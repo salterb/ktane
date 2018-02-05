@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from bomb_config import *
+from whos_on_first import *
 
 class Bomb:
     def __init__(self,
@@ -182,8 +183,39 @@ def simon(bomb):
     pass
 
 def whosOnFirst():
-    """ TO DO """
-    pass
+    """ Solves the "Who's on first" module, by outputting the list of 
+        potential solutions in order. """
+    
+    # We keep going until the user wants to stop
+    while True:
+        # Do-while to get the word on the display
+        while True:
+            display = input("\nWhat word is on the display? "
+                            "(type \"exit\" to cancel): ").upper().strip()
+            if display == "EXIT":
+                print("Exiting\n")
+                return
+            if display in WOFvalidDisplays:
+                break
+            print("Please input a valid display entry")
+    
+        # Do-while to get the word on the button
+        while True:
+            button = input("What word is on the "+WOFdisplayDict[display]\
+                          +" button? ").upper().strip()
+            if button == "EXIT":
+                print("Exiting\n")
+                return
+            if button in WOFvalidButtons:
+                break
+            print("Please input a valid button entry")
+        
+        print("\nThe button to press is the first valid entry " 
+              "in the following list: ")
+        print(WOFbuttonDict[button])
+                       
+    
+
 
 def memory():
     """ TO DO """
@@ -301,10 +333,13 @@ def main():
     while True:
         funcToCall = input("Which module would you like to solve? "
                            "(type \"help\" for options): ").lower().strip()
+
         if funcToCall in ["simplewires", "simple"] :
             simpleWires(bomb)
         elif funcToCall == "button":
             button(bomb)
+        elif funcToCall in ['wof','whosonfirst','who\'sonfirst']:
+            whosOnFirst()
         elif funcToCall in ["password", "pass"]:
             password()
         elif funcToCall in ["exit", "quit"]:
