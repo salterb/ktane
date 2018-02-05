@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from bomb_config.py import *
+from bomb_config import *
 
 class Bomb:
     def __init__(self,
@@ -103,7 +103,7 @@ def button(bomb):
     # Two do-while loops to get the button color and word
     validColours = ['R','B','Y','W']
     while True:
-        buttonColour = input("Please input the button colour ")
+        buttonColour = input("Please input the button colour: ").upper()
         if buttonColour in validColours:
             break
         print("Please supply a valid colour from [R, B, Y, W]")
@@ -111,19 +111,21 @@ def button(bomb):
     buttonWord = ""
     validWords = ['A','D','H','P']
     while buttonWord not in validWords:
-        buttonWord = input("Please input first letter of word on button ")
+        buttonWord = input("Please input first letter of word "
+                           "on button: ").upper()
         if buttonWord not in validWords:
             print("Please supply a valid letter from [A, D, H, P]")
+
     releaseString = ("------ DO NOT IMMEDIATELY RELEASE THE BUTTON ------\n\n"
                      "If the strip is BLUE, release the button when timer "
                      "has a 4 in any position\n"
                      "If the strip is YELLOW, release the button when timer "
                      "has a 5 in any position\n"
                      "Otherwise release the button when timer "
-                     "has a 1 in any position")
+                     "has a 1 in any position\n")
                      
     if buttonColour == 'B' and buttonWord == 'A':
-        print("Hold button")
+        print("\nHold button\n")
         print(releaseString)
         return
         
@@ -133,26 +135,24 @@ def button(bomb):
             bomb.numBatteries = addBatteries()
         
         if bomb.numBatteries > 1:
-            print("Press and release button")
+            print("\nPress and release button\n")
             return
         
     if buttonColour == 'W' and bomb.CAR != False:
-        # Do-while to get input
         if bomb.CAR == None:
             bomb.CAR = addCAR()
         
         if bomb.CAR == True:
-            print("Hold button")
+            print("\nHold button\n")
             print(releaseString)
             return
         
     if bomb.numBatteries > 2 and bomb.FRK != False:
-        # Do-while to get input
         if bomb.FRK == None:
             bomb.FRK = addFRK()
         
         if bomb.FRK == True:
-            print("Press and release button")
+            print("\nPress and release button\n")
             return
             
     if buttonColour == 'Y':
@@ -161,7 +161,7 @@ def button(bomb):
         return
         
     if buttonColour == 'R' and buttonWord == 'H':
-        print("Press and release button")
+        print("\nPress and release button\n")
         return
         
     else:
@@ -300,7 +300,7 @@ def main():
     
     while True:
         funcToCall = input("Which module would you like to solve? "
-                           "(type \"help\" for options) ").lower().strip()
+                           "(type \"help\" for options): ").lower().strip()
         if funcToCall in ["simplewires", "simple"] :
             simpleWires(bomb)
         elif funcToCall == "button":
