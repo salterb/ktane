@@ -158,8 +158,43 @@ def maze():
     pass
 
 def password():
-    """ TO DO """
-    pass
+    """ Solves the password module """
+    validPasswords = ["ABOUT", "AFTER", "AGAIN", "BELOW", "COULD",
+                      "EVERY", "FIRST", "FOUND", "GREAT", "HOUSE",
+                      "LARGE", "LEARN", "NEVER", "OTHER", "PLACE",
+                      "PLANT", "POINT", "RIGHT", "SMALL", "SOUND",
+                      "SPELL", "STILL", "STUDY", "THEIR", "THERE",
+                      "THESE", "THING", "THINK", "THREE", "WATER",
+                      "WHERE", "WHICH", "WORLD", "WOULD", "WRITE"]
+    letterPos = 0
+    while (len(validPasswords) > 1):
+        # Do-while for input
+        while (True):
+            letters = input("Please input the list of letters in position "
+                            +str(letterPos+1)+": ").strip().upper()
+            if letters == "EXIT" or letters == "QUIT":
+                return
+            elif letters.isalpha() and len(letters) <= 6:
+                break
+            
+            print("Invalid letter sequence. Please try again")
+        
+        letters = list(letters)
+        
+        # We have to copy the password list so we can remove items from the
+        # original list whilst still correctly iterating over the list.
+        validPasswordsCopy = validPasswords[:]
+        for word in validPasswordsCopy:
+            if word[letterPos] not in letters:
+                validPasswords.remove(word)
+        letterPos+=1
+    
+    # Now there is at most one word in the list. If there's none, the user
+    # made an error and we tell them to try again
+    if len(validPasswords) == 0:
+        print("Invalid input letters. Please run module again")
+    else:
+        print("The password is "+validPasswords[0])
 
 def main():
     """ Creats the bomb object with the relevant info, then calls the 
@@ -226,6 +261,8 @@ def main():
     while (True):
         funcToCall = input("Which module would you like to solve? "
                            "(type \"help\" for options) ").lower()
+        if funcToCall == "password":
+            password()
         if funcToCall in ["exit", "quit"]:
             print("\nWe hope your defusal was a success. Come again soon!\n")
             break 
