@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+
+from bomb_config.py import *
+
 class Bomb:
     def __init__(self,
                  serial=None,
@@ -47,15 +50,8 @@ def simpleWires(bomb):
 
     elif numWires == 4:
         if bomb.serial == None:
-            #Fill our the new serial
-            while True:
-                serial = input("Please input the bomb's serial number: ").upper()
-                if serial.isalnum() and len(serial) == 6:
-                    bomb.serial = serial
-                    break
-                print("Invalid serial number. Please try again using only 6 "
-                      "alphanumeric characters")
-                
+            bomb.serial = addSerial()
+            
         if wires.count("R") > 1 and int(bomb.serial[-1]) % 2 == 1:
             print("Cut the --- LAST RED --- wire")
         elif wires[-1] == 'Y' and ('R' not in wires):
@@ -69,14 +65,7 @@ def simpleWires(bomb):
 
     elif numWires == 5:
         if bomb.serial == None:
-            #Fill our the new serial
-            while True:
-                serial = input("Please input the bomb's serial number: ").upper()
-                if serial.isalnum() and len(serial) == 6:
-                    bomb.serial = serial
-                    break
-                print("Invalid serial number. Please try again using only 6 "
-                      "alphanumeric characters")
+            bomb.serial = addSerial()
 
         if wires[-1] == 'K' and int(bomb.serial[-1]) % 2 == 1:
             print("Cut the --- FOURTH --- wire")
@@ -89,14 +78,7 @@ def simpleWires(bomb):
 
     elif numWires == 6:
         if bomb.serial == None:
-            #Fill our the new serial
-            while True:
-                serial = input("Please input the bomb's serial number: ").upper()
-                if serial.isalnum() and len(serial) == 6:
-                    bomb.serial = serial
-                    break
-                print("Invalid serial number. Please try again using only 6 "
-                      "alphanumeric characters")
+            bomb.addSerial()
 
         if 'Y' not in wires and int(bomb.serial[-1]) % 2 == 1:
             print("Cut the --- THIRD --- wire")
@@ -148,13 +130,7 @@ def button(bomb):
     if  (buttonWord == 'D' and 
          (bomb.numBatteries == None or bomb.numBatteries > 1)):
         if bomb.numBatteries == None:
-            while True:
-                numBatteries = input("Please input the number of batteries "
-                                     "on the bomb: ")
-                if numBatteries.isdigit():
-                    bomb.numBatteries = int(numBatteries)
-                    break
-                print("Invalid number of batteries. Please try again")
+            bomb.numBatteries = addBatteries()
         
         if bomb.numBatteries > 1:
             print("Press and release button")
@@ -163,16 +139,7 @@ def button(bomb):
     if buttonColour == 'W' and bomb.CAR != False:
         # Do-while to get input
         if bomb.CAR == None:
-            while True:
-                CAR = input("Is there a lit indicator with label "
-                            "\"CAR\"? (Y/N) ").lower()
-                if len(CAR) > 0 and CAR[0] == "y":
-                    bomb.CAR = True
-                    break
-                elif len(CAR) > 0 and CAR[0] == "n":
-                    bomb.CAR = False
-                    break
-                print("Invalid input. Please try again")
+            bomb.CAR = addCAR()
         
         if bomb.CAR == True:
             print("Hold button")
@@ -182,27 +149,21 @@ def button(bomb):
     if bomb.numBatteries > 2 and bomb.FRK != False:
         # Do-while to get input
         if bomb.FRK == None:
-            while True:
-                FRK = input("Is there a lit indicator with label "
-                            "\"FRK\"? (Y/N) ").lower()
-                if len(FRK) > 0 and FRK[0] == "y":
-                    bomb.FRK = True
-                    break
-                elif len(FRK) > 0 and FRK[0] == "n":
-                    bomb.FRK = False
-                    break
-                print("Invalid input. Please try again")
+            bomb.FRK = addFRK()
         
         if bomb.FRK == True:
             print("Press and release button")
             return
+            
     if buttonColour == 'Y':
         print("Hold button")
         print(releaseString)
         return
+        
     if buttonColour == 'R' and buttonWord == 'H':
         print("Press and release button")
         return
+        
     else:
         print("Hold button")
         print(releaseString)
@@ -287,50 +248,13 @@ def password():
 
 def setupBomb():
     # Set up the bomb with a bunch of user input
-    while True:
-        serial = input("Please input the bomb's serial number: ").upper()
-        if serial.isalnum() and len(serial) == 6:
-            break
-        print("Invalid serial number. Please try again using only 6 "
-              "alphanumeric characters")
-
-    while True:
-        numBatteries = input("Please input the number of batteries "
-                             "on the bomb: ")
-        if numBatteries.isdigit():
-            break
-        print("Invalid number of batteries. Please try again")
-
-    while True:
-        parallelPort = input("Does the bomb have a parallel port? (Y/N) ")
-        if len(parallelPort) > 0 and parallelPort[0] in ['y','Y','n','N']:
-            break
-        print("Invalid input. Please try again")
-
-    while True:
-        CAR = input("Is there a lit indicator with label "
-                    "\"CAR\"? (Y/N) ").lower()
-        if len(CAR) > 0 and CAR[0] == 'y':
-            CAR = True
-            break
-        elif len(CAR) > 0 and CAR[0] == 'n':
-            CAR = False
-            break
-        print("Invalid input. Please try again")
-
-    while True:
-        FRK = input("Is there a lit indicator with label "
-                    "\"FRK\"? (Y/N) ").lower()
-        if len(FRK) > 0 and FRK[0] == 'y':
-            FRK = True
-            break
-        elif len(FRK) > 0 and FRK[0] == 'n':
-            FRK = False
-            break
-        print("Invalid input. Please try again")
+    serial = addSerial()
+    numBatteries = addBatteries()
+    parallelPort = addPPort()
+    CAR = addCAR()
+    FRK = addFRK()
     bomb = Bomb(serial, numBatteries, parallelPort, CAR, FRK)
     return bomb
-
 
 
 def main():
