@@ -219,6 +219,7 @@ def main():
     print(logo)
     print("Welcome to the KTANE solver!")
     print("We hope you have a successful defusal, with minimal death.\n")
+    print("\nFirst, we need to get some info about your bomb\n")
     
     # Set up the bomb with a bunch of user input
     while True:
