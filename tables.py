@@ -53,13 +53,4 @@ WOFbuttonDict = \
 'LIKE': ["YOU'RE", 'NEXT', 'U', 'UR', 'HOLD', 'DONE', 'UH UH', 'WHAT?', 'UH HUH', 'YOU', 'LIKE', 'SURE', 'YOU ARE', 'YOUR']}
 
 
-
-# ------------------ PASSWORD -----------------
-
-validPasswords = ["ABOUT", "AFTER", "AGAIN", "BELOW", "COULD",
-                  "EVERY", "FIRST", "FOUND", "GREAT", "HOUSE",
-                  "LARGE", "LEARN", "NEVER", "OTHER", "PLACE",
-                  "PLANT", "POINT", "RIGHT", "SMALL", "SOUND",
-                  "SPELL", "STILL", "STUDY", "THEIR", "THERE",
-                  "THESE", "THING", "THINK", "THREE", "WATER",
-                  "WHERE", "WHICH", "WORLD", "WOULD", "WRITE"]
+# ---------------------- COMPLICATED WIRES -------------------

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from bomb_config import *
-from whos_on_first import *
+from tables import *
 
 class Bomb:
     def __init__(self,
@@ -16,22 +16,69 @@ class Bomb:
         self.CAR = CAR                    # Is there a _lit_ CAR indicator?
         self.FRK = FRK                    # Is there a _lit_ FRK indicator?
 
-
+#----------------------------------------------------------#
+#                                                          #
+#                         HELPERS                          #
+#                                                          #
+#----------------------------------------------------------#
 
 def isValidSimpleWires(wires):
     """ Helper function to determine if the wire arrangement specified
-    is valid """
+        is valid """
     if len(wires) < 3 or len(wires) > 6:
         return False
-    for chr in wires:
-        if chr not in ['K','B','Y','R','W']:
+    for char in wires:
+        if char not in ['K','B','Y','R','W']:
             return False
     return True
+
+def isValidCompWire(wire):
+    """ Helper function to determine if a string representing a complicated
+        wire is valid """
+    if len(wire) > 4:
+        return False
+    for char in wire:
+        if char not in ['R','B','S','L']:
+            return False
+    return True
+    
+def cut(bomb):
+    print("\nCUT the wire")
+def noCut(bomb):
+    print("\nDo NOT cut the wire")
+def serialCut(bomb):
+    if bomb.serial == None:
+        bomb.serial = addSerial()
+    if int(bomb.serial[-1]) % 2 == 0:
+        print("\nCUT the wire")
+    else:
+        print("\nDo NOT cut the wire")
+def pPortCut(bomb):
+    if bomb.parallelPort == None:
+        bomb.parallelPort = addPPort()
+    if bomb.parallelPort == True:
+        print("\nCUT the wire")
+    else:
+        print("\nDo NOT cut the wire")
+def batteryCut(bomb):
+    if bomb.numBatteries == None:
+        bomb.numBatteries = addBatteries()
+    if bomb.numBatteries >= 2:
+        print("\nCUT the wire")
+    else:
+        print("\nDo NOT cut the wire")
+    
+
+#----------------------------------------------------------#
+#                                                          #
+#                         MODULES                          #
+#                                                          #
+#----------------------------------------------------------#
 
 def simpleWires(bomb):
     """ Solve the simple wires module on the bomb"""
     
-    # Use a "do-while" to get the wire sequence
+    # Do-while to get the wire sequence
     while True:
         wires = input("Please input the wire sequence (no spaces) ")
         if isValidSimpleWires(wires):
@@ -227,7 +274,30 @@ def morse():
 
 def complicatedWires(bomb):
     """ TO DO - pass one wire at a time? """
-    pass
+    # We keep running until the user wants to stop
+    print("Use 'R' for 'red', 'B' for 'blue', 'S' for star, and 'L' for light")
+    
+    while True:
+        # Do-while to obtain the string representing the wire
+        while True:
+            wire = input("\nPlease input the string representing the wire (type "
+                         "\"exit\" to cancel) ").upper().strip().strip('W')
+            if wire == "EXIT":
+                print("Exiting\n")
+                return
+            if isValidCompWire(wire):
+                break
+            print("Invalid wire")
+        wire = "".join(sorted(wire)) # Get in alphabetical order
+        
+        # Now we have 16 different cases to consider.
+        # We use a lookup table which runs the correct printing function.
+        compWiresDict = \
+        {'': cut, 'B': serialCut, 'BL': pPortCut, 'BLR': serialCut, 'BLRS': noCut,\
+        'BLS': pPortCut, 'BR': serialCut, 'BRS': pPortCut, 'BS': noCut, 'L': noCut,\
+        'LR': batteryCut, 'LRS': batteryCut, 'LS': batteryCut, 'R': serialCut,\
+        'RS': cut, 'S': cut}
+        compWiresDict[wire](bomb)
 
 def sequences():
     """ TO DO """
@@ -248,7 +318,7 @@ def password():
                       "WHERE", "WHICH", "WORLD", "WOULD", "WRITE"]
     letterPos = 0
     while (len(validPasswords) > 1):
-        # Do-while for input
+        # Do-while to obtain the letters
         while True:
             letters = input("Please input the list of letters in position "
                             +str(letterPos+1)+": ").strip().upper()
@@ -340,6 +410,8 @@ def main():
             button(bomb)
         elif funcToCall in ['wof','whosonfirst','who\'sonfirst']:
             whosOnFirst()
+        elif funcToCall in ['comp','complicated','complicatedwires']:
+            complicatedWires(bomb)
         elif funcToCall in ["password", "pass"]:
             password()
         elif funcToCall in ["exit", "quit"]:
@@ -347,6 +419,7 @@ def main():
             break
         else:
             print("Please try again")
+
 
 if __name__ == "__main__":
     main()
