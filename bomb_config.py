@@ -5,10 +5,13 @@
 def addSerial():
     while True:
         serial = input("Please input the bomb's serial number: ").upper()
-        if serial.isalnum() and len(serial) == 6:
+        if (serial.isalnum() and 
+            len(serial) == 6 and 
+            (serial[-1]).isdigit()):
             break
         print("Invalid serial number. Please try again using only 6 "
-              "alphanumeric characters")
+              "alphanumeric characters.\nNote that the last character "
+              "must be a digit")
     return serial
 
 def addBatteries():

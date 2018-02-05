@@ -237,8 +237,8 @@ def whosOnFirst():
     while True:
         # Do-while to get the word on the display
         while True:
-            display = input("\nWhat word is on the display? "
-                            "(type \"exit\" to cancel): ").upper().strip()
+            display = input("\nWhat word is on the display? (type "
+                            "\"exit\" to cancel): ").upper().replace(' ','')
             if display == "EXIT":
                 print("Exiting\n")
                 return
@@ -249,7 +249,7 @@ def whosOnFirst():
         # Do-while to get the word on the button
         while True:
             button = input("What word is on the "+WOFdisplayDict[display]\
-                          +" button? ").upper().strip()
+                          +" button? ").upper().replace(' ','')
             if button == "EXIT":
                 print("Exiting\n")
                 return
@@ -280,8 +280,9 @@ def complicatedWires(bomb):
     while True:
         # Do-while to obtain the string representing the wire
         while True:
-            wire = input("\nPlease input the string representing the wire (type "
-                         "\"exit\" to cancel) ").upper().strip().strip('W')
+            wire = input("\nPlease input the string representing "
+                         "the wire (type \"exit\" to cancel) "
+                         "").upper().replace(' ','').replace('W','')
             if wire == "EXIT":
                 print("Exiting\n")
                 return
@@ -321,7 +322,7 @@ def password():
         # Do-while to obtain the letters
         while True:
             letters = input("Please input the list of letters in position "
-                            +str(letterPos+1)+": ").strip().upper()
+                            +str(letterPos+1)+": ").replace(' ','').upper()
             if letters == "EXIT" or letters == "QUIT":
                 return
             elif letters.isalpha() and len(letters) <= 6:
@@ -401,8 +402,8 @@ def main():
     # Now, we ask the user to supply the name of the module they want to solve
     
     while True:
-        funcToCall = input("Which module would you like to solve? "
-                           "(type \"help\" for options): ").lower().strip()
+        funcToCall = input("Which module would you like to solve? (type "
+                           "\"help\" for options): ").lower().replace(' ','')
 
         if funcToCall in ["simplewires", "simple"] :
             simpleWires(bomb)
