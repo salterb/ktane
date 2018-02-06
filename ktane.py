@@ -41,32 +41,33 @@ def isValidCompWire(wire):
         if char not in ['R','B','S','L']:
             return False
     return True
-    
+
+# "Cut" functions for complicated wires
 def cut(bomb):
-    print("\nCUT the wire")
+    print("\n\033[1mCUT\033[0m the wire")
 def noCut(bomb):
-    print("\nDo NOT cut the wire")
+    print("\nDo \033[1mNOT\033[0m cut the wire")
 def serialCut(bomb):
     if bomb.serial == None:
         bomb.serial = addSerial()
     if int(bomb.serial[-1]) % 2 == 0:
-        print("\nCUT the wire")
+        print("\n\033[1mCUT\033[0m the wire")
     else:
-        print("\nDo NOT cut the wire")
+        print("\nDo \033[1mNOT\033[0m cut the wire")
 def pPortCut(bomb):
     if bomb.parallelPort == None:
         bomb.parallelPort = addPPort()
     if bomb.parallelPort == True:
-        print("\nCUT the wire")
+        print("\n\033[1mCUT\033[0m the wire")
     else:
-        print("\nDo NOT cut the wire")
+        print("\nDo \033[1mNOT\033[0m cut the wire")
 def batteryCut(bomb):
     if bomb.numBatteries == None:
         bomb.numBatteries = addBatteries()
     if bomb.numBatteries >= 2:
-        print("\nCUT the wire")
+        print("\n\033[1mCUT\033[0m the wire")
     else:
-        print("\nDo NOT cut the wire")
+        print("\nDo \033[1mNOT\033[0m cut the wire")
     
 
 #----------------------------------------------------------#
@@ -88,54 +89,54 @@ def simpleWires(bomb):
     numWires = len(wires)
     if numWires == 3:
         if 'R' in wires:
-            print("Cut the --- SECOND --- wire")
+            print("\nCut the \033[1mSECOND\033[0m wire\n")
         elif wires[-1] == 'W':
-            print("Cut the --- LAST --- wire")
+            print("\nCut the \033[1mLAST\033[0m wire\n")
         elif wires.count('B') > 1:
-            print("Cut the --- LAST BLUE --- wire")
+            print("\nCut the \033[1mLAST\033[0m \033[1;34mBLUE\033[0m wire\n")
         else:
-            print("Cut the --- LAST --- wire")
+            print("\nCut the \033[1mLAST\033[0m wire\n")
 
     elif numWires == 4:
         if bomb.serial == None:
             bomb.serial = addSerial()
             
         if wires.count("R") > 1 and int(bomb.serial[-1]) % 2 == 1:
-            print("Cut the --- LAST RED --- wire")
+            print("Cut the \033[1mLAST\033[0m \033[1;31mRED\033[0m wire")
         elif wires[-1] == 'Y' and ('R' not in wires):
-            print("Cut the --- FIRST --- wire")
+            print("Cut the \033[1mFIRST\033[0m wire")
         elif wires.count('B') == 1:
-            print("Cut the --- FIRST --- wire")
+            print("Cut the \033[1mFIRST\033[0m wire")
         elif wires.count('Y') > 1:
-            print("Cut the --- LAST --- wire")
+            print("Cut the \033[1mLAST\033[0m wire")
         else:
-            print("Cut the --- SECOND --- wire")
+            print("Cut the \033[1mSECOND\033[0m wire")
 
     elif numWires == 5:
         if bomb.serial == None:
             bomb.serial = addSerial()
 
         if wires[-1] == 'K' and int(bomb.serial[-1]) % 2 == 1:
-            print("Cut the --- FOURTH --- wire")
+            print("Cut the \033[1mFOURTH\033[0m wire")
         elif wires.count('R') == 1 and wires.count('Y') > 1:
-            print("Cut the --- FIRST --- wire")
+            print("Cut the \033[1mFIRST\033[0m wire")
         elif 'K' not in wires:
-            print("Cut the --- SECOND --- wire")
+            print("Cut the \033[1mSECOND\033[0m wire")
         else:
-            print("Cut the --- FIRST --- wire")
+            print("Cut the \033[1mFIRST\033[0m wire")
 
     elif numWires == 6:
         if bomb.serial == None:
             bomb.addSerial()
 
         if 'Y' not in wires and int(bomb.serial[-1]) % 2 == 1:
-            print("Cut the --- THIRD --- wire")
+            print("Cut the \033[1mTHIRD\033[0m wire")
         elif wires.count('Y') == 1 and wires.count('W') > 1:
-            print("Cut the --- FOURTH --- wire")
+            print("Cut the \033[1mFOURTH\033[0m wire")
         elif 'R' not in wires:
-            print("Cut the --- LAST --- wire")
+            print("Cut the \033[1mLAST\033[0m wire")
         else:
-            print("Cut the --- FOURTH --- wire")
+            print("Cut the \033[1mFOURTH\033[0m wire")
     
     else:
         raise Exception("len(numWires = "+str(len(numWires))+
@@ -164,13 +165,13 @@ def button(bomb):
         if buttonWord not in validWords:
             print("Please supply a valid letter from [A, D, H, P]")
 
-    releaseString = ("------ DO NOT IMMEDIATELY RELEASE THE BUTTON ------\n\n"
-                     "If the strip is BLUE, release the button when timer "
-                     "has a 4 in any position\n"
-                     "If the strip is YELLOW, release the button when timer "
-                     "has a 5 in any position\n"
-                     "Otherwise release the button when timer "
-                     "has a 1 in any position\n")
+    releaseString = ("\033[1m------ DO NOT IMMEDIATELY "
+                     "RELEASE THE BUTTON ------\033[0m\n\n"
+                     "If the strip is \033[1;34mBLUE\033[0m, release the "
+                     "button when timer has a \033[1;34m4\033[0m in any "
+                     "position\nIf the strip is \033[1;38mYELLOW\033[0m, "
+                     "has a \033[1;38m5\033[0m in any position\nOtherwise "
+                     "release the button when timer has a 1 in any position\n")
                      
     if buttonColour == 'B' and buttonWord == 'A':
         print("\nHold button\n")
@@ -345,7 +346,7 @@ def password():
     if len(validPasswords) == 0:
         print("Invalid input letters. Please run module again")
     else:
-        print("The password is "+validPasswords[0])
+        print("The password is \033[1m"+validPasswords[0]+"\033[0m\n")
 
 
 
