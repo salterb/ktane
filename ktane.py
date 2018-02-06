@@ -93,7 +93,7 @@ def simpleWires(bomb):
         elif wires[-1] == 'W':
             print("\nCut the \033[1mLAST\033[0m wire\n")
         elif wires.count('B') > 1:
-            print("\nCut the \033[1mLAST\033[0m \033[1;34mBLUE\033[0m wire\n")
+            print("\nCut the \033[1;34mLAST BLUE\033[0m wire\n")
         else:
             print("\nCut the \033[1mLAST\033[0m wire\n")
 
@@ -102,7 +102,7 @@ def simpleWires(bomb):
             bomb.serial = addSerial()
             
         if wires.count("R") > 1 and int(bomb.serial[-1]) % 2 == 1:
-            print("Cut the \033[1mLAST\033[0m \033[1;31mRED\033[0m wire")
+            print("Cut the \033[1;31mLAST RED\033[0m wire")
         elif wires[-1] == 'Y' and ('R' not in wires):
             print("Cut the \033[1mFIRST\033[0m wire")
         elif wires.count('B') == 1:
@@ -346,7 +346,7 @@ def password():
     if len(validPasswords) == 0:
         print("Invalid input letters. Please run module again")
     else:
-        print("The password is \033[1m"+validPasswords[0]+"\033[0m\n")
+        print("\nThe password is \033[1m"+validPasswords[0]+"\033[0m\n")
 
 
 
