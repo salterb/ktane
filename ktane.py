@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 from bomb_config import *
-from tables import *
+from wof import *
+from mazes import solve_maze
 
 class Bomb:
     def __init__(self,
@@ -307,7 +308,7 @@ def sequences():
 
 def maze():
     """ TO DO """
-    pass
+    solve_maze()
 
 def password():
     """ Solves the password module """
@@ -359,6 +360,9 @@ def setupBomb():
     FRK = addFRK()
     bomb = Bomb(serial, numBatteries, parallelPort, CAR, FRK)
     return bomb
+
+def help():
+    print("HELP!")
 
 
 def main():
@@ -416,6 +420,10 @@ def main():
             complicatedWires(bomb)
         elif funcToCall in ["password", "pass"]:
             password()
+        elif funcToCall in ["maze", "mazes"]:
+            maze()
+        elif funcToCall in ["help", "h", "-h", "--help"]:
+            help()
         elif funcToCall in ["exit", "quit"]:
             print("\nWe hope your defusal was a success. Come again soon!\n")
             break

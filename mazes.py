@@ -95,12 +95,12 @@ maze6ValidMoves = {(1,1): [RIGHT, UP], (2,1): [LEFT, RIGHT],
                    (1,5): [UP, DOWN], (2,5): [UP, DOWN], (3,5): [UP, DOWN],
                    (4,5): [DOWN, RIGHT], (5,5): [LEFT, UP], (6,5): [UP, DOWN],
                    (1,6): [DOWN], (2,6): [DOWN, RIGHT], (3,6): [DOWN, LEFT],
-                   (4,6); [RIGHT], (5,6): [LEFT, DOWN, RIGHT],
+                   (4,6): [RIGHT], (5,6): [LEFT, DOWN, RIGHT],
                    (6,6): [LEFT, DOWN]}
                    
 maze7ValidMoves = {(1,1): [RIGHT, UP], (2,1): [LEFT, RIGHT],
                    (3,1): [LEFT, RIGHT], (4,1): [LEFT, RIGHT],
-                   (5,1): [LEFT, UP, RIGHT], (6,1): [LEFT, UP]
+                   (5,1): [LEFT, UP, RIGHT], (6,1): [LEFT, UP],
                    (1,2): [UP, DOWN], (2,2): [UP], (3,2): [UP, RIGHT],
                    (4,2): [LEFT, RIGHT], (5,2): [LEFT, DOWN],
                    (6,2): [UP, DOWN], (1,3): [DOWN, RIGHT],
@@ -123,7 +123,7 @@ maze8ValidMoves = {(1,1): [LEFT, UP], (2,1): [LEFT, UP, RIGHT],
                    (5,3): [LEFT, UP, RIGHT], (6,3): [LEFT, UP],
                    (1,4): [UP, DOWN], (2,4): [DOWN, RIGHT],
                    (3,4): [LEFT, RIGHT], (4,4): [LEFT, RIGHT],
-                   (5,4): [LEFT, DOWN], (6,4); [UP, DOWN],
+                   (5,4): [LEFT, DOWN], (6,4): [UP, DOWN],
                    (1,5): [UP, RIGHT, DOWN], (2,5): [LEFT, RIGHT, UP],
                    (3,5): [LEFT], (4,5): [UP, RIGHT], (5,5): [LEFT, UP],
                    (6,5): [UP, DOWN], (1,6): [DOWN], (2,6): [DOWN, RIGHT],
@@ -136,14 +136,13 @@ maze9ValidMoves = {(1,1): [UP, RIGHT], (2,1): [LEFT, UP], (3,1): [UP, RIGHT],
                    (4,2): [DOWN, RIGHT], (5,2): [LEFT, DOWN], (6,2): [UP],
                    (1,3): [UP, DOWN], (2,3): [DOWN], (3,3): [DOWN, RIGHT],
                    (4,3): [LEFT, UP], (5,3): [RIGHT], (6,3): [DOWN, LEFT, UP],
-                   (1,4): [DOWN, RIGHT UP], (2,4): [LEFT, UP, RIGHT],
+                   (1,4): [DOWN, RIGHT, UP], (2,4): [LEFT, UP, RIGHT],
                    (3,4): [LEFT, UP], (4,4): [DOWN, RIGHT], (5,4): [LEFT, UP],
                    (6,4): [UP, DOWN], (1,5): [UP, DOWN], (2,5): [UP, DOWN],
                    (3,5): [DOWN, RIGHT], (4,5): [LEFT], (5,5): [UP, DOWN],
                    (6,5): [UP, DOWN], (1,6): [DOWN], (2,6): [DOWN, RIGHT],
                    (3,6): [LEFT, RIGHT], (4,6): [LEFT, RIGHT],
                    (5,6): [LEFT, DOWN, RIGHT], (6,6): [LEFT, DOWN]}
-
 
 
 mazeLookup = {(1,5): maze1ValidMoves, (6,4): maze1ValidMoves,
@@ -156,6 +155,7 @@ mazeLookup = {(1,5): maze1ValidMoves, (6,4): maze1ValidMoves,
               (3,3): maze8ValidMoves, (4,6): maze8ValidMoves,
               (1,2): maze9ValidMoves, (3,5): maze9ValidMoves}
 
+
 def DFS_maze_helper(maze, player_pos, end, current_moves):
     """
     Performs a DFS to find the solution to a maze.
@@ -167,7 +167,7 @@ def DFS_maze_helper(maze, player_pos, end, current_moves):
     M = mazeLookup[maze]
     
     for move in M[tuple(player_pos)]:
-        # We don't want to backtrack our most recent move
+        # The second check ensured we don't backtrack at all
         if len(current_moves) == 0 or move != -current_moves[-1]:
             new_moves = current_moves[:]
             new_moves.append(move)
@@ -193,9 +193,11 @@ def DFS_maze(maze, start, end):
 def print_moves(maze, start, end):
     """ Prints the necessary moves to solve the maze. Currently not very
         aesthetic - will replace """
+
     moves = DFS_maze(maze, start, end)
     if moves == None:
-        throw Exception("Moves returned None - something wrong with DFS?")
+        print("No moves - maybe you specified the same start and end point?")
+        return
     for direction in moves:
         if direction == -1:
             print("LEFT")
@@ -213,11 +215,11 @@ def solve_maze():
     while True:
         maze_ipt = input("Enter the coordinates of "
                         "any green circle in the maze: ").strip('()[] ')
-        if (int(maze_ipt[0]) in valid_symbols and 
-            int(maze_ipt[-1] in valid_symbols):
+        if (len(maze_ipt) >= 2 and 
+            (int(maze_ipt[0]), int(maze_ipt[-1])) in mazeLookup.keys()):
                 break
-        print("\nInvalid coordinates. Please provide (x,y) coordinates,"
-              " where 1 < x,y < 6\n")
+        print("\nInvalid coordinates. Please provide (x,y) coordinates "
+              "of a valid green circle, where 1 < x,y < 6\n")
               
     # Assume the first and last digits are the correct ones, after
     # removing any brackets and whitespace.
@@ -226,18 +228,20 @@ def solve_maze():
     while True:
         start_ipt = input("Enter the coordinates of the START of "
                           "the maze (white light): ").strip('()[] ')
-        if (int(start_ipt[0]) in valid_symbols and 
-            int(start_ipt[-1] in valid_symbols):
+        if (len(start_ipt) >= 2 and 
+            int(start_ipt[0]) in valid_symbols and 
+            int(start_ipt[-1]) in valid_symbols):
                 break
         print("\nInvalid coordinates. Please provide (x,y) coordinates,"
               " where 1 < x,y < 6\n")
-    start = (int(start_ipt[0]), start_ipt[-1])
+    start = (int(start_ipt[0]), int(start_ipt[-1]))
     
     while True:
         end_ipt = input("Enter the coordinates of the END of the "
                         "maze (red triangle): ").strip('()[] ')
-        if (int(end_ipt[0]) in valid_symbols and 
-            int(end_ipt[-1] in valid_symbols):
+        if (len(end_ipt) >= 2 and 
+            int(end_ipt[0]) in valid_symbols and 
+            int(end_ipt[-1]) in valid_symbols):
                 break
         print("\nInvalid coordinates. Please provide (x,y) coordinates,"
               " where 1 < x,y < 6\n")
