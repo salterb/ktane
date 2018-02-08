@@ -2,17 +2,19 @@
 # These functions will only return the relevant data - these must be
 # added to the bomb manually
 
+
 def addSerial():
     while True:
         serial = input("Please input the bomb's serial number: ").upper()
-        if (serial.isalnum() and 
-            len(serial) == 6 and 
+        if (serial.isalnum() and
+            len(serial) == 6 and
             (serial[-1]).isdigit()):
             break
         print("Invalid serial number. Please try again using only 6 "
               "alphanumeric characters.\nNote that the last character "
               "must be a digit")
     return serial
+
 
 def addBatteries():
     while True:
@@ -22,6 +24,7 @@ def addBatteries():
             break
         print("Invalid number of batteries. Please try again")
     return int(numBatteries)
+
 
 def addPPort():
     while True:
@@ -36,6 +39,7 @@ def addPPort():
         print("Invalid input. Please try again")
     return parallelPort
 
+
 def addCAR():
     while True:
         CAR = input("Is there a lit indicator with label "
@@ -48,7 +52,8 @@ def addCAR():
             break
         print("Invalid input. Please try again")
     return CAR
-    
+
+
 def addFRK():
     while True:
         FRK = input("Is there a lit indicator with label "

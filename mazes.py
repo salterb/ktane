@@ -97,7 +97,7 @@ maze6ValidMoves = {(1,1): [RIGHT, UP], (2,1): [LEFT, RIGHT],
                    (1,6): [DOWN], (2,6): [DOWN, RIGHT], (3,6): [DOWN, LEFT],
                    (4,6): [RIGHT], (5,6): [LEFT, DOWN, RIGHT],
                    (6,6): [LEFT, DOWN]}
-                   
+
 maze7ValidMoves = {(1,1): [RIGHT, UP], (2,1): [LEFT, RIGHT],
                    (3,1): [LEFT, RIGHT], (4,1): [LEFT, RIGHT],
                    (5,1): [LEFT, UP, RIGHT], (6,1): [LEFT, UP],
@@ -159,43 +159,46 @@ mazeLookup = {(1,5): maze1ValidMoves, (6,4): maze1ValidMoves,
 def DFS_maze_helper(maze, player_pos, end, current_moves):
     """
     Performs a DFS to find the solution to a maze.
-    We use a dictionary to lookup permissable directions but also want to 
+    We use a dictionary to lookup permissable directions but also want to
     modify the entries of the coordinate vectors for the start point, so we
     have to convert from list to tuple on the fly.
     """
     # Find the maze we are working with
     M = mazeLookup[maze]
-    
+
     for move in M[tuple(player_pos)]:
         # The second check ensured we don't backtrack at all
         if len(current_moves) == 0 or move != -current_moves[-1]:
             new_moves = current_moves[:]
             new_moves.append(move)
             new_pos = player_pos[:]
-            
+
             if move == LEFT or move == RIGHT:
-                new_pos[0]+=move
+                new_pos[0] += move
             else:
-                new_pos[1]+=move//2 # UP/DOWN are encoded as +/- 2 respectively
+                # UP/DOWN are encoded as +/- 2 respectively
+                new_pos[1] += move//2
             if new_pos == end:
                 return new_moves
-            
+
             # If we get non-None output from our DFS helper, then it found the
             # solution. We want to pass this down the call chain
             possible_moves = DFS_maze_helper(maze, new_pos, end, new_moves)
-            if possible_moves != None:
+            if possible_moves is not None:
                 return possible_moves
-    
+
+
 def DFS_maze(maze, start, end):
     """ Initiates the DFS by calling the helper with an empty array """
     return DFS_maze_helper(maze, list(start), list(end), [])
+
 
 def print_moves(maze, start, end):
     """ Prints the necessary moves to solve the maze. Currently not very
         aesthetic - will replace """
 
     moves = DFS_maze(maze, start, end)
-    if moves == None:
+    if moves is None:
         print("No moves - maybe you specified the same start and end point?")
         return
     for direction in moves:
@@ -208,43 +211,44 @@ def print_moves(maze, start, end):
         else:
             print("DOWN")
 
+
 def solve_maze():
-    valid_symbols = [1,2,3,4,5,6]
-    
+    valid_symbols = [1, 2, 3, 4, 5, 6]
+
     # Do-whiles for input
     while True:
         maze_ipt = input("Enter the coordinates of "
-                        "any green circle in the maze: ").strip('()[] ')
-        if (len(maze_ipt) >= 2 and 
+                         "any green circle in the maze: ").strip('()[] ')
+        if (len(maze_ipt) >= 2 and
             (int(maze_ipt[0]), int(maze_ipt[-1])) in mazeLookup.keys()):
                 break
         print("\nInvalid coordinates. Please provide (x,y) coordinates "
               "of a valid green circle, where 1 < x,y < 6\n")
-              
+
     # Assume the first and last digits are the correct ones, after
     # removing any brackets and whitespace.
     maze = (int(maze_ipt[0]), int(maze_ipt[-1]))
-    
+
     while True:
         start_ipt = input("Enter the coordinates of the START of "
                           "the maze (white light): ").strip('()[] ')
-        if (len(start_ipt) >= 2 and 
-            int(start_ipt[0]) in valid_symbols and 
+        if (len(start_ipt) >= 2 and
+            int(start_ipt[0]) in valid_symbols and
             int(start_ipt[-1]) in valid_symbols):
                 break
         print("\nInvalid coordinates. Please provide (x,y) coordinates,"
               " where 1 < x,y < 6\n")
     start = (int(start_ipt[0]), int(start_ipt[-1]))
-    
+
     while True:
         end_ipt = input("Enter the coordinates of the END of the "
                         "maze (red triangle): ").strip('()[] ')
-        if (len(end_ipt) >= 2 and 
-            int(end_ipt[0]) in valid_symbols and 
+        if (len(end_ipt) >= 2 and
+            int(end_ipt[0]) in valid_symbols and
             int(end_ipt[-1]) in valid_symbols):
                 break
         print("\nInvalid coordinates. Please provide (x,y) coordinates,"
               " where 1 < x,y < 6\n")
     end = (int(end_ipt[0]), int(end_ipt[-1]))
-    
+
     print_moves(maze, start, end)
