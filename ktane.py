@@ -234,7 +234,9 @@ def batteryCut(bomb):
 # ---------------------------------------------------------- #
 
 def simpleWires(bomb):
-    """ Solve the simple wires module on the bomb"""
+    """ Solve the simple wires module on the bomb. The user inputs the sequence
+        of wires, and the function tells the user which one to cut.
+    """
 
     # Do-while to get the wire sequence
     while True:
@@ -307,7 +309,8 @@ def button(bomb):
         This function is ugly. We've used 'if's and returns rather than
         'elif's, since we are also providing functionality for users to
         supply the bomb data at the last possible moment, and that involves
-        provisionally going inside if statements to provide user input."""
+        provisionally going inside if statements to provide user input.
+    """
 
     # Two do-while loops to get the button color and word
     validColours = ['R', 'B', 'Y', 'W']
@@ -452,13 +455,23 @@ def memory():
 
 
 def morse():
-    """ TO DO - allow for passing of partial string? """
+    """ Solves the morse module. The user inputs morse characters until
+        there is only one valid word left
+    """
     validWords = ["SHELL", "HALLS", "SLICK", "TRICK", "BOXES", "LEAKS",
                   "STROBE", "BISTRO", "FLICK", "BOMBS", "BREAK", "BRICK",
                   "STEAK", "STING", "VECTOR", "BEATS"]
     freqs = [3.505, 3.515, 3.522, 3.532, 3.535, 3.542, 3.545, 3.552, 3.555,
              3.565, 3.572, 3.575, 3.582, 3.592, 3.595, 3.600]
     morseFreqs = dict(zip(validWords, freqs))
+    morseLetters = {".-": "A", "-...": "B", "-.-.": "C", "-..": "D",
+                        ".": "E", "..-.": "F", "--.": "G", "....": "H",
+                        "..": "I", ".---": "J", "-.-": "K", ".-..": "L",
+                        "--": "M", "-.": "N", "---": "O", ".--.": "P",
+                        "-.--": "Q", ".-.": "R", "...": "S", "-": "T",
+                        "..-": "U", "...-": "V", ".--": "W", "-.--": "X",
+                        "-.--": "Y", "--..": "Z"}
+
     while len(validWords) > 1:
         while True:
             morse = input("Please input a morse code letter "
@@ -478,13 +491,6 @@ def morse():
 
             print("Invalid morse sequence. Please try again")
 
-        morseLetters = {".-": "A", "-...": "B", "-.-.": "C", "-..": "D",
-                        ".": "E", "..-.": "F", "--.": "G", "....": "H",
-                        "..": "I", ".---": "J", "-.-": "K", ".-..": "L",
-                        "--": "M", "-.": "N", "---": "O", ".--.": "P",
-                        "-.--": "Q", ".-.": "R", "...": "S", "-": "T",
-                        "..-": "U", "...-": "V", ".--": "W", "-.--": "X",
-                        "-.--": "Y", "--..": "Z"}
         validWordsCopy = validWords[:]
         for word in validWordsCopy:
             if morseLetters[morse] not in word:
@@ -502,7 +508,10 @@ def morse():
 
 
 def complicatedWires(bomb):
-    """ TO DO - pass one wire at a time? """
+    """ Solves the complicated wires module. The user inputs the wire detail
+        one wire at a time, and the function tells the user whether to cut the
+        wire or not
+    """
     # We keep running until the user wants to stop
     print("Use 'R' for 'red', 'B' for 'blue', 'S' for star, and 'L' for light")
 
