@@ -17,6 +17,7 @@ class Bomb:
         self.parallelPort = parallelPort  # Is there a parallel port?
         self.CAR = CAR                    # Is there a _lit_ CAR indicator?
         self.FRK = FRK                    # Is there a _lit_ FRK indicator?
+        self.strikes = 0
 
 # ---------------------------------------------------------- #
 #                                                            #
@@ -365,7 +366,8 @@ def password():
         print("\nThe password is \033[1m"+validPasswords[0]+"\033[0m\n")
 
 
-def strike(bomb)
+def strike(bomb):
+    self.strikes += 1
 
 
 def setupBomb():
@@ -378,13 +380,20 @@ def setupBomb():
     bomb = Bomb(serial, numBatteries, parallelPort, CAR, FRK)
     return bomb
 
+def configBomb(bomb):
+    bomb.serial = addSerial()
+    bomb.numBatteries = addBatteries()
+    bomb.parallelPort = addPPort()
+    bomb.CAR = addCAR()
+    bomb.FRK = addFRK()
+
 def parseModule(bomb):
     while True:
         funcToCall = input("Which module would you like to solve? (type "
                            "\"help\" for options): ").lower().replace(' ', '')
         if funcToCall in ["simplewires", "simple"]:
             simpleWires(bomb)
-        elif funcToCall == "button":
+        elif funcToCall in ["button":]
             button(bomb)
         elif funcToCall in ["wof", "whosonfirst", "who'sonfirst"]:
             whosOnFirst()
@@ -394,6 +403,10 @@ def parseModule(bomb):
             password()
         elif funcToCall in ["maze", "mazes"]:
             maze()
+        elif funcToCall in ["strike":]
+            strike(bomb)
+        elif funcToCall in ["config", "conf"]:
+            configBomb(bomb)
         elif funcToCall in ["help", "h", "-h", "--help"]:
             help()
         elif funcToCall in ["exit", "quit"]:
@@ -401,6 +414,7 @@ def parseModule(bomb):
             break
         else:
             print("Please try again")
+
 
 def help():
     print("HELP!")
