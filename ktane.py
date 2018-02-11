@@ -328,9 +328,9 @@ def button(bomb):
     releaseString = ("\033[1m------ DO NOT IMMEDIATELY "
                      "RELEASE THE BUTTON ------\033[0m\n\n"
                      "If the strip is \033[1;34mBLUE\033[0m, release the "
-                     "button when timer has a \033[1;38m4\033[0m in any "
+                     "button when timer has a \033[1m4\033[0m in any "
                      "position\nIf the strip is \033[1;33mYELLOW\033[0m, "
-                     "has a \033[1;38m5\033[0m in any position\nOtherwise "
+                     "has a \033[1m5\033[0m in any position\nOtherwise "
                      "release the button when timer has a 1 in any position\n")
 
     if buttonColour == 'B' and buttonWord == 'A':
@@ -453,7 +453,53 @@ def memory():
 
 def morse():
     """ TO DO - allow for passing of partial string? """
-    pass
+    validWords = ["SHELL", "HALLS", "SLICK", "TRICK", "BOXES", "LEAKS",
+                  "STROBE", "BISTRO", "FLICK", "BOMBS", "BREAK", "BRICK",
+                  "STEAK", "STING", "VECTOR", "BEATS"]
+    freqs = [3.505, 3.515, 3.522, 3.532, 3.535, 3.542, 3.545, 3.552, 3.555,
+             3.565, 3.572, 3.575, 3.582, 3.592, 3.595, 3.600]
+    morseFreqs = dict(zip(validWords, freqs))
+    while len(validWords) > 1:
+        while True:
+            morse = input("Please input a morse code letter "
+                            "(. = dot, - = dash: ").replace(' ', '').upper()
+            if morse == "EXIT" or morse == "QUIT":
+                return
+            else:
+                # Test whether the input has valid morse characters
+                validMorse = True
+                for char in morse:
+                    if char not in ['.','-']:
+                        validMorse = False
+                if len(morse) == 0 or len(morse) > 4:
+                    validMorse = False
+                if validMorse:
+                    break
+
+            print("Invalid morse sequence. Please try again")
+
+        morseLetters = {".-": "A", "-...": "B", "-.-.": "C", "-..": "D",
+                        ".": "E", "..-.": "F", "--.": "G", "....": "H",
+                        "..": "I", ".---": "J", "-.-": "K", ".-..": "L",
+                        "--": "M", "-.": "N", "---": "O", ".--.": "P",
+                        "-.--": "Q", ".-.": "R", "...": "S", "-": "T",
+                        "..-": "U", "...-": "V", ".--": "W", "-.--": "X",
+                        "-.--": "Y", "--..": "Z"}
+        validWordsCopy = validWords[:]
+        for word in validWordsCopy:
+            if morseLetters[morse] not in word:
+                validWords.remove(word)
+
+    # Now we have at most one valid word
+    if len(validWords) == 0:
+        print("Morse inputs do not match any known word. "
+              "Please run module again.")
+    else:
+        print("\nThe word is "+validWords[0])
+        freqStr = "{:.3f}".format(morseFreqs[validWords[0]])  # Pad with zeroes
+        print("The frequency is \033[1m"
+              +freqStr+" MHz\033[0m\n")
+        
 
 
 def complicatedWires(bomb):
@@ -505,7 +551,7 @@ def password():
                       "THESE", "THING", "THINK", "THREE", "WATER",
                       "WHERE", "WHICH", "WORLD", "WOULD", "WRITE"]
     letterPos = 0
-    while (len(validPasswords) > 1):
+    while len(validPasswords) > 1:
         # Do-while to obtain the letters
         while True:
             letters = input("Please input the list of letters in position "
@@ -549,6 +595,8 @@ def parseModule(bomb):
             whosOnFirst()
         elif funcToCall in ["comp", "complicated", "complicatedwires"]:
             complicatedWires(bomb)
+        elif funcToCall in ["morse"]:
+            morse()
         elif funcToCall in ["password", "pass"]:
             password()
         elif funcToCall in ["maze", "mazes"]:
