@@ -475,7 +475,7 @@ def morse():
     while len(validWords) > 1:
         while True:
             morse = input("Please input a morse code letter "
-                          "(. = dot, - = dash: ").replace(' ', '').upper()
+                          "(. = dot, - = dash): ").replace(' ', '').upper()
             if morse == "EXIT" or morse == "QUIT":
                 return
             else:
