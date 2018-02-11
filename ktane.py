@@ -376,27 +376,28 @@ def setupBomb():
     return bomb
 
 def parseModule(bomb):
-    funcToCall = input("Which module would you like to solve? (type "
-                       "\"help\" for options): ").lower().replace(' ', '')
-    if funcToCall in ["simplewires", "simple"]:
-        simpleWires(bomb)
-    elif funcToCall == "button":
-        button(bomb)
-    elif funcToCall in ["wof", "whosonfirst", "who'sonfirst"]:
-        whosOnFirst()
-    elif funcToCall in ["comp", "complicated", "complicatedwires"]:
-        complicatedWires(bomb)
-    elif funcToCall in ["password", "pass"]:
-        password()
-    elif funcToCall in ["maze", "mazes"]:
-        maze()
-    elif funcToCall in ["help", "h", "-h", "--help"]:
-        help()
-    elif funcToCall in ["exit", "quit"]:
-        print("\nWe hope your defusal was a success. Come again soon!\n")
-        break
-    else:
-        print("Please try again")
+    while True:
+        funcToCall = input("Which module would you like to solve? (type "
+                           "\"help\" for options): ").lower().replace(' ', '')
+        if funcToCall in ["simplewires", "simple"]:
+            simpleWires(bomb)
+        elif funcToCall == "button":
+            button(bomb)
+        elif funcToCall in ["wof", "whosonfirst", "who'sonfirst"]:
+            whosOnFirst()
+        elif funcToCall in ["comp", "complicated", "complicatedwires"]:
+            complicatedWires(bomb)
+        elif funcToCall in ["password", "pass"]:
+            password()
+        elif funcToCall in ["maze", "mazes"]:
+            maze()
+        elif funcToCall in ["help", "h", "-h", "--help"]:
+            help()
+        elif funcToCall in ["exit", "quit"]:
+            print("\nWe hope your defusal was a success. Come again soon!\n")
+            break
+        else:
+            print("Please try again")
 
 def help():
     print("HELP!")
@@ -442,8 +443,7 @@ def main():
 
     # Now, we ask the user to supply the name of the module they want to solve
 
-    while True:
-        parseModule(bomb)
+    parseModule(bomb)
 
 
 if __name__ == "__main__":
