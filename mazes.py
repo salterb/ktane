@@ -201,7 +201,9 @@ def print_moves(maze, start, end):
     if moves is None:
         print("No moves - maybe you specified the same start and end point?")
         return
+    print("")  # New line
     for i, direction in enumerate(moves):
+        print(str(i+1) + ": ", end="")
         if direction == -1:
             print("LEFT")
         elif direction == 1:
@@ -210,6 +212,7 @@ def print_moves(maze, start, end):
             print("UP")
         else:
             print("DOWN")
+    print("")  # New line
 
 
 def solve_maze():

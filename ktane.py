@@ -365,6 +365,9 @@ def password():
         print("\nThe password is \033[1m"+validPasswords[0]+"\033[0m\n")
 
 
+def strike(bomb)
+
+
 def setupBomb():
     # Set up the bomb with a bunch of user input
     serial = addSerial()
