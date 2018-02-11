@@ -86,41 +86,41 @@ def isValidCompWire(wire):
 def staticSimon(bomb):
     if set(['A','E','I','O','U']).isdisjoint(set(bomb.serial)):
         if bomb.strikes == 0:
-            print("RED -> BLUE")
-            print("BLUE -> YELLOW")
-            print("GREEN -> GREEN")
-            print("YELLOW -> RED")
+            print("\033[1;31mRED\033[0m    -> \033[1;34mBLUE\033[0m")
+            print("\033[1;34mBLUE\033[0m   -> \033[1;33mYELLOW\033[0m")
+            print("\033[1;32mGREEN\033[0m  -> \033[1;32mGREEN\033[0m")
+            print("\033[1;33mYELLOW\033[0m -> \033[1;31mRED\033[0m")
 
         elif bomb.strikes == 1:
-            print("RED -> RED")
-            print("BLUE -> BLUE")
-            print("GREEN -> YELLOW")
-            print("YELLOW -> GREEN")
+            print("\033[1;31mRED\033[0m    -> \033[1;31mRED\033[0m")
+            print("\033[1;34mBLUE\033[0m   -> \033[1;34mBLUE\033[0m")
+            print("\033[1;32mGREEN\033[0m  -> \033[1;33mYELLOW\033[0m")
+            print("\033[1;33mYELLOW\033[0m -> \033[1;32mGREEN\033[0m")
 
         elif bomb.strikes == 2:
-            print("RED -> YELLOW")
-            print("BLUE -> GREEN")
-            print("GREEN -> BLUE")
-            print("YELLOW -> RED")
+            print("\033[1;31mRED\033[0m    -> \033[1;33mYELLOW\033[0m")
+            print("\033[1;34mBLUE\033[0m   -> \033[1;32mGREEN\033[0m")
+            print("\033[1;32mGREEN\033[0m  -> \033[1;34mBLUE\033[0m")
+            print("\033[1;33mYELLOW\033[0m -> \033[1;31mRED\033[0m")
         else:
             print('3 or more strikes. Please run "reset strikes" to try again')
     
     else:
         if bomb.strikes == 0:
-            print("RED -> BLUE")
-            print("BLUE -> RED")
-            print("GREEN -> YELLOW")
-            print("YELLOW -> GREEN")
+            print("\033[1;31mRED\033[0m    -> \033[1;34mBLUE\033[0m")
+            print("\033[1;34mBLUE\033[0m   -> \033[1;31mRED\033[0m")
+            print("\033[1;32mGREEN\033[0m  -> \033[1;33mYELLOW\033[0m")
+            print("\033[1;33mYELLOW\033[0m -> \033[1;32mGREEN\033[0m")
         elif bomb.strikes == 1:
-            print("RED -> YELLOW")
-            print("BLUE -> GREEN")
-            print("GREEN -> BLUE")
-            print("YELLOW -> RED")
+            print("\033[1;31mRED\033[0m     -> \033[1;33mYELLOW\033[0m")
+            print("\033[1;34mBLUE\033[0m    -> \033[1;32mGREEN\033[0m")
+            print("\033[1;32mGREEN\033[0m   -> \033[1;34mBLUE\033[0m")
+            print("\033[1;33mYELLOW\033[0m  -> \033[1;31mRED\033[0m")
         elif bomb.strikes == 2:
-            print("RED -> GREEN")
-            print("BLUE -> RED")
-            print("GREEN -> YELLOW")
-            print("YELLOW -> BLUE")
+            print("\033[1;31mRED\033[0m    -> \033[1;32mGREEN\033[0m")
+            print("\033[1;34mBLUE\033[0m   -> \033[1;31mRED\033[0m")
+            print("\033[1;32mGREEN\033[0m  -> \033[1;33mYELLOW\033[0m")
+            print("\033[1;33mYELLOW\033[0m -> \033[1;34mBLUE\033[0m")
         else:
             print('3 or more strikes. Please run "reset strikes" to try again')
 
@@ -260,8 +260,8 @@ def button(bomb):
     releaseString = ("\033[1m------ DO NOT IMMEDIATELY "
                      "RELEASE THE BUTTON ------\033[0m\n\n"
                      "If the strip is \033[1;34mBLUE\033[0m, release the "
-                     "button when timer has a \033[1;34m4\033[0m in any "
-                     "position\nIf the strip is \033[1;38mYELLOW\033[0m, "
+                     "button when timer has a \033[1;38m4\033[0m in any "
+                     "position\nIf the strip is \033[1;33mYELLOW\033[0m, "
                      "has a \033[1;38m5\033[0m in any position\nOtherwise "
                      "release the button when timer has a 1 in any position\n")
 
@@ -288,7 +288,10 @@ def button(bomb):
             print(releaseString)
             return
 
-    if bomb.numBatteries > 2 and bomb.FRK is not False:
+    if (bomb.FRK is not False and
+        (bomb.numBatteries is None or bomb.numBatteries > 2)):
+        if bomb.numBatteries is None:
+            bomb.numBatteries = addBatteries()
         if bomb.FRK is None:
             bomb.FRK = addFRK()
 
@@ -321,6 +324,8 @@ def simon(bomb):
         colour map, or enters "interactive mode", where the user inputs a
         color string and we print out the correct sequence of colors to press.
     """
+    if bomb.serial is None:
+        bomb.serial = addSerial()
     while True:
         user_input = input("Do you want interactive Simon? (Y/n) ").upper()
         if user_input == "" or user_input[0] == "Y":
@@ -461,8 +466,10 @@ def parseModule(bomb):
                            "\"help\" for options): ").lower().replace(' ', '')
         if funcToCall in ["simplewires", "simple"]:
             simpleWires(bomb)
-        elif funcToCall in ["button":]
+        elif funcToCall in ["button"]:
             button(bomb)
+        elif funcToCall in ["simon"]:
+            simon(bomb)
         elif funcToCall in ["wof", "whosonfirst", "who'sonfirst"]:
             whosOnFirst()
         elif funcToCall in ["comp", "complicated", "complicatedwires"]:
