@@ -27,7 +27,7 @@ class Bomb:
 # ---------------------------------------------------------- #
 
 def setupBomb():
-    # Set up the bomb with a bunch of user input
+    """ Sets up the bomb with a bunch of user input """
     serial = addSerial()
     numBatteries = addBatteries()
     parallelPort = addPPort()
@@ -38,20 +38,24 @@ def setupBomb():
 
 
 def configBomb(bomb):
+    """ Allows later configuration of the bomb in the event of incorrect
+        initial input"""
     bomb.serial = addSerial()
     bomb.numBatteries = addBatteries()
     bomb.parallelPort = addPPort()
     bomb.CAR = addCAR()
     bomb.FRK = addFRK()
-    
-    
+
+
 def strike(bomb):
+    """ Adds a strike to the bomb """
     self.strikes += 1
 
 
 def resetStrikes(bomb):
+    """ Resets strikes in case of incorrect strike input """
     self.strikes = 0
-    
+
 
 # ---------------------------------------------------------- #
 #                                                            #
@@ -59,7 +63,7 @@ def resetStrikes(bomb):
 #                                                            #
 # ---------------------------------------------------------- #
 
-# Wire validator functions
+# Input validator functions
 def isValidSimpleWires(wires):
     """ Helper function to determine if the wire arrangement specified
         is valid """
@@ -82,9 +86,20 @@ def isValidCompWire(wire):
     return True
 
 
+def isValidSimon(string):
+    """ Helper function to determine if the Simon light sequence is valid """
+    if len(string) == 0:
+        return False
+    for char in string:
+        if char not in ['R', 'B', 'Y', 'G']:
+            return False
+    return True
+
+
 # Simon functions
 def staticSimon(bomb):
-    if set(['A','E','I','O','U']).isdisjoint(set(bomb.serial)):
+    """ Simply prints out the relevant colour conversion list for Simon """
+    if set(['A', 'E', 'I', 'O', 'U']).isdisjoint(set(bomb.serial)):
         if bomb.strikes == 0:
             print("\033[1;31mRED\033[0m    -> \033[1;34mBLUE\033[0m")
             print("\033[1;34mBLUE\033[0m   -> \033[1;33mYELLOW\033[0m")
@@ -103,8 +118,8 @@ def staticSimon(bomb):
             print("\033[1;32mGREEN\033[0m  -> \033[1;34mBLUE\033[0m")
             print("\033[1;33mYELLOW\033[0m -> \033[1;31mRED\033[0m")
         else:
-            print('3 or more strikes. Please run "reset strikes" to try again')
-    
+            raise Exception("Invalid strike number: "+str(bomb.strikes))
+
     else:
         if bomb.strikes == 0:
             print("\033[1;31mRED\033[0m    -> \033[1;34mBLUE\033[0m")
@@ -123,6 +138,57 @@ def staticSimon(bomb):
             print("\033[1;33mYELLOW\033[0m -> \033[1;34mBLUE\033[0m")
         else:
             print('3 or more strikes. Please run "reset strikes" to try again')
+
+
+def interactiveSimon(bomb):
+    """ Prompts the user for the Simon input, and displays the correct output
+    """
+
+    # Repeat the process until the user wants to exit
+    while True:
+        # Do-while for input
+        while True:
+            lights = input("Please input the light sequence (type \"exit\" "
+                           "to exit): ").upper().replace(' ', '')
+            if lights == "EXIT":
+                return
+            if isValidSimon(lights):
+                print("")  # Blank line
+                break
+            print("Invalid color sequence. Use one letter per colour")
+
+        if set(['A', 'E', 'I', 'O', 'U']).isdisjoint(set(bomb.serial)):
+            if bomb.strikes == 0:
+                colourDict = {'R': 'B', 'B': 'Y', 'G': 'G', 'Y': 'R'}
+            elif bomb.strikes == 1:
+                colourDict = {'R': 'R', 'B': 'B', 'G': 'Y', 'Y': 'G'}
+            elif bomb.strikes == 2:
+                colourDict = {'R': 'Y', 'B': 'G', 'G': 'B', 'Y': 'R'}
+            else:
+                raise Exception("Invalid strike number: "+str(bomb.strikes))
+        else:
+            if bomb.strikes == 0:
+                colourDict = {'R': 'B', 'B': 'R', 'G': 'Y', 'Y': 'G'}
+            elif bomb.strikes == 1:
+                colourDict = {'R': 'Y', 'B': 'G', 'G': 'B', 'Y': 'R'}
+            elif bomb.strikes == 2:
+                colourDict = {'R': 'G', 'B': 'R', 'G': 'Y', 'Y': 'B'}
+            else:
+                raise Exception("Invalid strike number: "+str(bomb.strikes))
+
+        for char in lights:
+            colour = colourDict[char]
+            if colour == 'R':
+                print("\033[1;31mRED\033[0m")
+            elif colour == 'B':
+                print("\033[1;34mBLUE\033[0m")
+            elif colour == 'G':
+                print("\033[1;32mGREEN\033[0m")
+            elif colour == 'Y':
+                print("\033[1;33mYELLOW\033[0m")
+            else:
+                raise Exception("Invalid colour: "+colour)
+        print("")  # Blank line
 
 
 # "Cut" functions for complicated wires
@@ -172,10 +238,11 @@ def simpleWires(bomb):
 
     # Do-while to get the wire sequence
     while True:
-        wires = input("Please input the wire sequence (no spaces) ")
+        wires = input("Please input the "
+                      "wire sequence: ").upper().replace(' ', '')
         if isValidSimpleWires(wires):
             break
-        print("Invalid wire sequence")
+        print("Invalid wire sequence. Use one letter per wire (black = 'K')")
 
     numWires = len(wires)
     if numWires == 3:
@@ -232,6 +299,7 @@ def simpleWires(bomb):
     else:
         raise Exception("len(numWires = " + str(len(numWires)) +
                         " - this is apparently not good!")
+    print("")  # Blank line
 
 
 def button(bomb):
@@ -324,18 +392,25 @@ def simon(bomb):
         colour map, or enters "interactive mode", where the user inputs a
         color string and we print out the correct sequence of colors to press.
     """
+    # Check strike validity
+    if bomb.strikes not in [0, 1, 2]:
+        print("You have " + str(bomb.strikes) + "strikes. "
+              "Please run \"reset strikes\" to try again")
+        return
+
     if bomb.serial is None:
         bomb.serial = addSerial()
     while True:
         user_input = input("Do you want interactive Simon? (Y/n) ").upper()
         if user_input == "" or user_input[0] == "Y":
             interactiveSimon(bomb)
+            print("")  # Blank line
             return
         elif user_input[0] == "N":
             staticSimon(bomb)
+            print("")  # Blank line
             return
         print("Please select a valid option")
-    pass
 
 
 def whosOnFirst():
@@ -468,7 +543,7 @@ def parseModule(bomb):
             simpleWires(bomb)
         elif funcToCall in ["button"]:
             button(bomb)
-        elif funcToCall in ["simon"]:
+        elif funcToCall in ["simon", "simonsays"]:
             simon(bomb)
         elif funcToCall in ["wof", "whosonfirst", "who'sonfirst"]:
             whosOnFirst()
