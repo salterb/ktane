@@ -321,7 +321,7 @@ def sequences():
 
 
 def maze():
-    """ TO DO """
+    """ Calls the external maze solver from a separate module """
     solve_maze()
 
 
