@@ -462,14 +462,14 @@ def morse():
     while len(validWords) > 1:
         while True:
             morse = input("Please input a morse code letter "
-                            "(. = dot, - = dash: ").replace(' ', '').upper()
+                          "(. = dot, - = dash: ").replace(' ', '').upper()
             if morse == "EXIT" or morse == "QUIT":
                 return
             else:
                 # Test whether the input has valid morse characters
                 validMorse = True
                 for char in morse:
-                    if char not in ['.','-']:
+                    if char not in ['.', '-']:
                         validMorse = False
                 if len(morse) == 0 or len(morse) > 4:
                     validMorse = False
@@ -498,8 +498,7 @@ def morse():
         print("\nThe word is "+validWords[0])
         freqStr = "{:.3f}".format(morseFreqs[validWords[0]])  # Pad with zeroes
         print("The frequency is \033[1m"
-              +freqStr+" MHz\033[0m\n")
-        
+              + freqStr + " MHz\033[0m\n")
 
 
 def complicatedWires(bomb):
