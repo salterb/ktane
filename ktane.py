@@ -19,6 +19,40 @@ class Bomb:
         self.FRK = FRK                    # Is there a _lit_ FRK indicator?
         self.strikes = 0
 
+
+# ---------------------------------------------------------- #
+#                                                            #
+#                       BOMB CONFIG                          #
+#                                                            #
+# ---------------------------------------------------------- #
+
+def setupBomb():
+    # Set up the bomb with a bunch of user input
+    serial = addSerial()
+    numBatteries = addBatteries()
+    parallelPort = addPPort()
+    CAR = addCAR()
+    FRK = addFRK()
+    bomb = Bomb(serial, numBatteries, parallelPort, CAR, FRK)
+    return bomb
+
+
+def configBomb(bomb):
+    bomb.serial = addSerial()
+    bomb.numBatteries = addBatteries()
+    bomb.parallelPort = addPPort()
+    bomb.CAR = addCAR()
+    bomb.FRK = addFRK()
+    
+    
+def strike(bomb):
+    self.strikes += 1
+
+
+def resetStrikes(bomb):
+    self.strikes = 0
+    
+
 # ---------------------------------------------------------- #
 #                                                            #
 #                         HELPERS                            #
@@ -46,6 +80,49 @@ def isValidCompWire(wire):
         if char not in ['R', 'B', 'S', 'L']:
             return False
     return True
+
+
+# Simon functions
+def staticSimon(bomb):
+    if set(['A','E','I','O','U']).isdisjoint(set(bomb.serial)):
+        if bomb.strikes == 0:
+            print("RED -> BLUE")
+            print("BLUE -> YELLOW")
+            print("GREEN -> GREEN")
+            print("YELLOW -> RED")
+
+        elif bomb.strikes == 1:
+            print("RED -> RED")
+            print("BLUE -> BLUE")
+            print("GREEN -> YELLOW")
+            print("YELLOW -> GREEN")
+
+        elif bomb.strikes == 2:
+            print("RED -> YELLOW")
+            print("BLUE -> GREEN")
+            print("GREEN -> BLUE")
+            print("YELLOW -> RED")
+        else:
+            print('3 or more strikes. Please run "reset strikes" to try again')
+    
+    else:
+        if bomb.strikes == 0:
+            print("RED -> BLUE")
+            print("BLUE -> RED")
+            print("GREEN -> YELLOW")
+            print("YELLOW -> GREEN")
+        elif bomb.strikes == 1:
+            print("RED -> YELLOW")
+            print("BLUE -> GREEN")
+            print("GREEN -> BLUE")
+            print("YELLOW -> RED")
+        elif bomb.strikes == 2:
+            print("RED -> GREEN")
+            print("BLUE -> RED")
+            print("GREEN -> YELLOW")
+            print("YELLOW -> BLUE")
+        else:
+            print('3 or more strikes. Please run "reset strikes" to try again')
 
 
 # "Cut" functions for complicated wires
@@ -240,7 +317,19 @@ def keypad():
 
 
 def simon(bomb):
-    """ TO DO """
+    """ Solves the "Simon" module, in one of two ways. Either prints out the
+        colour map, or enters "interactive mode", where the user inputs a
+        color string and we print out the correct sequence of colors to press.
+    """
+    while True:
+        user_input = input("Do you want interactive Simon? (Y/n) ").upper()
+        if user_input == "" or user_input[0] == "Y":
+            interactiveSimon(bomb)
+            return
+        elif user_input[0] == "N":
+            staticSimon(bomb)
+            return
+        print("Please select a valid option")
     pass
 
 
@@ -366,27 +455,6 @@ def password():
         print("\nThe password is \033[1m"+validPasswords[0]+"\033[0m\n")
 
 
-def strike(bomb):
-    self.strikes += 1
-
-
-def setupBomb():
-    # Set up the bomb with a bunch of user input
-    serial = addSerial()
-    numBatteries = addBatteries()
-    parallelPort = addPPort()
-    CAR = addCAR()
-    FRK = addFRK()
-    bomb = Bomb(serial, numBatteries, parallelPort, CAR, FRK)
-    return bomb
-
-def configBomb(bomb):
-    bomb.serial = addSerial()
-    bomb.numBatteries = addBatteries()
-    bomb.parallelPort = addPPort()
-    bomb.CAR = addCAR()
-    bomb.FRK = addFRK()
-
 def parseModule(bomb):
     while True:
         funcToCall = input("Which module would you like to solve? (type "
@@ -403,8 +471,10 @@ def parseModule(bomb):
             password()
         elif funcToCall in ["maze", "mazes"]:
             maze()
-        elif funcToCall in ["strike":]
+        elif funcToCall in ["strike"]:
             strike(bomb)
+        elif funcToCall in ["resetstrike", "resetstrikes"]:
+            resetStrikes(bomb)
         elif funcToCall in ["config", "conf"]:
             configBomb(bomb)
         elif funcToCall in ["help", "h", "-h", "--help"]:
