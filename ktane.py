@@ -191,6 +191,26 @@ def interactiveSimon(bomb):
         print("")  # Blank line
 
 
+# Memory functions
+def memoryInput(arg):
+    if arg not in [0, 1, 2]:
+        raise Exception("Invalid argument passed to "
+                        "memoryDisplayInput: "+str(arg))
+
+    # Do-while for input
+    while True:
+        if arg == 0:
+            ipt = input("Please input the number on the display: ")
+        elif arg == 1:
+            ipt = input("What value was in that position? ")
+        else:
+            ipt = input("Which position was that in? ")
+        
+        if ipt.isdigit() and 1 <= int(ipt) <= 4:
+            return int(ipt)
+        print("Invalid input")
+
+
 # "Cut" functions for complicated wires
 def cut(bomb):
     print("\n\033[1mCUT\033[0m the wire")
@@ -451,8 +471,85 @@ def whosOnFirst():
 
 def memory():
     """ TO DO """
-    pass
+    DISPLAY = 0
+    WHICH_LABEL = 1
+    WHICH_POSITION = 2
 
+    # Stage 1
+    ipt = memoryInput(DISPLAY)
+    print("")  # Blank line
+    if ipt == 1 or ipt == 2:
+        print("Press the button in \033[1mPOSITION 2\033[0m\n")
+        stage1 = (memoryInput(WHICH_LABEL), 2)
+    elif ipt == 3:
+        print("Press the button in \033[1mPOSITION 3\033[0m\n")
+        stage1 = (memoryInput(WHICH_LABEL), 3)
+    else:
+        print("Press the button in \033[1mPOSITION 4\033[0m\n")
+        stage1 = (memoryInput(WHICH_LABEL), 4)
+
+    # Stage 2
+    ipt = memoryInput(DISPLAY)
+    print("")  # Blank line
+    if ipt == 1:
+        print("Press the button with \033[1mLABEL 4\033[0m\n")
+        stage2 = (4, memoryInput(WHICH_POSITION))
+    elif ipt == 2 or ipt == 4:
+        print("Press the button in \033[1mPOSITION "
+              "{}\033[0m\n".format(stage1[1]))
+        stage2 = (memoryInput(WHICH_LABEL), stage1[1])
+    else:
+        print("Press the button in \033[1mPOSITION 1\033[0m\n")
+        stage2 = (memoryInput(WHICH_LABEL), 1)
+
+    # Stage 3
+    ipt = memoryInput(DISPLAY)
+    print("")  # Blank line
+    if ipt == 1:
+        print("Press the button with \033[1mLABEL "
+              "{}\033[0m\n".format(stage2[0]))
+        stage3 = (stage2[0], memoryInput(WHICH_POSITION))
+    elif ipt == 2:
+        print("Press the button with \033[1mLABEL "
+              "{}\033[0m\n".format(stage1[0]))
+        stage3 = (stage1[0], memoryInput(WHICH_POSITION))
+    elif ipt == 3:
+        print("Press the button in \033[1mPOSITION 3\033[0m\n")
+        stage3 = (memoryInput(WHICH_LABEL), 3)
+    else:
+        print("Press the button with \033[1mLABEL 4\033[0m\n")
+        stage3 = (4, memoryInput(WHICH_POSITION))
+
+    # Stage 4
+    ipt = memoryInput(DISPLAY)
+    print("")  # Blank line
+    if ipt == 1:
+        print("Press the button in \033[1mPOSITION "
+              "{}\033[0m\n".format(stage1[0]))
+        stage4 = (stage1[0], memoryInput(WHICH_POSITION))
+    elif ipt == 2:
+        print("Press the button in \033[1mPOSITION 1\033[0m\n")
+        stage4 = (memoryInput(WHICH_LABEL), 1)
+    else:
+        print("Press the button in \033[1mPOSITION "
+              "{}\033[0m\n".format(stage2[1]))
+        stage2 = (memoryInput(WHICH_LABEL), stage2[1])
+
+    # Stage 5
+    ipt = memoryInput(DISPLAY)
+    print("")  # Blank line
+    if ipt == 1:
+        print("Press the button with \033[1mLABEL "
+              "{}\033[0m\n".format(stage1[0]))
+    elif ipt == 2:
+        print("Press the button with \033[1mLABEL "
+              "{}\033[0m\n".format(stage2[0]))
+    elif ipt == 3:
+        print("Press the button with \033[1mLABEL "
+              "{}\033[0m\n".format(stage4[0]))
+    else:
+        print("Press the button with \033[1mLABEL "
+              "{}\033[0m\n".format(stage3[0]))
 
 def morse():
     """ Solves the morse module. The user inputs morse characters until
@@ -601,14 +698,16 @@ def parseModule(bomb):
             simon(bomb)
         elif funcToCall in ["wof", "whosonfirst", "who'sonfirst"]:
             whosOnFirst()
-        elif funcToCall in ["comp", "complicated", "complicatedwires"]:
-            complicatedWires(bomb)
+        elif funcToCall in ["memory"]:
+            memory()
         elif funcToCall in ["morse"]:
             morse()
-        elif funcToCall in ["password", "pass"]:
-            password()
+        elif funcToCall in ["comp", "complicated", "complicatedwires"]:
+            complicatedWires(bomb)
         elif funcToCall in ["maze", "mazes"]:
             maze()
+        elif funcToCall in ["password", "pass"]:
+            password()
         elif funcToCall in ["strike"]:
             strike(bomb)
         elif funcToCall in ["resetstrike", "resetstrikes"]:
