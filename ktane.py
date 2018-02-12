@@ -205,7 +205,7 @@ def memoryInput(arg):
             ipt = input("What value was in that position? ")
         else:
             ipt = input("Which position was that in? ")
-        
+
         if ipt.isdigit() and 1 <= int(ipt) <= 4:
             return int(ipt)
         print("Invalid input")
@@ -470,7 +470,8 @@ def whosOnFirst():
 
 
 def memory():
-    """ TO DO """
+    """ Solves the memory module by storing all previous input and
+        automatically referring back to it to find the correct answers. """
     DISPLAY = 0
     WHICH_LABEL = 1
     WHICH_POSITION = 2
@@ -550,6 +551,7 @@ def memory():
     else:
         print("Press the button with \033[1mLABEL "
               "{}\033[0m\n".format(stage3[0]))
+
 
 def morse():
     """ Solves the morse module. The user inputs morse characters until
