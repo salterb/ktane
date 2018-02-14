@@ -247,6 +247,14 @@ def batteryCut(bomb):
         print("\nDo \033[1mNOT\033[0m cut the wire")
 
 
+def isValidWireSequence(wire):
+    if (len(wire) >= 2 and 
+       wire[0] in ['R', 'B', 'K'] and 
+       wire[-1] in ['A', 'B', 'C']):
+        return True
+    return False
+
+
 # ---------------------------------------------------------- #
 #                                                            #
 #                         MODULES                            #
@@ -639,8 +647,75 @@ def complicatedWires(bomb):
 
 
 def sequences():
-    """ TO DO """
-    pass
+    """ Loads an interfact that can solve the wire sequences module.
+        Also implements a "delete" function in case of accidental input.
+    """
+    RED = -1
+    BLUE = -2
+    BLACK = -3
+    validReds = {0: 'C', 1: 'B', 2: 'A', 3: 'AC', 4: 'B',
+                 5: 'AC', 6: 'ABC', 7: 'AB', 8: 'B'}
+    validBlues = {0: 'B', 1: 'AC', 2: 'B', 3: 'A', 4: 'B',
+                  5: 'BC', 6: 'C', 7: 'AC', 8: 'A'}
+    validBlacks = {0: 'ABC', 1: 'AC', 2: 'B', 3: 'AC', 4: 'B',
+                   5: 'BC', 6: 'AB', 7: 'C', 8: 'C'}
+    redCount = 0
+    blueCount = 0
+    blackCount = 0
+    previousMove = None
+    # Keep going until the user wants to exit
+    while True:
+        # Do-while for input
+        while True:
+            wire = input("\nPlease input the colour of the wire, and the "
+                         "letter to which it is connected.\nUse "
+                         "'K' for black. (Type 'exit' to exit, 'undo' to undo "
+                         "previous move.) ").upper().replace(' ', '')
+            if wire == "EXIT":
+                print("\nExiting\n")
+                return
+            if wire == "UNDO":
+                if previousMove == None:
+                    print("Nothing to undo!")
+                elif previousMove == RED:
+                    redCount -= 1
+                elif previousMove == BLUE:
+                    blueCount -= 1
+                elif previousMove == BLACK:
+                    blackCount -= 1
+                previousMove = None
+                break
+
+            if isValidWireSequence(wire):
+                break
+            print("Invalid wire")
+        
+        # Now our wire is valid, we provide output.
+        if wire[0] == 'R':
+            if wire[1] in validReds[redCount]:
+                print("\n\033[1mCUT\033[0m the wire")
+            else:
+                print("\nDo \033[1mNOT\033[0m cut the wire")
+            redCount += 1
+            previousMove = RED
+        elif wire[0] == 'B':
+            if wire[1] in validBlues[blueCount]:
+                print("\n\033[1mCUT\033[0m the wire")
+            else:
+                print("\nDo \033[1mNOT\033[0m cut the wire")
+            blueCount += 1
+            previousMove = BLUE
+        elif wire[0] == 'K':
+            if wire[1] in validBlacks[blackCount]:
+                print("\n\033[1mCUT\033[0m the wire")
+            else:
+                print("\nDo \033[1mNOT\033[0m cut the wire")
+            blackCount += 1
+            previousMove = BLACK
+        
+        if redCount > 8 or blueCount > 8 or blackCount > 8:
+            print("Used too many wires. Exiting\n")
+            return
 
 
 def maze():
@@ -706,6 +781,9 @@ def parseModule(bomb):
             morse()
         elif funcToCall in ["comp", "complicated", "complicatedwires"]:
             complicatedWires(bomb)
+        elif funcToCall in ["sequence", "sequences", 
+                            "wiresequence", "wiresequences"]:
+            sequences()
         elif funcToCall in ["maze", "mazes"]:
             maze()
         elif funcToCall in ["password", "pass"]:
