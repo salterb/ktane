@@ -518,7 +518,7 @@ def keypad():
     from copy import deepcopy as dc
     columns = [["Q", "AT", "LAMBDA", "N", "CAT", "H", "C"],
                ["EURO", "Q", "C", "PHI", "STAR", "H", "QUESTION"],
-               ["COPYRIGHT", "OMEGA", "PHI", "K", "3", "LAMBDA", "STAR"],
+               ["C", "OMEGA", "PHI", "K", "3", "LAMBDA", "STAR"],
                ["6", "PARAGRAPH", "TB", "CAT", "K", "QUESTION", "FACE"],
                ["PHI", "FACE", "TB", "C", "PARAGRAPH", "3", "STAR"],
                ["6", "EURO", "NOTEQUAL", "AE", "PSI", "N", "OMEGA"]]
