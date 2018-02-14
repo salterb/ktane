@@ -73,16 +73,7 @@ def isValidSimpleWires(wires):
         if char not in ['K', 'B', 'Y', 'R', 'W']:
             return False
     return True
-
-
-def symbolParser(string):
-    """ Takes a string, and attempts to parse it to match to one of many
-        symbols. The idea is that there are no two columns with similar
-        symbols, so several, such as "black star" and "white star" can be
-        mapped to the same thing. Even so, it's gonna be ugly.
-    """
     
-
 
 def isValidCompWire(wire):
     """ Helper function to determine if a string representing a complicated
@@ -103,6 +94,106 @@ def isValidSimon(string):
         if char not in ['R', 'B', 'Y', 'G']:
             return False
     return True
+
+
+# Symbols functions
+def rot13(str):
+    """ Enable rot-13 encoding of words so my code doesn't have smutty
+        words in it
+    """
+
+    from codecs import encode
+    return encode(str, "rot_13")
+
+
+def symbolParser():
+    """ Takes a string, and attempts to parse it to match to one of many
+        symbols. The idea is that there are no two columns with similar
+        symbols, so several, such as "black star" and "white star" can be
+        mapped to the same thing. Even so, it's gonna be ugly.
+    """
+    
+    # If you're reading this, this project probably became too big, and you
+    # need a better parsing function. You're not gonna be able to bootstrap
+    # anything onto this to make it work, you'll need to do something cleverer.
+    # Sorry.
+    
+    # Do-while for input
+    while True:
+        string = input("Please input your symbol (either a close letter or "
+                  "very short description): ").upper().replace(' ', '')\
+                  .replace('-', '')
+        # The list of valid symbols to return is as follows:
+        # Q, AT, LAMBDA, N, CAT, H, C, EURO, PHI, STAR, QUESTION,
+        # OMEGA, K, 3, 6, PARAGRAPH, TB, FACE, PSI, NOTEQUAL, AE
+        # Note that some symbols overlap, but this isn't a problem as they
+        # are all in separate columns
+        if string in ["Q", "QOPPA", "KOPPA", "WEIRDQ", "LOLLY", "LOLLIPOP", 
+                      "LOLLYPOP", "POPSICLE"]:
+            return "Q"
+        elif string in ["AT", "TA", "WEIRDA", "A", "PYRAMID", "LADDER"]:
+            return "AT"
+        elif string in ["LAMBDA", "LAMBDALINE", "WEIRDLAMBDA", 
+                        "LAMBDAWITHLINE"]:
+            return "LAMBDA"
+        elif string in ["N", "WEIRDN", "BACKWARDSN", "LIGHTNING", "BOLT",
+                        "LIGHTNINGBOLT", "THUNDER", "THUNDERBOLT", "NWITHHAT",
+                        "NHAT", "NSQUIGGLE", "NBREVE"]:
+            return "N"
+        elif string in ["CAT", "KITTY", "JELLYFISH", "WHAT", "WHAT?",
+                        "HWITHTRIANGLE", "HTRIANGLE"]:
+            return "CAT"
+        elif string in ["H", "CURLY H", "CURSIVEH", "GOTHICH", "HWITHTAIL",
+                        "HTAIL", "WEIRDH"]:
+            return "H"
+        elif string in ["C", "CWITHDOT", "CDOT", "BACKWARDC", "BACKWARDCDOT",
+                        "COPYRIGHT", "CINCIRCLE"]:
+            return "C"
+        elif string in ["EURO", "EUROUMLAUT", "EURODOTS", "E", "EDOTS",
+                        "BACKWARDSEURO"]:
+            return "EURO"
+        elif string in ["PHI", "SPRING", "COIL", "CURL", "CURLYQ"]:
+            return "PHI"
+        elif string in ["STAR", "WHITESTAR", "BLACKSTAR", "FILLEDINSTAR"]:
+            return "STAR"
+        elif string in ["QUESTION", "QUESTIONMARK", "UPSIDEDOWNQUESTIONMARK",
+                        "UPSIDEDOWNQUESTION"]:
+            return "QUESTION"
+
+        # ROT-13 encoding here because SOME PEOPLE claim that this symbol
+        # resembles various bodily parts, the names of which I don't want in
+        # my code. IT'S AN OMEGA, EVERYONE
+        elif string in ["OMEGA", "W", "WEIRDW", rot13("NFF"), rot13("OHZ"),
+                        rot13("OHGG"), rot13("OBBGL"), rot13("OBBOF"),
+                        rot13("OBBOVRF"), rot13("GVGF"), rot13("GVGGVRF"),
+                        rot13("ONYYF"), rot13("GRFGRF"), rot13("FPEBGHZ"),
+                        rot13("AHGFNPX"), rot13("AHGF"), "HEADPHONES"]:
+            return "OMEGA"
+        elif string in ["K", "Ж", "ZHE", "KS", "2K", "2KS", "TWOK", "TWOKS",
+                        "WEIRDX", "WEIRDK", "Z", "BACKTOBACKK", "BACKTOBACKKS"]:
+            return "K"
+        elif string in ["3", "WEIRD3", "HALF3", "UNFINISHED3", "THREE",
+                        "3WITHTAIL", "3WITHHORNS"]:
+            return "3"
+        elif string in ["6", "SIX", "FLAT6", "FLATSIX", "WEIRD6", "WEIRDSIX",
+                        "DELTA", "WEIRDDELTA"]:
+            return "6"
+        elif string in ["PARAGRAPH", "P", "WEIRDP", "BOLDP"]:
+            return "PARAGRAPH"
+        elif string in ["TB", "BT", "DT", "TD", "WEIRDB"]:
+            return "TB"
+        elif string in ["FACE", "SMILE", "SMILEYFACE", "HAPPY", "HAPPYFACE"]:
+            return "FACE"
+        elif string in ["PSI", "TRIDENT", "FORK", "PITCHFORK"]:
+            return "PSI"
+        elif string in ["NOTEQUAL", "NOTEQUALS", "NOTEQUALSIGN", "HASH",
+                        "HASHTAG", "POUND", "POUNDSIGN","WEIGHT", "WEIGHTS",
+                        "DUMBBELL", "WEIRDX", "CROSS"]:
+            return "NOTEQUAL"
+        elif string in ["AE", "Æ", "ash"]:
+            return "AE"
+        else:
+            return None
 
 
 # Simon functions
@@ -426,13 +517,23 @@ def keypad():
     """ Solves the symbol keypad """
     from copy import deepcopy as dc
     columns = [["Q", "AT", "LAMBDA", "N", "CAT", "H", "C"],
-               ["EURO", "Q", "C", "PHI", "STAR", "H", "QUESTION"]
-               ["COPYRIGHT", "OMEGA", "PHI", "K", "3", "LAMBDA", "STAR"]
-               ["6", "PARAGRAPH", "TB", "CAT", "K", "QUESTION", "FACE"]
-               ["PHI", "FACE", "TB", "C", "PARAGRAPH", "3", "STAR"]]
+               ["EURO", "Q", "C", "PHI", "STAR", "H", "QUESTION"],
+               ["COPYRIGHT", "OMEGA", "PHI", "K", "3", "LAMBDA", "STAR"],
+               ["6", "PARAGRAPH", "TB", "CAT", "K", "QUESTION", "FACE"],
+               ["PHI", "FACE", "TB", "C", "PARAGRAPH", "3", "STAR"],
+               ["6", "EURO", "NOTEQUAL", "AE", "PSI", "N", "OMEGA"]]
     symbols = []
-    for i in range(4):
-        symbols.append(symbolParser())
+    print("\n"+"-"*20+" CAUTION "+"-"*20)
+    print("This module is hard for a computer to solve.\nPlease try to "
+          "describe all symbols using a very short and obvious description.\n")
+    while len(symbols) < 4:
+        string = symbolParser()
+        if string in symbols:
+            print("Symbol already added")
+        elif string is None:
+            print("Symbol not recognised")
+        else:
+            symbols.append(string)
 
     # Make a copy of the columns for iterating over
     columnsCopy = dc(columns)
@@ -442,12 +543,15 @@ def keypad():
                 columns.remove(list)
                 break
 
-    # Now we have the correct column, so we just print out out symbols
-    # in order
-    correctColumn = columns[0]
-    for item in correctColumn:
-        if item in symbols:
-            print(item.capitalize())
+    # Now we have the correct column (or none at all), so we just print out
+    # our symbols in order
+    if len(columns) > 0:
+        correctColumn = columns[0]
+        for item in correctColumn:
+            if item in symbols:
+                print("\033[1m"+item.capitalize()+"\033[0m")
+    else:
+        print("No valid columns. Did you input the symbols correctly?")   
 
 
 def simon(bomb):
@@ -803,6 +907,8 @@ def parseModule(bomb):
             simpleWires(bomb)
         elif funcToCall in ["button"]:
             button(bomb)
+        elif funcToCall in ["symbol", "symbols", "sym", "keypad"]:
+            keypad()
         elif funcToCall in ["simon", "simonsays"]:
             simon(bomb)
         elif funcToCall in ["wof", "whosonfirst", "who'sonfirst"]:
