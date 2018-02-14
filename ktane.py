@@ -73,7 +73,7 @@ def isValidSimpleWires(wires):
         if char not in ['K', 'B', 'Y', 'R', 'W']:
             return False
     return True
-    
+
 
 def isValidCompWire(wire):
     """ Helper function to determine if a string representing a complicated
@@ -112,28 +112,28 @@ def symbolParser():
         symbols, so several, such as "black star" and "white star" can be
         mapped to the same thing. Even so, it's gonna be ugly.
     """
-    
+
     # If you're reading this, this project probably became too big, and you
     # need a better parsing function. You're not gonna be able to bootstrap
     # anything onto this to make it work, you'll need to do something cleverer.
     # Sorry.
-    
+
     # Do-while for input
     while True:
         string = input("Please input your symbol (either a close letter or "
-                  "very short description): ").upper().replace(' ', '')\
-                  .replace('-', '')
+                       "very short description): ").upper().replace(' ', '')\
+                       .replace('-', '')
         # The list of valid symbols to return is as follows:
         # Q, AT, LAMBDA, N, CAT, H, C, EURO, PHI, STAR, QUESTION,
         # OMEGA, K, 3, 6, PARAGRAPH, TB, FACE, PSI, NOTEQUAL, AE
         # Note that some symbols overlap, but this isn't a problem as they
         # are all in separate columns
-        if string in ["Q", "QOPPA", "KOPPA", "WEIRDQ", "LOLLY", "LOLLIPOP", 
+        if string in ["Q", "QOPPA", "KOPPA", "WEIRDQ", "LOLLY", "LOLLIPOP",
                       "LOLLYPOP", "POPSICLE"]:
             return "Q"
         elif string in ["AT", "TA", "WEIRDA", "A", "PYRAMID", "LADDER"]:
             return "AT"
-        elif string in ["LAMBDA", "LAMBDALINE", "WEIRDLAMBDA", 
+        elif string in ["LAMBDA", "LAMBDALINE", "WEIRDLAMBDA",
                         "LAMBDAWITHLINE"]:
             return "LAMBDA"
         elif string in ["N", "WEIRDN", "BACKWARDSN", "LIGHTNING", "BOLT",
@@ -170,7 +170,8 @@ def symbolParser():
                         rot13("AHGFNPX"), rot13("AHGF"), "HEADPHONES"]:
             return "OMEGA"
         elif string in ["K", "Ж", "ZHE", "KS", "2K", "2KS", "TWOK", "TWOKS",
-                        "WEIRDX", "WEIRDK", "Z", "BACKTOBACKK", "BACKTOBACKKS"]:
+                        "WEIRDX", "WEIRDK", "Z", "BACKTOBACKK",
+                        "BACKTOBACKKS"]:
             return "K"
         elif string in ["3", "WEIRD3", "HALF3", "UNFINISHED3", "THREE",
                         "3WITHTAIL", "3WITHHORNS"]:
@@ -187,7 +188,7 @@ def symbolParser():
         elif string in ["PSI", "TRIDENT", "FORK", "PITCHFORK"]:
             return "PSI"
         elif string in ["NOTEQUAL", "NOTEQUALS", "NOTEQUALSIGN", "HASH",
-                        "HASHTAG", "POUND", "POUNDSIGN","WEIGHT", "WEIGHTS",
+                        "HASHTAG", "POUND", "POUNDSIGN", "WEIGHT", "WEIGHTS",
                         "DUMBBELL", "WEIRDX", "CROSS"]:
             return "NOTEQUAL"
         elif string in ["AE", "Æ", "ash"]:
@@ -348,8 +349,8 @@ def batteryCut(bomb):
 
 
 def isValidWireSequence(wire):
-    if (len(wire) >= 2 and 
-       wire[0] in ['R', 'B', 'K'] and 
+    if (len(wire) >= 2 and
+       wire[0] in ['R', 'B', 'K'] and
        wire[-1] in ['A', 'B', 'C']):
         return True
     return False
@@ -551,7 +552,7 @@ def keypad():
             if item in symbols:
                 print("\033[1m"+item.capitalize()+"\033[0m")
     else:
-        print("No valid columns. Did you input the symbols correctly?")   
+        print("No valid columns. Did you input the symbols correctly?")
 
 
 def simon(bomb):
@@ -811,7 +812,7 @@ def sequences():
                 print("\nExiting\n")
                 return
             if wire == "UNDO":
-                if previousMove == None:
+                if previousMove is None:
                     print("Nothing to undo!")
                 elif previousMove == RED:
                     redCount -= 1
@@ -825,7 +826,7 @@ def sequences():
             if isValidWireSequence(wire):
                 break
             print("Invalid wire")
-        
+
         # Now our wire is valid, we provide output.
         if wire[0] == 'R':
             if wire[1] in validReds[redCount]:
@@ -848,7 +849,7 @@ def sequences():
                 print("\nDo \033[1mNOT\033[0m cut the wire")
             blackCount += 1
             previousMove = BLACK
-        
+
         if redCount > 8 or blueCount > 8 or blackCount > 8:
             print("Used too many wires. Exiting\n")
             return
@@ -899,6 +900,26 @@ def password():
         print("\nThe password is \033[1m"+validPasswords[0]+"\033[0m\n")
 
 
+def needyKnob():
+    validLights = {"44": "UP", "43": "UP", "53": "DOWN", "32": "DOWN",
+                   "14": "LEFT", "03": "LEFT", "54": "RIGHT", "52": "RIGHT"}
+    # Do-while for input
+    while True:
+        lights = input("\nInput the number of lit lights on the left hand "
+                       "side, and the number on the right: ").replace(' ', '')
+        if len(lights) < 2:
+            print("Please input two separate numbers")
+        elif not lights[0].isdigit() or not lights[-1].isdigit():
+            print("Please only input two digits")
+        else:
+            lights_stripped = lights[0] + lights[-1]
+            if lights_stripped not in validLights.keys():
+                print("Invalid light sequence")
+            else:
+                print("\n\033[1m" + validLights[lights_stripped] + "\033[0m\n")
+                return
+
+
 def parseModule(bomb):
     while True:
         funcToCall = input("Which module would you like to solve? (type "
@@ -919,13 +940,15 @@ def parseModule(bomb):
             morse()
         elif funcToCall in ["comp", "complicated", "complicatedwires"]:
             complicatedWires(bomb)
-        elif funcToCall in ["sequence", "sequences", 
+        elif funcToCall in ["sequence", "sequences",
                             "wiresequence", "wiresequences"]:
             sequences()
         elif funcToCall in ["maze", "mazes"]:
             maze()
         elif funcToCall in ["password", "pass"]:
             password()
+        elif funcToCall in ["needy", "knob", "needyknob", "dial"]:
+            needyKnob()
         elif funcToCall in ["strike"]:
             strike(bomb)
         elif funcToCall in ["resetstrike", "resetstrikes"]:
