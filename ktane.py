@@ -75,6 +75,15 @@ def isValidSimpleWires(wires):
     return True
 
 
+def symbolParser(string):
+    """ Takes a string, and attempts to parse it to match to one of many
+        symbols. The idea is that there are no two columns with similar
+        symbols, so several, such as "black star" and "white star" can be
+        mapped to the same thing. Even so, it's gonna be ugly.
+    """
+    
+
+
 def isValidCompWire(wire):
     """ Helper function to determine if a string representing a complicated
         wire is valid """
@@ -414,8 +423,31 @@ def button(bomb):
 
 
 def keypad():
-    """ TO DO """
-    pass
+    """ Solves the symbol keypad """
+    from copy import deepcopy as dc
+    columns = [["Q", "AT", "LAMBDA", "N", "CAT", "H", "C"],
+               ["EURO", "Q", "C", "PHI", "STAR", "H", "QUESTION"]
+               ["COPYRIGHT", "OMEGA", "PHI", "K", "3", "LAMBDA", "STAR"]
+               ["6", "PARAGRAPH", "TB", "CAT", "K", "QUESTION", "FACE"]
+               ["PHI", "FACE", "TB", "C", "PARAGRAPH", "3", "STAR"]]
+    symbols = []
+    for i in range(4):
+        symbols.append(symbolParser())
+
+    # Make a copy of the columns for iterating over
+    columnsCopy = dc(columns)
+    for list in columnsCopy:
+        for item in symbols:
+            if item not in list:
+                columns.remove(list)
+                break
+
+    # Now we have the correct column, so we just print out out symbols
+    # in order
+    correctColumn = columns[0]
+    for item in correctColumn:
+        if item in symbols:
+            print(item.capitalize())
 
 
 def simon(bomb):
