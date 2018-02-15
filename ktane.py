@@ -526,7 +526,8 @@ def keypad():
     symbols = []
     print("\n"+"-"*20+" CAUTION "+"-"*20)
     print("This module is hard for a computer to solve.\nPlease try to "
-          "describe all symbols using a very short and obvious description.\n")
+          "describe all symbols using a very short and obvious description.\n"
+          +"-"*49, end='\n\n')
     while len(symbols) < 4:
         string = symbolParser()
         if string in symbols:
@@ -546,11 +547,13 @@ def keypad():
 
     # Now we have the correct column (or none at all), so we just print out
     # our symbols in order
-    if len(columns) > 0:
+    if len(columns) == 1:
         correctColumn = columns[0]
         for item in correctColumn:
             if item in symbols:
                 print("\033[1m"+item.capitalize()+"\033[0m")
+    elif len(columns) > 1:
+        raise Exception("Multiple valid columns: "+str(columns))
     else:
         print("No valid columns. Did you input the symbols correctly?")
 
@@ -920,6 +923,12 @@ def needyKnob():
                 return
 
 
+# ---------------------------------------------------------- #
+#                                                            #
+#                       USAGE FUNCTIONS                      #
+#                                                            #
+# ---------------------------------------------------------- #
+
 def parseModule(bomb):
     while True:
         funcToCall = input("Which module would you like to solve? (type "
@@ -965,7 +974,24 @@ def parseModule(bomb):
 
 
 def help():
-    print("HELP!")
+    print("\nKTANE Solver help")
+    print("-"*50, end='\n\n')
+    print("Valid commands:\n")
+    print("   simple         Solve the simple wires module")
+    print("   button         Solve the button module")
+    print("   symbols        Solve the symbol keypad module")
+    print("   simon          Solve the Simon Says module")
+    print("   wof            Solve the \"Who's on first?\" module")
+    print("   memory         Solve the memory module")
+    print("   complicated    Solve the complicated wires module")
+    print("   sequence       Solve the wire sequence module")
+    print("   maze           Solve the maze module")
+    print("   password       Solve the password module")
+    print("   knob           Find correct position for needy knob\n")
+    print("   reset strike   Reset number of strikes on bomb to zero")
+    print("   config         (Re)configure the bomb")
+    print("   help           Show this help menu")
+    print("   exit           Exit the program\n")
 
 
 def main():
