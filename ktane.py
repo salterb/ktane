@@ -527,7 +527,7 @@ def keypad():
     print("\n"+"-"*20+" CAUTION "+"-"*20)
     print("This module is hard for a computer to solve.\nPlease try to "
           "describe all symbols using a very short and obvious description.\n"
-          +"-"*49, end='\n\n')
+          + "-"*49, end='\n\n')
     while len(symbols) < 4:
         string = symbolParser()
         if string in symbols:
