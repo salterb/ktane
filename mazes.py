@@ -51,7 +51,7 @@ maze3ValidMoves = {(1,1): [RIGHT, UP], (2,1): [LEFT, RIGHT],
                    (2,6): [LEFT, RIGHT], (3,6): [LEFT, DOWN], (4,6): [DOWN],
                    (5,6): [RIGHT, DOWN], (6,6): [LEFT, DOWN]}
 
-maze4ValidMoves = {(1,1): [LEFT, UP], (2,1): [LEFT, RIGHT], (3,1): [LEFT],
+maze4ValidMoves = {(1,1): [RIGHT, UP], (2,1): [LEFT, RIGHT], (3,1): [LEFT],
                    (4,1): [RIGHT], (5,1): [LEFT, UP], (6,1): [UP],
                    (1,2): [UP, RIGHT, DOWN], (2,2): [LEFT, RIGHT],
                    (3,2): [LEFT, RIGHT], (4,2): [LEFT, RIGHT],
@@ -114,7 +114,7 @@ maze7ValidMoves = {(1,1): [RIGHT, UP], (2,1): [LEFT, RIGHT],
                    (3,6): [LEFT, RIGHT], (4,6): [LEFT, DOWN],
                    (5,6): [DOWN, RIGHT], (6,6): [LEFT, DOWN]}
 
-maze8ValidMoves = {(1,1): [LEFT, UP], (2,1): [LEFT, UP, RIGHT],
+maze8ValidMoves = {(1,1): [RIGHT, UP], (2,1): [LEFT, UP, RIGHT],
                    (3,1): [LEFT, RIGHT], (4,1): [LEFT, RIGHT],
                    (5,1): [LEFT, RIGHT], (6,1): [RIGHT], (1,2): [UP, DOWN],
                    (2,2): [DOWN], (3,2): [UP, RIGHT], (4,2): [LEFT, RIGHT],
