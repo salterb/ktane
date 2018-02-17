@@ -430,7 +430,6 @@ def simpleWires(bomb):
     else:
         raise Exception("len(numWires = " + str(len(numWires)) +
                         " - this is apparently not good!")
-    print("")  # Blank line
 
 
 def button(bomb):
