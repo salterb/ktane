@@ -49,7 +49,7 @@ def configBomb(bomb):
 
 def strike(bomb):
     """ Adds a strike to the bomb """
-    self.strikes += 1
+    bomb.strikes += 1
 
 
 def resetStrikes(bomb):
