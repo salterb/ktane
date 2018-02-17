@@ -183,7 +183,8 @@ def symbolParser():
             return "PARAGRAPH"
         elif string in ["TB", "BT", "DT", "TD", "WEIRDB"]:
             return "TB"
-        elif string in ["FACE", "SMILE", "SMILEYFACE", "HAPPY", "HAPPYFACE"]:
+        elif string in ["FACE", "SMILE", "SMILEY", "SMILEYFACE", "HAPPY",
+                        "HAPPYFACE"]:
             return "FACE"
         elif string in ["PSI", "TRIDENT", "FORK", "PITCHFORK"]:
             return "PSI"
