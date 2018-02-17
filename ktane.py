@@ -682,7 +682,7 @@ def memory():
     else:
         print("Press the button in \033[1mPOSITION "
               "{}\033[0m\n".format(stage2[1]))
-        stage2 = (memoryInput(WHICH_LABEL), stage2[1])
+        stage4 = (memoryInput(WHICH_LABEL), stage2[1])
 
     # Stage 5
     ipt = memoryInput(DISPLAY)
@@ -715,8 +715,8 @@ def morse():
                     ".": "E", "..-.": "F", "--.": "G", "....": "H",
                     "..": "I", ".---": "J", "-.-": "K", ".-..": "L",
                     "--": "M", "-.": "N", "---": "O", ".--.": "P",
-                    "-.--": "Q", ".-.": "R", "...": "S", "-": "T",
-                    "..-": "U", "...-": "V", ".--": "W", "-.--": "X",
+                    "--.-": "Q", ".-.": "R", "...": "S", "-": "T",
+                    "..-": "U", "...-": "V", ".--": "W", "-..-": "X",
                     "-.--": "Y", "--..": "Z"}
 
     while len(validWords) > 1:
