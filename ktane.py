@@ -416,7 +416,7 @@ def simpleWires(bomb):
 
     elif numWires == 6:
         if bomb.serial is None:
-            bomb.addSerial()
+            bomb.serial = addSerial()
 
         if 'Y' not in wires and int(bomb.serial[-1]) % 2 == 1:
             print("\nCut the \033[1mTHIRD\033[0m wire\n")
