@@ -226,7 +226,7 @@ def solve_maze():
             (int(maze_ipt[0]), int(maze_ipt[-1])) in mazeLookup.keys()):
                 break
         print("\nInvalid coordinates. Please provide (x,y) coordinates "
-              "of a valid green circle, where 1 < x,y < 6\n")
+              "of a valid green circle, where 1 ≤ x,y ≤ 6\n")
 
     # Assume the first and last digits are the correct ones, after
     # removing any brackets and whitespace.
