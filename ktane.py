@@ -157,7 +157,7 @@ def symbolParser():
         elif string in ["STAR", "WHITESTAR", "BLACKSTAR", "FILLEDINSTAR"]:
             return "STAR"
         elif string in ["QUESTION", "QUESTIONMARK", "UPSIDEDOWNQUESTIONMARK",
-                        "UPSIDEDOWNQUESTION"]:
+                        "UPSIDEDOWNQUESTION", "?"]:
             return "QUESTION"
 
         # ROT-13 encoding here because SOME PEOPLE claim that this symbol
@@ -192,7 +192,7 @@ def symbolParser():
                         "HASHTAG", "POUND", "POUNDSIGN", "WEIGHT", "WEIGHTS",
                         "DUMBBELL", "WEIRDX", "CROSS"]:
             return "NOTEQUAL"
-        elif string in ["AE", "Æ", "ash"]:
+        elif string in ["AE", "Æ", "ASH"]:
             return "AE"
         else:
             return None
