@@ -67,11 +67,11 @@ maze4ValidMoves = {(1,1): [RIGHT, UP], (2,1): [LEFT, RIGHT], (3,1): [LEFT],
                    (2,6): [LEFT, DOWN], (3,6): [RIGHT], (4,6): [LEFT, RIGHT],
                    (5,6): [LEFT, RIGHT], (6,6): [LEFT, DOWN]}
 
-maze5ValidMoves = {(1,1): [UP], (2,1): [UP, LEFT], (3,1): [LEFT, RIGHT],
+maze5ValidMoves = {(1,1): [UP], (2,1): [UP, RIGHT], (3,1): [LEFT, RIGHT],
                    (4,1): [LEFT, RIGHT], (5,1): [LEFT, RIGHT],
                    (6,1): [LEFT, UP], (1,2): [UP, DOWN], (2,2): [RIGHT, DOWN],
                    (3,2): [LEFT, RIGHT], (4,2): [LEFT, RIGHT, UP],
-                   (5,2): [RIGHT], (6,2): [UP, DOWN], (1,3): [UP, DOWN],
+                   (5,2): [LEFT], (6,2): [UP, DOWN], (1,3): [UP, DOWN],
                    (2,3): [UP, RIGHT], (3,3): [LEFT, RIGHT],
                    (4,3): [LEFT, DOWN], (5,3): [UP], (6,3): [UP, DOWN],
                    (1,4): [UP, RIGHT, DOWN], (2,4): [LEFT, DOWN],
@@ -79,7 +79,7 @@ maze5ValidMoves = {(1,1): [UP], (2,1): [UP, LEFT], (3,1): [LEFT, RIGHT],
                    (6,4): [LEFT, DOWN], (1,5): [DOWN, RIGHT],
                    (2,5): [LEFT, RIGHT], (3,5): [LEFT, RIGHT],
                    (4,5): [LEFT, DOWN, RIGHT], (5,5): [LEFT, UP],
-                   (6,5): [UP], (1,6): [LEFT], (2,6): [LEFT, RIGHT],
+                   (6,5): [UP], (1,6): [RIGHT], (2,6): [LEFT, RIGHT],
                    (3,6): [LEFT, RIGHT], (4,6): [LEFT, RIGHT],
                    (5,6): [LEFT, DOWN, RIGHT], (6,6): [LEFT, DOWN]}
 
