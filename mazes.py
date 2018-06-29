@@ -116,7 +116,7 @@ maze7ValidMoves = {(1,1): [RIGHT, UP], (2,1): [LEFT, RIGHT],
 
 maze8ValidMoves = {(1,1): [RIGHT, UP], (2,1): [LEFT, UP, RIGHT],
                    (3,1): [LEFT, RIGHT], (4,1): [LEFT, RIGHT],
-                   (5,1): [LEFT, RIGHT], (6,1): [RIGHT], (1,2): [UP, DOWN],
+                   (5,1): [LEFT, RIGHT], (6,1): [LEFT], (1,2): [UP, DOWN],
                    (2,2): [DOWN], (3,2): [UP, RIGHT], (4,2): [LEFT, RIGHT],
                    (5,2): [LEFT, RIGHT], (6,2): [LEFT], (1,3): [UP, DOWN],
                    (2,3): [UP, RIGHT], (3,3): [LEFT, DOWN], (4,3): [RIGHT],
