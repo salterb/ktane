@@ -66,3 +66,7 @@ def addFRK():
             break
         print("Invalid input. Please try again")
     return FRK
+
+
+if __name__ == "__main__":
+    print("Please run the script ktane.py instead!")

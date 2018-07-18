@@ -255,3 +255,7 @@ def solve_maze():
     end = (int(end_ipt[0]), int(end_ipt[-1]))
 
     print_moves(maze, start, end)
+
+
+if __name__ == "__main__":
+    print("Please run the script ktane.py instead!")

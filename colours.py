@@ -12,3 +12,7 @@ def blue(string):
 
 def bold(string):
     return "\033[1m"+string+"\033[0m"
+
+
+if __name__ == "__main__":
+    print("Please run the script ktane.py instead!")
