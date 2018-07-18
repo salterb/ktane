@@ -3,7 +3,7 @@
 from bomb_config import *
 from wof import *
 from mazes import solve_maze
-
+from colours import *
 
 class Bomb:
     def __init__(self,
@@ -203,43 +203,43 @@ def staticSimon(bomb):
     """ Simply prints out the relevant colour conversion list for Simon """
     if set(['A', 'E', 'I', 'O', 'U']).isdisjoint(set(bomb.serial)):
         if bomb.strikes == 0:
-            print("\033[1;31mRED\033[0m    -> \033[1;34mBLUE\033[0m")
-            print("\033[1;34mBLUE\033[0m   -> \033[1;33mYELLOW\033[0m")
-            print("\033[1;32mGREEN\033[0m  -> \033[1;32mGREEN\033[0m")
-            print("\033[1;33mYELLOW\033[0m -> \033[1;31mRED\033[0m")
+            print(red("RED")+"    -> "+blue("BLUE"))
+            print(blue("BLUE")+"   -> "+yellow("YELLOW"))
+            print(green("GREEN")+"  -> "+green("GREEN"))
+            print(yellow("YELLOW")+" -> "+red("RED"))
 
         elif bomb.strikes == 1:
-            print("\033[1;31mRED\033[0m    -> \033[1;31mRED\033[0m")
-            print("\033[1;34mBLUE\033[0m   -> \033[1;34mBLUE\033[0m")
-            print("\033[1;32mGREEN\033[0m  -> \033[1;33mYELLOW\033[0m")
-            print("\033[1;33mYELLOW\033[0m -> \033[1;32mGREEN\033[0m")
+            print(red("RED")+"    -> "+red("RED"))
+            print(blue("BLUE")+"   -> "+blue("BLUE"))
+            print(green("GREEN")+"  -> "+yellow("YELLOW"))
+            print(yellow("YELLOW")+" -> "+green("GREEN"))
 
         elif bomb.strikes == 2:
-            print("\033[1;31mRED\033[0m    -> \033[1;33mYELLOW\033[0m")
-            print("\033[1;34mBLUE\033[0m   -> \033[1;32mGREEN\033[0m")
-            print("\033[1;32mGREEN\033[0m  -> \033[1;34mBLUE\033[0m")
-            print("\033[1;33mYELLOW\033[0m -> \033[1;31mRED\033[0m")
+            print(red("RED")+"    -> "+yellow("YELLOW"))
+            print(blue("BLUE")+"   -> "+green("GREEN"))
+            print(green("GREEN")+"  -> "+blue("BLUE"))
+            print(yellow("YELLOW")+" -> "+red("RED"))
         else:
             raise Exception("Invalid strike number: "+str(bomb.strikes))
 
     else:
         if bomb.strikes == 0:
-            print("\033[1;31mRED\033[0m    -> \033[1;34mBLUE\033[0m")
-            print("\033[1;34mBLUE\033[0m   -> \033[1;31mRED\033[0m")
-            print("\033[1;32mGREEN\033[0m  -> \033[1;33mYELLOW\033[0m")
-            print("\033[1;33mYELLOW\033[0m -> \033[1;32mGREEN\033[0m")
+            print(red("RED")+"    -> "+blue("BLUE"))
+            print(blue("BLUE")+"   -> "+red("RED"))
+            print(green("GREEN")+"  -> "+yellow("YELLOW"))
+            print(yellow("YELLOW")+" -> "+green("GREEN"))
         elif bomb.strikes == 1:
-            print("\033[1;31mRED\033[0m     -> \033[1;33mYELLOW\033[0m")
-            print("\033[1;34mBLUE\033[0m    -> \033[1;32mGREEN\033[0m")
-            print("\033[1;32mGREEN\033[0m   -> \033[1;34mBLUE\033[0m")
-            print("\033[1;33mYELLOW\033[0m  -> \033[1;31mRED\033[0m")
+            print(red("RED")+"     -> "+yellow("YELLOW"))
+            print(blue("BLUE")+"    -> "+green("GREEN"))
+            print(green("GREEN")+"   -> "+blue("BLUE"))
+            print(yellow("YELLOW")+"  -> "+red("RED"))
         elif bomb.strikes == 2:
-            print("\033[1;31mRED\033[0m    -> \033[1;32mGREEN\033[0m")
-            print("\033[1;34mBLUE\033[0m   -> \033[1;31mRED\033[0m")
-            print("\033[1;32mGREEN\033[0m  -> \033[1;33mYELLOW\033[0m")
-            print("\033[1;33mYELLOW\033[0m -> \033[1;34mBLUE\033[0m")
+            print(red("RED")+"    -> "+green("GREEN"))
+            print(blue("BLUE")+"   -> "+red("RED"))
+            print(green("GREEN")+"  -> "+yellow("YELLOW"))
+            print(yellow("YELLOW")+" -> "+blue("BLUE"))
         else:
-            print('3 or more strikes. Please run "reset strikes" to try again')
+            raise Exception("Invalid strike number: "+str(bomb.strikes))
 
 
 def interactiveSimon(bomb):
@@ -281,13 +281,13 @@ def interactiveSimon(bomb):
         for char in lights:
             colour = colourDict[char]
             if colour == 'R':
-                print("\033[1;31mRED\033[0m")
+                print(red("RED"))
             elif colour == 'B':
-                print("\033[1;34mBLUE\033[0m")
+                print(blue("BLUE"))
             elif colour == 'G':
-                print("\033[1;32mGREEN\033[0m")
+                print(green("GREEN"))
             elif colour == 'Y':
-                print("\033[1;33mYELLOW\033[0m")
+                print(yellow("YELLOW"))
             else:
                 raise Exception("Invalid colour: "+colour)
         print("")  # Blank line
@@ -313,40 +313,40 @@ def memoryInput(arg):
         print("Invalid input")
 
 
-# "Cut" functions for complicated wires
+# "Cut" functions for complicated wires and sequences
 def cut(bomb):
-    print("\n\033[1mCUT\033[0m the wire")
+    print("\n" + bold("CUT") + " the wire")
 
 
 def noCut(bomb):
-    print("\nDo \033[1mNOT\033[0m cut the wire")
+    print("\nDo " + bold("NOT") + " cut the wire")
 
 
 def serialCut(bomb):
     if bomb.serial is None:
         bomb.serial = addSerial()
     if int(bomb.serial[-1]) % 2 == 0:
-        print("\n\033[1mCUT\033[0m the wire")
+        print("\n" + bold("CUT") + " the wire")
     else:
-        print("\nDo \033[1mNOT\033[0m cut the wire")
+        print("\nDo " + bold("NOT") + " cut the wire")
 
 
 def pPortCut(bomb):
     if bomb.parallelPort is None:
         bomb.parallelPort = addPPort()
     if bomb.parallelPort is True:
-        print("\n\033[1mCUT\033[0m the wire")
+        print("\n" + bold("CUT") + " the wire")
     else:
-        print("\nDo \033[1mNOT\033[0m cut the wire")
+        print("\nDo " + bold("NOT") + " cut the wire")
 
 
 def batteryCut(bomb):
     if bomb.numBatteries is None:
         bomb.numBatteries = addBatteries()
     if bomb.numBatteries >= 2:
-        print("\n\033[1mCUT\033[0m the wire")
+        print("\n" + bold("CUT") + " the wire")
     else:
-        print("\nDo \033[1mNOT\033[0m cut the wire")
+        print("\nDo " + bold("NOT") + " cut the wire")
 
 
 def isValidWireSequence(wire):
@@ -379,58 +379,58 @@ def simpleWires(bomb):
     numWires = len(wires)
     if numWires == 3:
         if 'R' not in wires:
-            print("\nCut the \033[1mSECOND\033[0m wire\n")
+            print("\nCut the " + bold("SECOND") + " wire\n")
         elif wires[-1] == 'W':
-            print("\nCut the \033[1mLAST\033[0m wire")
+            print("\nCut the " + bold("LAST") + " wire")
         elif wires.count('B') > 1:
-            print("\nCut the \033[1;34mLAST BLUE\033[0m wire\n")
+            print("\nCut the " + bold("LAST BLUE") + " wire\n")
         else:
-            print("\nCut the \033[1mLAST\033[0m wire\n")
+            print("\nCut the " + bold("LAST") + " wire\n")
 
     elif numWires == 4:
         if bomb.serial is None:
             bomb.serial = addSerial()
 
         if wires.count("R") > 1 and int(bomb.serial[-1]) % 2 == 1:
-            print("\nCut the \033[1;31mLAST RED\033[0m wire\n")
+            print("\nCut the " + bold("LAST RED") + " wire\n")
         elif wires[-1] == 'Y' and ('R' not in wires):
-            print("\nCut the \033[1mFIRST\033[0m wire\n")
+            print("\nCut the " + bold("FIRST") + " wire\n")
         elif wires.count('B') == 1:
-            print("\nCut the \033[1mFIRST\033[0m wire\n")
+            print("\nCut the " + bold("FIRST") + " wire\n")
         elif wires.count('Y') > 1:
-            print("\nCut the \033[1mLAST\033[0m wire\n")
+            print("\nCut the " + bold("LAST") + " wire\n")
         else:
-            print("\nCut the \033[1mSECOND\033[0m wire\n")
+            print("\nCut the " + bold("SECOND") + " wire\n")
 
     elif numWires == 5:
         if bomb.serial is None:
             bomb.serial = addSerial()
 
         if wires[-1] == 'K' and int(bomb.serial[-1]) % 2 == 1:
-            print("\nCut the \033[1mFOURTH\033[0m wire\n")
+            print("\nCut the " + bold("FOURTH") + " wire\n")
         elif wires.count('R') == 1 and wires.count('Y') > 1:
-            print("\nCut the \033[1mFIRST\033[0m wire\n")
+            print("\nCut the " + bold("FIRST") + " wire\n")
         elif 'K' not in wires:
-            print("\nCut the \033[1mSECOND\033[0m wire\n")
+            print("\nCut the " + bold("SECOND") + " wire\n")
         else:
-            print("\nCut the \033[1mFIRST\033[0m wire\n")
+            print("\nCut the " + bold("FIRST") + " wire\n")
 
     elif numWires == 6:
         if bomb.serial is None:
             bomb.serial = addSerial()
 
         if 'Y' not in wires and int(bomb.serial[-1]) % 2 == 1:
-            print("\nCut the \033[1mTHIRD\033[0m wire\n")
+            print("\nCut the " + bold("THIRD") + " wire\n")
         elif wires.count('Y') == 1 and wires.count('W') > 1:
-            print("\nCut the \033[1mFOURTH\033[0m wire\n")
+            print("\nCut the " + bold("FOURTH") + " wire\n")
         elif 'R' not in wires:
-            print("\nCut the \033[1mLAST\033[0m wire\n")
+            print("\nCut the " + bold("LAST") + " wire\n")
         else:
-            print("\nCut the \033[1mFOURTH\033[0m wire\n")
+            print("\nCut the " + bold("FOURTH") + " wire\n")
 
     else:
         raise Exception("len(numWires = " + str(len(numWires)) +
-                        " - this is apparently not good!")
+                        " - this is bad!")
 
 
 def button(bomb):
@@ -457,13 +457,14 @@ def button(bomb):
         if buttonWord not in validWords:
             print("Please supply a valid letter from [A, D, H, P]")
 
-    releaseString = ("\033[1m------ DO NOT IMMEDIATELY "
-                     "RELEASE THE BUTTON ------\033[0m\n\n"
-                     "If the strip is \033[1;34mBLUE\033[0m, release the "
-                     "button when timer has a \033[1m4\033[0m in any "
-                     "position\nIf the strip is \033[1;33mYELLOW\033[0m, "
-                     "has a \033[1m5\033[0m in any position\nOtherwise "
-                     "release the button when timer has a 1 in any position\n")
+    releaseString = (bold("------ DO NOT IMMEDIATELY RELEASE THE "
+                          "BUTTON ------\n\n")+
+                     "If the strip is " + blue("BLUE") + ", release the "
+                     "button when timer has a " + bold("4") + " in any "
+                     "position\nIf the strip is " + yellow("YELLOW") + ", "
+                     "release the button when timer has a " + bold("5") + "in "
+                     "any position\nOtherwise release the button when timer "
+                     "has a " + bold("1") + " in any position\n")
 
     if buttonColour == 'B' and buttonWord == 'A':
         print("\nHold button\n")
@@ -551,7 +552,7 @@ def keypad():
         correctColumn = columns[0]
         for item in correctColumn:
             if item in symbols:
-                print("\033[1m"+item.capitalize()+"\033[0m")
+                print(bold(item.capitalize()))
     elif len(columns) > 1:
         raise Exception("Multiple valid columns: "+str(columns))
     else:
@@ -565,7 +566,7 @@ def simon(bomb):
     """
     # Check strike validity
     if bomb.strikes not in [0, 1, 2]:
-        print("You have " + str(bomb.strikes) + "strikes. "
+        print("You have " + str(bomb.strikes) + " strikes. "
               "Please run \"reset strikes\" to try again")
         return
 
@@ -628,77 +629,68 @@ def memory():
     ipt = memoryInput(DISPLAY)
     print("")  # Blank line
     if ipt == 1 or ipt == 2:
-        print("Press the button in \033[1mPOSITION 2\033[0m\n")
+        print("Press the button in " + bold("POSITION 2\n"))
         stage1 = (memoryInput(WHICH_LABEL), 2)
     elif ipt == 3:
-        print("Press the button in \033[1mPOSITION 3\033[0m\n")
+        print("Press the button in " + bold("POSITION 3\n"))
         stage1 = (memoryInput(WHICH_LABEL), 3)
     else:
-        print("Press the button in \033[1mPOSITION 4\033[0m\n")
+        print("Press the button in " + bold("POSITION 4\n"))
         stage1 = (memoryInput(WHICH_LABEL), 4)
 
     # Stage 2
     ipt = memoryInput(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
-        print("Press the button with \033[1mLABEL 4\033[0m\n")
+        print("Press the button with " + bold("LABEL 4\n"))
         stage2 = (4, memoryInput(WHICH_POSITION))
     elif ipt == 2 or ipt == 4:
-        print("Press the button in \033[1mPOSITION "
-              "{}\033[0m\n".format(stage1[1]))
+        print("Press the button in " + bold("POSITION {}\n").format(stage1[1]))
         stage2 = (memoryInput(WHICH_LABEL), stage1[1])
     else:
-        print("Press the button in \033[1mPOSITION 1\033[0m\n")
+        print("Press the button in " + bold("POSITION 1\n"))
         stage2 = (memoryInput(WHICH_LABEL), 1)
 
     # Stage 3
     ipt = memoryInput(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
-        print("Press the button with \033[1mLABEL "
-              "{}\033[0m\n".format(stage2[0]))
+        print("Press the button with " + bold("LABEL {}\n").format(stage2[0]))
         stage3 = (stage2[0], memoryInput(WHICH_POSITION))
     elif ipt == 2:
-        print("Press the button with \033[1mLABEL "
-              "{}\033[0m\n".format(stage1[0]))
+        print("Press the button with " + bold("LABEL {}\n").format(stage1[0]))
         stage3 = (stage1[0], memoryInput(WHICH_POSITION))
     elif ipt == 3:
-        print("Press the button in \033[1mPOSITION 3\033[0m\n")
+        print("Press the button in " + bold("POSITION 3\n"))
         stage3 = (memoryInput(WHICH_LABEL), 3)
     else:
-        print("Press the button with \033[1mLABEL 4\033[0m\n")
+        print("Press the button with " + bold("LABEL 4\n"))
         stage3 = (4, memoryInput(WHICH_POSITION))
 
     # Stage 4
     ipt = memoryInput(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
-        print("Press the button in \033[1mPOSITION "
-              "{}\033[0m\n".format(stage1[0]))
+        print("Press the button in " + bold("POSITION {}\n").format(stage1[0]))
         stage4 = (stage1[0], memoryInput(WHICH_POSITION))
     elif ipt == 2:
-        print("Press the button in \033[1mPOSITION 1\033[0m\n")
+        print("Press the button in " + bold("POSITION 1\n"))
         stage4 = (memoryInput(WHICH_LABEL), 1)
     else:
-        print("Press the button in \033[1mPOSITION "
-              "{}\033[0m\n".format(stage2[1]))
+        print("Press the button in " + bold("POSITION {}\n").format(stage2[1]))
         stage4 = (memoryInput(WHICH_LABEL), stage2[1])
 
     # Stage 5
     ipt = memoryInput(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
-        print("Press the button with \033[1mLABEL "
-              "{}\033[0m\n".format(stage1[0]))
+        print("Press the button with " + bold("LABEL {}\n").format(stage1[0]))
     elif ipt == 2:
-        print("Press the button with \033[1mLABEL "
-              "{}\033[0m\n".format(stage2[0]))
+        print("Press the button with " + bold("LABEL {}\n").format(stage2[0]))
     elif ipt == 3:
-        print("Press the button with \033[1mLABEL "
-              "{}\033[0m\n".format(stage4[0]))
+        print("Press the button with " + bold("LABEL {}\n").format(stage4[0]))
     else:
-        print("Press the button with \033[1mLABEL "
-              "{}\033[0m\n".format(stage3[0]))
+        print("Press the button with " + bold("LABEL {}\n").format(stage3[0]))
 
 
 def morse():
@@ -750,8 +742,7 @@ def morse():
     else:
         print("\nThe word is "+validWords[0])
         freqStr = "{:.3f}".format(morseFreqs[validWords[0]])  # Pad with zeroes
-        print("The frequency is \033[1m"
-              + freqStr + " MHz\033[0m\n")
+        print("The frequency is " + bold(freqStr) + " MHz\033[0m\n")
 
 
 def complicatedWires(bomb):
@@ -833,23 +824,23 @@ def sequences():
         # Now our wire is valid, we provide output.
         if wire[0] == 'R':
             if wire[1] in validReds[redCount]:
-                print("\n\033[1mCUT\033[0m the wire")
+                cut(bomb)
             else:
-                print("\nDo \033[1mNOT\033[0m cut the wire")
+                noCut(bomb)
             redCount += 1
             previousMove = RED
         elif wire[0] == 'B':
             if wire[1] in validBlues[blueCount]:
-                print("\n\033[1mCUT\033[0m the wire")
+                cut(bomb)
             else:
-                print("\nDo \033[1mNOT\033[0m cut the wire")
+                noCut(bomb)
             blueCount += 1
             previousMove = BLUE
         elif wire[0] == 'K':
             if wire[1] in validBlacks[blackCount]:
-                print("\n\033[1mCUT\033[0m the wire")
+                cut(bomb)
             else:
-                print("\nDo \033[1mNOT\033[0m cut the wire")
+                noCut(bomb)
             blackCount += 1
             previousMove = BLACK
 
@@ -900,7 +891,7 @@ def password():
     if len(validPasswords) == 0:
         print("Invalid input letters. Please run module again")
     else:
-        print("\nThe password is \033[1m"+validPasswords[0]+"\033[0m\n")
+        print("\nThe password is " + bold(validPasswords[0]) + "\n")
 
 
 def needyKnob():
@@ -919,7 +910,7 @@ def needyKnob():
             if lights_stripped not in validLights.keys():
                 print("Invalid light sequence")
             else:
-                print("\n\033[1m" + validLights[lights_stripped] + "\033[0m\n")
+                print("\n" + bold(validLights[lights_stripped]) + "\n")
                 return
 
 
