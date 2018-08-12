@@ -5,6 +5,7 @@ from wof import *
 from mazes import solve_maze
 from colours import *
 
+
 class Bomb:
     def __init__(self,
                  serial=None,
