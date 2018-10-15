@@ -28,7 +28,7 @@ class Bomb:
 # ---------------------------------------------------------- #
 
 def setupBomb():
-    """ Sets up the bomb with a bunch of user input """
+    """ Sets up the bomb with a bunch of user input."""
     serial = addSerial()
     numBatteries = addBatteries()
     parallelPort = addPPort()
@@ -39,8 +39,8 @@ def setupBomb():
 
 
 def configBomb(bomb):
-    """ Allows later configuration of the bomb in the event of incorrect
-        initial input"""
+    """ Allows later configuration of the bomb in the event of
+    incorrect initial input."""
     bomb.serial = addSerial()
     bomb.numBatteries = addBatteries()
     bomb.parallelPort = addPPort()
@@ -49,12 +49,12 @@ def configBomb(bomb):
 
 
 def strike(bomb):
-    """ Adds a strike to the bomb """
+    """ Adds a strike to the bomb."""
     bomb.strikes += 1
 
 
 def resetStrikes(bomb):
-    """ Resets strikes in case of incorrect strike input """
+    """ Resets strikes in case of incorrect strike input."""
     self.strikes = 0
 
 
@@ -66,8 +66,9 @@ def resetStrikes(bomb):
 
 # Input validator functions
 def isValidSimpleWires(wires):
-    """ Helper function to determine if the wire arrangement specified
-        is valid """
+    """Helper function to determine if the wire arrangement specified
+    is valid.
+    """
     if len(wires) < 3 or len(wires) > 6:
         return False
     for char in wires:
@@ -77,8 +78,9 @@ def isValidSimpleWires(wires):
 
 
 def isValidCompWire(wire):
-    """ Helper function to determine if a string representing a complicated
-        wire is valid """
+    """Helper function to determine if a string representing a
+    complicated wire is valid.
+    """
     if len(wire) > 4:
         return False
     for char in wire:
@@ -88,7 +90,9 @@ def isValidCompWire(wire):
 
 
 def isValidSimon(string):
-    """ Helper function to determine if the Simon light sequence is valid """
+    """Helper function to determine if the Simon light sequence is
+    valid.
+    """
     if len(string) == 0:
         return False
     for char in string:
@@ -98,26 +102,25 @@ def isValidSimon(string):
 
 
 # Symbols functions
-def rot13(str):
-    """ Enable rot-13 encoding of words so my code doesn't have smutty
-        words in it
+def _rot13(str):
+    """Enable rot-13 encoding of words so my code doesn't have smutty
+    words in it.
     """
-
     from codecs import encode
     return encode(str, "rot_13")
 
 
 def symbolParser():
-    """ Takes a string, and attempts to parse it to match to one of many
-        symbols. The idea is that there are no two columns with similar
-        symbols, so several, such as "black star" and "white star" can be
-        mapped to the same thing. Even so, it's gonna be ugly.
+    """Takes a string, and attempts to parse it to match to one of many
+    symbols. The idea is that there are no two columns with similar
+    symbols, so several, such as "black star" and "white star" can be
+    mapped to "star". Even so, it's gonna be ugly.
     """
 
-    # If you're reading this, this project probably became too big, and you
-    # need a better parsing function. You're not gonna be able to bootstrap
-    # anything onto this to make it work, you'll need to do something cleverer.
-    # Sorry.
+    # If you're reading this, this project probably became too big, and
+    # you need a better parsing function. You're not gonna be able to
+    # bootstrap anything onto this to make it work, you'll need to do
+    # something cleverer. Sorry.
 
     # Do-while for input
     while True:
@@ -161,14 +164,14 @@ def symbolParser():
                         "UPSIDEDOWNQUESTION", "?"]:
             return "QUESTION"
 
-        # ROT-13 encoding here because SOME PEOPLE claim that this symbol
-        # resembles various bodily parts, the names of which I don't want in
-        # my code. IT'S AN OMEGA, EVERYONE
-        elif string in ["OMEGA", "W", "WEIRDW", rot13("NFF"), rot13("OHZ"),
-                        rot13("OHGG"), rot13("OBBGL"), rot13("OBBOF"),
-                        rot13("OBBOVRF"), rot13("GVGF"), rot13("GVGGVRF"),
-                        rot13("ONYYF"), rot13("GRFGRF"), rot13("FPEBGHZ"),
-                        rot13("AHGFNPX"), rot13("AHGF"), "HEADPHONES"]:
+        # ROT-13 encoding here because SOME PEOPLE claim that this
+        # symbol resembles various bodily parts, the names of which I
+        # don't want in my code. IT'S AN OMEGA, EVERYONE!
+        elif string in ["OMEGA", "W", "WEIRDW", _rot13("NFF"), _rot13("OHZ"),
+                        _rot13("OHGG"), _rot13("OBBGL"), _rot13("OBBOF"),
+                        _rot13("OBBOVRF"), _rot13("GVGF"), _rot13("GVGGVRF"),
+                        _rot13("ONYYF"), _rot13("GRFGRF"), _rot13("FPEBGHZ"),
+                        _rot13("AHGFNPX"), _rot13("AHGF"), "HEADPHONES"]:
             return "OMEGA"
         elif string in ["K", "Ж", "ZHE", "KS", "2K", "2KS", "TWOK", "TWOKS",
                         "WEIRDX", "WEIRDK", "Z", "BACKTOBACKK",
@@ -201,7 +204,9 @@ def symbolParser():
 
 # Simon functions
 def staticSimon(bomb):
-    """ Simply prints out the relevant colour conversion list for Simon """
+    """Simply prints out the relevant colour conversion list for
+    Simon.
+    """
     if set(['A', 'E', 'I', 'O', 'U']).isdisjoint(set(bomb.serial)):
         if bomb.strikes == 0:
             print(red("RED")+"    -> "+blue("BLUE"))
@@ -244,7 +249,8 @@ def staticSimon(bomb):
 
 
 def interactiveSimon(bomb):
-    """ Prompts the user for the Simon input, and displays the correct output
+    """Prompts the user for the Simon input, and displays the correct
+    output.
     """
 
     # Repeat the process until the user wants to exit
@@ -365,8 +371,9 @@ def isValidWireSequence(wire):
 # ---------------------------------------------------------- #
 
 def simpleWires(bomb):
-    """ Solve the simple wires module on the bomb. The user inputs the sequence
-        of wires, and the function tells the user which one to cut.
+    """Solve the simple wires module on the bomb. The user inputs the
+    sequence of wires, and the function tells the user which one to
+    cut.
     """
 
     # Do-while to get the wire sequence
@@ -435,11 +442,11 @@ def simpleWires(bomb):
 
 
 def button(bomb):
-    """ Solves the button module on the bomb.
-        This function is ugly. We've used 'if's and returns rather than
-        'elif's, since we are also providing functionality for users to
-        supply the bomb data at the last possible moment, and that involves
-        provisionally going inside if statements to provide user input.
+    """Solves the button module on the bomb.
+    This function is ugly. We've used 'if's and returns rather than
+    'elif's, since we are also providing functionality for users to
+    supply the bomb data at the last possible moment, and that involves
+    provisionally going inside if statements to provide user input.
     """
 
     # Two do-while loops to get the button color and word
@@ -459,7 +466,7 @@ def button(bomb):
             print("Please supply a valid letter from [A, D, H, P]")
 
     releaseString = (bold("------ DO NOT IMMEDIATELY RELEASE THE "
-                          "BUTTON ------\n\n")+
+                          "BUTTON ------\n\n") +
                      "If the strip is " + blue("BLUE") + ", release the "
                      "button when timer has a " + bold("4") + " in any "
                      "position\nIf the strip is " + yellow("YELLOW") + ", "
@@ -517,7 +524,7 @@ def button(bomb):
 
 
 def keypad():
-    """ Solves the symbol keypad """
+    """Solves the symbol keypad."""
     from copy import deepcopy as dc
     columns = [["Q", "AT", "LAMBDA", "N", "CAT", "H", "C"],
                ["EURO", "Q", "C", "PHI", "STAR", "H", "QUESTION"],
@@ -561,9 +568,10 @@ def keypad():
 
 
 def simon(bomb):
-    """ Solves the "Simon" module, in one of two ways. Either prints out the
-        colour map, or enters "interactive mode", where the user inputs a
-        color string and we print out the correct sequence of colors to press.
+    """Solves the "Simon" module, in one of two ways. Either prints out
+    the colour map, or enters "interactive mode", where the user inputs
+    a color string and we print out the correct sequence of colors to
+    press.
     """
     # Check strike validity
     if bomb.strikes not in [0, 1, 2]:
@@ -587,8 +595,9 @@ def simon(bomb):
 
 
 def whosOnFirst():
-    """ Solves the "Who's on first" module, by outputting the list of
-        potential solutions in order. """
+    """Solves the "Who's on first" module, by outputting the list of
+    potential solutions in order.
+    """
 
     # We keep going until the user wants to stop
     while True:
@@ -620,8 +629,9 @@ def whosOnFirst():
 
 
 def memory():
-    """ Solves the memory module by storing all previous input and
-        automatically referring back to it to find the correct answers. """
+    """Solves the memory module by storing all previous input and
+    automatically referring back to it to find the correct answers.
+    """
     DISPLAY = 0
     WHICH_LABEL = 1
     WHICH_POSITION = 2
@@ -695,8 +705,8 @@ def memory():
 
 
 def morse():
-    """ Solves the morse module. The user inputs morse characters until
-        there is only one valid word left
+    """Solves the morse module. The user inputs morse characters until
+    there is only one valid word left.
     """
     validWords = ["SHELL", "HALLS", "SLICK", "TRICK", "BOXES", "LEAKS",
                   "STROBE", "BISTRO", "FLICK", "BOMBS", "BREAK", "BRICK",
@@ -747,9 +757,9 @@ def morse():
 
 
 def complicatedWires(bomb):
-    """ Solves the complicated wires module. The user inputs the wire detail
-        one wire at a time, and the function tells the user whether to cut the
-        wire or not
+    """Solves the complicated wires module. The user inputs the wire detail
+    one wire at a time, and the function tells the user whether to cut the
+    wire or not.
     """
     # We keep running until the user wants to stop
     print("Use 'R' for 'red', 'B' for 'blue', 'S' for star, and 'L' for light")
@@ -779,8 +789,8 @@ def complicatedWires(bomb):
 
 
 def sequences():
-    """ Loads an interfact that can solve the wire sequences module.
-        Also implements a "delete" function in case of accidental input.
+    """Loads an interfact that can solve the wire sequences module.
+    Also implements a "delete" function in case of accidental input.
     """
     RED = -1
     BLUE = -2
@@ -851,12 +861,12 @@ def sequences():
 
 
 def maze():
-    """ Calls the external maze solver from a separate module """
+    """Calls the external maze solver from a separate module."""
     solve_maze()
 
 
 def password():
-    """ Solves the password module """
+    """Solves the password module."""
     validPasswords = ["ABOUT", "AFTER", "AGAIN", "BELOW", "COULD",
                       "EVERY", "FIRST", "FOUND", "GREAT", "HOUSE",
                       "LARGE", "LEARN", "NEVER", "OTHER", "PLACE",
@@ -987,8 +997,8 @@ def help():
 
 
 def main():
-    """ Creats the bomb object with the relevant info, then calls the
-        desired function based on user input """
+    """Creates the bomb object with the relevant info, then calls the
+    desired function based on user input."""
 
     logo = ("\n"
             " _   _______ ___   _   _  _____ \n"

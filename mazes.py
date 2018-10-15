@@ -157,11 +157,10 @@ mazeLookup = {(1,5): maze1ValidMoves, (6,4): maze1ValidMoves,
 
 
 def DFS_maze_helper(maze, player_pos, end, current_moves):
-    """
-    Performs a DFS to find the solution to a maze.
-    We use a dictionary to lookup permissable directions but also want to
-    modify the entries of the coordinate vectors for the start point, so we
-    have to convert from list to tuple on the fly.
+    """Performs a DFS to find the solution to a maze.
+    We use a dictionary to lookup permissable directions but also want
+    to modify the entries of the coordinate vectors for the start
+    point, so we have to convert from list to tuple on the fly.
     """
     # Find the maze we are working with
     M = mazeLookup[maze]
@@ -189,13 +188,13 @@ def DFS_maze_helper(maze, player_pos, end, current_moves):
 
 
 def DFS_maze(maze, start, end):
-    """ Initiates the DFS by calling the helper with an empty array """
+    """Initiates the DFS by calling the helper with an empty array."""
     return DFS_maze_helper(maze, list(start), list(end), [])
 
 
 def print_moves(maze, start, end):
-    """ Prints the necessary moves to solve the maze. Currently not very
-        aesthetic - will replace """
+    """Prints the necessary moves to solve the maze. Currently not very
+    aesthetic - will replace."""
 
     moves = DFS_maze(maze, start, end)
     if moves is None:
