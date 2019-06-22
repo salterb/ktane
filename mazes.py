@@ -155,6 +155,9 @@ mazeLookup = {(1,5): maze1ValidMoves, (6,4): maze1ValidMoves,
               (3,3): maze8ValidMoves, (4,6): maze8ValidMoves,
               (1,2): maze9ValidMoves, (3,5): maze9ValidMoves}
 
+def maze_input(str):
+    return input(str).strip('()[] ')
+
 
 def DFS_maze_helper(maze, player_pos, end, current_moves):
     """Performs a DFS to find the solution to a maze.
@@ -219,8 +222,7 @@ def solve_maze():
 
     # Do-whiles for input
     while True:
-        maze_ipt = input("Enter the coordinates of "
-                         "any green circle in the maze: ").strip('()[] ')
+        maze_ipt = maze_input("Enter the coordinates of any green circle in the maze: ")
         if (len(maze_ipt) >= 2 and
             (int(maze_ipt[0]), int(maze_ipt[-1])) in mazeLookup.keys()):
                 break
@@ -232,8 +234,7 @@ def solve_maze():
     maze = (int(maze_ipt[0]), int(maze_ipt[-1]))
 
     while True:
-        start_ipt = input("Enter the coordinates of the START of "
-                          "the maze (white light): ").strip('()[] ')
+        start_ipt = maze_input("Enter the coordinates of the START of the maze (white light): ")
         if (len(start_ipt) >= 2 and
             int(start_ipt[0]) in valid_symbols and
             int(start_ipt[-1]) in valid_symbols):
@@ -243,8 +244,7 @@ def solve_maze():
     start = (int(start_ipt[0]), int(start_ipt[-1]))
 
     while True:
-        end_ipt = input("Enter the coordinates of the END of the "
-                        "maze (red triangle): ").strip('()[] ')
+        end_ipt = maze_input("Enter the coordinates of the END of the maze (red triangle): ")
         if (len(end_ipt) >= 2 and
             int(end_ipt[0]) in valid_symbols and
             int(end_ipt[-1]) in valid_symbols):
