@@ -1,24 +1,68 @@
 #!/usr/bin/env python3
 
+"""
+KTANE Solver
+
+A friendly interactive manual, written in Python3, to help solve
+modules and defuse bombs in Keep Talking and Nobody Explodes.
+
+"""
+from sys import version_info, exit
+from collections import namedtuple
+
 from bomb_config import *
 from wof import *
 from mazes import solve_maze
 from colours import *
 
+if version_info < (3, 6):
+    print("Python 3.6 or greater is required")
+    exit(1)
+
+logo = r"""
+ _   _______ ___   _   _  _____
+| | / /_   _/ _ \ | \ | ||  ___|
+| |/ /  | |/ /_\ \|  \| || |__
+|    \  | ||  _  || . ` ||  __|
+| |\  \ | || | | || |\  || |___
+\_| \_/ \_/\_| |_/\_| \_/\____/
+
+
+ _____       _
+/  ___|     | |
+\ `--.  ___ | |_   _____ _ __
+ `--. \/ _ \| \ \ / / _ \ '__|
+/\__/ / (_) | |\ V /  __/ |
+\____/ \___/|_| \_/ \___|_|
+"""
+
+
 
 class Bomb:
+    """Bomb object.
+
+    Holds configuration information for the bomb.
+    """
     def __init__(self,
                  serial=None,
-                 numBatteries=None,
-                 parallelPort=None,
+                 num_batteries=None,
+                 parallel_port=None,
                  CAR=None,
                  FRK=None):
         self.serial = serial              # The bomb's serial number
-        self.numBatteries = numBatteries  # The number of batteries on the bomb
-        self.parallelPort = parallelPort  # Is there a parallel port?
+        self.num_batteries = num_batteries  # The number of batteries on the bomb
+        self.parallel_port = parallel_port  # Is there a parallel port?
         self.CAR = CAR                    # Is there a _lit_ CAR indicator?
         self.FRK = FRK                    # Is there a _lit_ FRK indicator?
         self.strikes = 0
+
+    def __repr__(self):
+        rep  = f"Bomb: serial: {self.serial}"
+        rep += f"      num_batteries: {self.num_batteries}"
+        rep += f"      parallel_port: {self.parallel_port}"
+        rep += f"      CAR: {self.CAR}"
+        rep += f"      FRK: {self.FRK}"
+        return rep
 
 
 # ---------------------------------------------------------- #
@@ -27,23 +71,23 @@ class Bomb:
 #                                                            #
 # ---------------------------------------------------------- #
 
-def setupBomb():
+def setup_bomb():
     """ Sets up the bomb with a bunch of user input."""
     serial = addSerial()
-    numBatteries = addBatteries()
-    parallelPort = addPPort()
+    num_batteries = addBatteries()
+    parallel_port = addPPort()
     CAR = addCAR()
     FRK = addFRK()
-    bomb = Bomb(serial, numBatteries, parallelPort, CAR, FRK)
+    bomb = Bomb(serial, num_batteries, parallel_port, CAR, FRK)
     return bomb
 
 
-def configBomb(bomb):
+def config_bomb(bomb):
     """ Allows later configuration of the bomb in the event of
     incorrect initial input."""
     bomb.serial = addSerial()
-    bomb.numBatteries = addBatteries()
-    bomb.parallelPort = addPPort()
+    bomb.num_batteries = addBatteries()
+    bomb.parallel_port = addPPort()
     bomb.CAR = addCAR()
     bomb.FRK = addFRK()
 
@@ -53,9 +97,9 @@ def strike(bomb):
     bomb.strikes += 1
 
 
-def resetStrikes(bomb):
+def reset_strikes(bomb):
     """ Resets strikes in case of incorrect strike input."""
-    self.strikes = 0
+    bomb.strikes = 0
 
 
 # ---------------------------------------------------------- #
@@ -65,52 +109,59 @@ def resetStrikes(bomb):
 # ---------------------------------------------------------- #
 
 # Input validator functions
-def isValidSimpleWires(wires):
+def is_valid_simple_wires(wires):
     """Helper function to determine if the wire arrangement specified
     is valid.
     """
     if len(wires) < 3 or len(wires) > 6:
         return False
     for char in wires:
-        if char not in ['K', 'B', 'Y', 'R', 'W']:
+        if char not in ('K', 'B', 'Y', 'R', 'W'):
             return False
     return True
 
 
-def isValidCompWire(wire):
+def is_valid_comp_wire(wire):
     """Helper function to determine if a string representing a
     complicated wire is valid.
     """
     if len(wire) > 4:
         return False
     for char in wire:
-        if char not in ['R', 'B', 'S', 'L']:
+        if char not in ('R', 'B', 'S', 'L'):
             return False
     return True
 
 
-def isValidSimon(string):
+def is_valid_simon(string):
     """Helper function to determine if the Simon light sequence is
     valid.
     """
     if len(string) == 0:
         return False
     for char in string:
-        if char not in ['R', 'B', 'Y', 'G']:
+        if char not in ('R', 'B', 'Y', 'G'):
             return False
     return True
 
 
 # Symbols functions
-def _rot13(str):
+def _rot13(string):
     """Enable rot-13 encoding of words so my code doesn't have smutty
     words in it.
     """
     from codecs import encode
-    return encode(str, "rot_13")
+    return encode(string, "rot_13")
 
 
-def symbolParser():
+def get_input(string):
+    """Removes spaces and forces uppercase for all inputs to ensured
+    uniformity.
+    """
+    return input(string).upper().replace(' ', '')
+
+
+def symbol_parser():
     """Takes a string, and attempts to parse it to match to one of many
     symbols. The idea is that there are no two columns with similar
     symbols, so several, such as "black star" and "white star" can be
@@ -124,86 +175,79 @@ def symbolParser():
 
     # Do-while for input
     while True:
-        string = input("Please input your symbol (either a close letter or "
-                       "very short description): ").upper().replace(' ', '')\
-                       .replace('-', '')
+        string = get_input("Input your symbol (either a close letter "
+                           "or very short description): ").replace('-', '')
         # The list of valid symbols to return is as follows:
         # Q, AT, LAMBDA, N, CAT, H, C, EURO, PHI, STAR, QUESTION,
         # OMEGA, K, 3, 6, PARAGRAPH, TB, FACE, PSI, NOTEQUAL, AE
         # Note that some symbols overlap, but this isn't a problem as they
         # are all in separate columns
-        if string in ["Q", "QOPPA", "KOPPA", "WEIRDQ", "LOLLY", "LOLLIPOP",
-                      "LOLLYPOP", "POPSICLE"]:
-            return "Q"
-        elif string in ["AT", "TA", "WEIRDA", "A", "PYRAMID", "LADDER"]:
-            return "AT"
-        elif string in ["LAMBDA", "LAMBDALINE", "WEIRDLAMBDA",
-                        "LAMBDAWITHLINE"]:
-            return "LAMBDA"
-        elif string in ["N", "WEIRDN", "BACKWARDSN", "LIGHTNING", "BOLT",
-                        "LIGHTNINGBOLT", "THUNDER", "THUNDERBOLT", "NWITHHAT",
-                        "NHAT", "NSQUIGGLE", "NBREVE"]:
-            return "N"
-        elif string in ["CAT", "KITTY", "JELLYFISH", "WHAT", "WHAT?",
-                        "HWITHTRIANGLE", "HTRIANGLE"]:
-            return "CAT"
-        elif string in ["H", "CURLY H", "CURSIVEH", "GOTHICH", "HWITHTAIL",
-                        "HTAIL", "WEIRDH"]:
-            return "H"
-        elif string in ["C", "CWITHDOT", "CDOT", "BACKWARDC", "BACKWARDCDOT",
-                        "COPYRIGHT", "CINCIRCLE"]:
-            return "C"
-        elif string in ["EURO", "EUROUMLAUT", "EURODOTS", "E", "EDOTS",
-                        "BACKWARDSEURO"]:
-            return "EURO"
-        elif string in ["PHI", "SPRING", "COIL", "CURL", "CURLYQ"]:
-            return "PHI"
-        elif string in ["STAR", "WHITESTAR", "BLACKSTAR", "FILLEDINSTAR"]:
-            return "STAR"
-        elif string in ["QUESTION", "QUESTIONMARK", "UPSIDEDOWNQUESTIONMARK",
-                        "UPSIDEDOWNQUESTION", "?"]:
-            return "QUESTION"
+        if string in ("Q", "QOPPA", "KOPPA", "WEIRDQ", "LOLLY", "LOLLIPOP",
+                      "LOLLYPOP", "POPSICLE"):
+            symbol = "Q"
+        elif string in ("AT", "TA", "WEIRDA", "A", "PYRAMID", "LADDER"):
+            symbol = "AT"
+        elif string in ("LAMBDA", "LAMBDALINE", "WEIRDLAMBDA", "LAMBDAWITHLINE"):
+            symbol = "LAMBDA"
+        elif string in ("N", "WEIRDN", "BACKWARDSN", "LIGHTNING", "BOLT", "LIGHTNINGBOLT",
+                        "THUNDER", "THUNDERBOLT", "NWITHHAT", "NHAT", "NSQUIGGLE", "NBREVE"):
+            symbol = "N"
+        elif string in ("CAT", "KITTY", "JELLYFISH", "WHAT", "WHAT?", "HWITHTRIANGLE",
+                        "HTRIANGLE"):
+            symbol = "CAT"
+        elif string in ("H", "CURLY H", "CURSIVEH", "GOTHICH", "HWITHTAIL", "HTAIL", "WEIRDH"):
+            symbol = "H"
+        elif string in ("C", "CWITHDOT", "CDOT", "BACKWARDC", "BACKWARDCDOT", "COPYRIGHT",
+                        "CINCIRCLE"):
+            symbol = "C"
+        elif string in ("EURO", "EUROUMLAUT", "EURODOTS", "E", "EDOTS", "BACKWARDSEURO"):
+            symbol = "EURO"
+        elif string in ("PHI", "SPRING", "COIL", "CURL", "CURLYQ"):
+            symbol = "PHI"
+        elif string in ("STAR", "WHITESTAR", "BLACKSTAR", "FILLEDINSTAR"):
+            symbol = "STAR"
+        elif string in ("QUESTION", "QUESTIONMARK", "UPSIDEDOWNQUESTIONMARK",
+                        "UPSIDEDOWNQUESTION", "?"):
+            symbol = "QUESTION"
 
         # ROT-13 encoding here because SOME PEOPLE claim that this
         # symbol resembles various bodily parts, the names of which I
         # don't want in my code. IT'S AN OMEGA, EVERYONE!
-        elif string in ["OMEGA", "W", "WEIRDW", _rot13("NFF"), _rot13("OHZ"),
+        elif string in ("OMEGA", "W", "WEIRDW", _rot13("NFF"), _rot13("OHZ"),
                         _rot13("OHGG"), _rot13("OBBGL"), _rot13("OBBOF"),
                         _rot13("OBBOVRF"), _rot13("GVGF"), _rot13("GVGGVRF"),
                         _rot13("ONYYF"), _rot13("GRFGRF"), _rot13("FPEBGHZ"),
-                        _rot13("AHGFNPX"), _rot13("AHGF"), "HEADPHONES"]:
-            return "OMEGA"
-        elif string in ["K", "Ж", "ZHE", "KS", "2K", "2KS", "TWOK", "TWOKS",
-                        "WEIRDX", "WEIRDK", "Z", "BACKTOBACKK",
-                        "BACKTOBACKKS"]:
-            return "K"
-        elif string in ["3", "WEIRD3", "HALF3", "UNFINISHED3", "THREE",
-                        "3WITHTAIL", "3WITHHORNS"]:
-            return "3"
-        elif string in ["6", "SIX", "FLAT6", "FLATSIX", "WEIRD6", "WEIRDSIX",
-                        "DELTA", "WEIRDDELTA"]:
-            return "6"
-        elif string in ["PARAGRAPH", "P", "WEIRDP", "BOLDP"]:
-            return "PARAGRAPH"
-        elif string in ["TB", "BT", "DT", "TD", "WEIRDB"]:
-            return "TB"
-        elif string in ["FACE", "SMILE", "SMILEY", "SMILEYFACE", "HAPPY",
-                        "HAPPYFACE"]:
-            return "FACE"
-        elif string in ["PSI", "TRIDENT", "FORK", "PITCHFORK"]:
-            return "PSI"
-        elif string in ["NOTEQUAL", "NOTEQUALS", "NOTEQUALSIGN", "HASH",
-                        "HASHTAG", "POUND", "POUNDSIGN", "WEIGHT", "WEIGHTS",
-                        "DUMBBELL", "WEIRDX", "CROSS"]:
-            return "NOTEQUAL"
-        elif string in ["AE", "Æ", "ASH"]:
-            return "AE"
-        else:
-            return None
+                        _rot13("AHGFNPX"), _rot13("AHGF"), "HEADPHONES"):
+            symbol = "OMEGA"
+        elif string in ("K", "Ж", "ZHE", "KS", "2K", "2KS", "TWOK", "TWOKS", "WEIRDX",
+                        "WEIRDK", "Z", "BACKTOBACKK", "BACKTOBACKKS"):
+            symbol = "K"
+        elif string in ("3", "WEIRD3", "HALF3", "UNFINISHED3", "THREE", "3WITHTAIL",
+                        "3WITHHORNS"):
+            symbol = "3"
+        elif string in ("6", "SIX", "FLAT6", "FLATSIX", "WEIRD6", "WEIRDSIX", "DELTA",
+                        "WEIRDDELTA"):
+            symbol = "6"
+        elif string in ("PARAGRAPH", "P", "WEIRDP", "BOLDP"):
+            symbol = "PARAGRAPH"
+        elif string in ("TB", "BT", "DT", "TD", "WEIRDB"):
+            symbol = "TB"
+        elif string in ("FACE", "SMILE", "SMILEY", "SMILEYFACE", "HAPPY",
+                        "HAPPYFACE"):
+            symbol = "FACE"
+        elif string in ("PSI", "TRIDENT", "FORK", "PITCHFORK"):
+            symbol = "PSI"
+        elif string in ("NOTEQUAL", "NOTEQUALS", "NOTEQUALSIGN", "HASH", "HASHTAG", "POUND",
+                        "POUNDSIGN", "WEIGHT", "WEIGHTS", "DUMBBELL", "WEIRDX", "CROSS"):
+            symbol = "NOTEQUAL"
+        elif string in ("AE", "Æ", "ASH"):
+            symbol = "AE"
+
+        return symbol
 
 
 # Simon functions
-def staticSimon(bomb):
+def static_simon(bomb):
     """Simply prints out the relevant colour conversion list for
     Simon.
     """
@@ -226,7 +270,7 @@ def staticSimon(bomb):
             print(green("GREEN")+"  -> "+blue("BLUE"))
             print(yellow("YELLOW")+" -> "+red("RED"))
         else:
-            raise Exception("Invalid strike number: "+str(bomb.strikes))
+            raise ValueError(f"Invalid strike number: {bomb.strikes}")
 
     else:
         if bomb.strikes == 0:
@@ -245,10 +289,10 @@ def staticSimon(bomb):
             print(green("GREEN")+"  -> "+yellow("YELLOW"))
             print(yellow("YELLOW")+" -> "+blue("BLUE"))
         else:
-            raise Exception("Invalid strike number: "+str(bomb.strikes))
+            raise ValueError(f"Invalid strike number: {bomb.strikes}")
 
 
-def interactiveSimon(bomb):
+def interactive_simon(bomb):
     """Prompts the user for the Simon input, and displays the correct
     output.
     """
@@ -257,36 +301,35 @@ def interactiveSimon(bomb):
     while True:
         # Do-while for input
         while True:
-            lights = input("Please input the light sequence (type \"exit\" "
-                           "to exit): ").upper().replace(' ', '')
+            lights = get_input('Input the light sequence shown (type "exit" to exit): ')
             if lights == "EXIT":
                 return
-            if isValidSimon(lights):
+            if is_valid_simon(lights):
                 print("")  # Blank line
                 break
             print("Invalid color sequence. Use one letter per colour")
 
         if set(['A', 'E', 'I', 'O', 'U']).isdisjoint(set(bomb.serial)):
             if bomb.strikes == 0:
-                colourDict = {'R': 'B', 'B': 'Y', 'G': 'G', 'Y': 'R'}
+                colour_dict = {'R': 'B', 'B': 'Y', 'G': 'G', 'Y': 'R'}
             elif bomb.strikes == 1:
-                colourDict = {'R': 'R', 'B': 'B', 'G': 'Y', 'Y': 'G'}
+                colour_dict = {'R': 'R', 'B': 'B', 'G': 'Y', 'Y': 'G'}
             elif bomb.strikes == 2:
-                colourDict = {'R': 'Y', 'B': 'G', 'G': 'B', 'Y': 'R'}
+                colour_dict = {'R': 'Y', 'B': 'G', 'G': 'B', 'Y': 'R'}
             else:
-                raise Exception("Invalid strike number: "+str(bomb.strikes))
+                raise ValueError(f"Invalid strike number: {bomb.strikes}")
         else:
             if bomb.strikes == 0:
-                colourDict = {'R': 'B', 'B': 'R', 'G': 'Y', 'Y': 'G'}
+                colour_dict = {'R': 'B', 'B': 'R', 'G': 'Y', 'Y': 'G'}
             elif bomb.strikes == 1:
-                colourDict = {'R': 'Y', 'B': 'G', 'G': 'B', 'Y': 'R'}
+                colour_dict = {'R': 'Y', 'B': 'G', 'G': 'B', 'Y': 'R'}
             elif bomb.strikes == 2:
-                colourDict = {'R': 'G', 'B': 'R', 'G': 'Y', 'Y': 'B'}
+                colour_dict = {'R': 'G', 'B': 'R', 'G': 'Y', 'Y': 'B'}
             else:
-                raise Exception("Invalid strike number: "+str(bomb.strikes))
+                raise ValueError(f"Invalid strike number: {bomb.strikes}")
 
         for char in lights:
-            colour = colourDict[char]
+            colour = colour_dict[char]
             if colour == 'R':
                 print(red("RED"))
             elif colour == 'B':
@@ -296,24 +339,30 @@ def interactiveSimon(bomb):
             elif colour == 'Y':
                 print(yellow("YELLOW"))
             else:
-                raise Exception("Invalid colour: "+colour)
+                raise ValueError(f"Invalid colour: {colour}")
         print("")  # Blank line
 
 
 # Memory functions
-def memoryInput(arg):
-    if arg not in [0, 1, 2]:
-        raise Exception("Invalid argument passed to "
-                        "memoryDisplayInput: "+str(arg))
+def memory_input(arg):
+    """Gets input for the Memory module. Either asks for number on
+    display, which value was in the button pressed, or which position
+    the pressed button was in, depending on the argument provided.
+    """
+    DISPLAY = 0
+    WHICH_LABEL = 1
+    WHICH_POSITION = 2
+    if arg not in (DISPLAY, WHICH_LABEL, WHICH_POSITION):
+        raise ValueError(f"Invalid argument passed to memoryDisplayInput: {arg}")
 
     # Do-while for input
     while True:
-        if arg == 0:
-            ipt = input("Please input the number on the display: ")
-        elif arg == 1:
-            ipt = input("What value was in that position? ")
+        if arg == DISPLAY:
+            ipt = get_input("Input the number on the display: ")
+        elif arg == WHICH_LABEL:
+            ipt = get_input("What value was in that position? ")
         else:
-            ipt = input("Which position was that in? ")
+            ipt = get_input("Which position was that in? ")
 
         if ipt.isdigit() and 1 <= int(ipt) <= 4:
             return int(ipt)
@@ -321,15 +370,26 @@ def memoryInput(arg):
 
 
 # "Cut" functions for complicated wires and sequences
-def cut(bomb):
+def cut(bomb=None):
+    """Informs the user to cut the wire. Does not use the supplied
+    variable, but it is provided as an option for consistency with
+    other "cut" functions.
+    """
     print("\n" + bold("CUT") + " the wire")
 
 
-def noCut(bomb):
+def no_cut(bomb=None):
+    """Informs the user NOT to cut the wire. Does not use the supplied
+    variable, but it is provided as an option for consistency with
+    other "cut" functions.
+    """
     print("\nDo " + bold("NOT") + " cut the wire")
 
 
-def serialCut(bomb):
+def serial_cut(bomb):
+    """Informs the user to cut the wire IF the serial number is
+    even.
+    """
     if bomb.serial is None:
         bomb.serial = addSerial()
     if int(bomb.serial[-1]) % 2 == 0:
@@ -338,28 +398,35 @@ def serialCut(bomb):
         print("\nDo " + bold("NOT") + " cut the wire")
 
 
-def pPortCut(bomb):
-    if bomb.parallelPort is None:
-        bomb.parallelPort = addPPort()
-    if bomb.parallelPort is True:
+def p_port_cut(bomb):
+    """Informs the user to cut the wire IF the bomb has a
+    parallel port.
+    """
+    if bomb.parallel_port is None:
+        bomb.parallel_port = addPPort()
+    if bomb.parallel_port is True:
         print("\n" + bold("CUT") + " the wire")
     else:
         print("\nDo " + bold("NOT") + " cut the wire")
 
 
-def batteryCut(bomb):
-    if bomb.numBatteries is None:
-        bomb.numBatteries = addBatteries()
-    if bomb.numBatteries >= 2:
+def battery_cut(bomb):
+    """Informs the user to cut the wire IF the bomb has more than
+    two batteries.
+    """
+    if bomb.num_batteries is None:
+        bomb.num_batteries = addBatteries()
+    if bomb.num_batteries >= 2:
         print("\n" + bold("CUT") + " the wire")
     else:
         print("\nDo " + bold("NOT") + " cut the wire")
 
 
-def isValidWireSequence(wire):
-    if (len(wire) >= 2 and
-       wire[0] in ['R', 'B', 'K'] and
-       wire[-1] in ['A', 'B', 'C']):
+def is_valid_wire_sequence(wire):
+    """Verifies the provided wire sequence consists of valid
+    characters.
+    """
+    if len(wire) >= 2 and wire[0] in ('R', 'B', 'K') and wire[-1] in ('A', 'B', 'C'):
         return True
     return False
 
@@ -370,7 +437,7 @@ def isValidWireSequence(wire):
 #                                                            #
 # ---------------------------------------------------------- #
 
-def simpleWires(bomb):
+def simple_wires(bomb):
     """Solve the simple wires module on the bomb. The user inputs the
     sequence of wires, and the function tells the user which one to
     cut.
@@ -378,67 +445,65 @@ def simpleWires(bomb):
 
     # Do-while to get the wire sequence
     while True:
-        wires = input("Please input the "
-                      "wire sequence: ").upper().replace(' ', '')
-        if isValidSimpleWires(wires):
+        wires = get_input("Please input the wire sequence: ")
+        if is_valid_simple_wires(wires):
             break
         print("Invalid wire sequence. Use one letter per wire (black = 'K')")
 
-    numWires = len(wires)
-    if numWires == 3:
-        if 'R' not in wires:
+    num_wires = len(wires)
+    if num_wires == 3:
+        if "R" not in wires:
             print("\nCut the " + bold("SECOND") + " wire\n")
-        elif wires[-1] == 'W':
+        elif wires[-1] == "W":
             print("\nCut the " + bold("LAST") + " wire")
-        elif wires.count('B') > 1:
+        elif wires.count("B") > 1:
             print("\nCut the " + bold("LAST BLUE") + " wire\n")
         else:
             print("\nCut the " + bold("LAST") + " wire\n")
 
-    elif numWires == 4:
+    elif num_wires == 4:
         if bomb.serial is None:
             bomb.serial = addSerial()
 
         if wires.count("R") > 1 and int(bomb.serial[-1]) % 2 == 1:
             print("\nCut the " + bold("LAST RED") + " wire\n")
-        elif wires[-1] == 'Y' and ('R' not in wires):
+        elif wires[-1] == "Y" and ("R" not in wires):
             print("\nCut the " + bold("FIRST") + " wire\n")
-        elif wires.count('B') == 1:
+        elif wires.count("B") == 1:
             print("\nCut the " + bold("FIRST") + " wire\n")
-        elif wires.count('Y') > 1:
+        elif wires.count("Y") > 1:
             print("\nCut the " + bold("LAST") + " wire\n")
         else:
             print("\nCut the " + bold("SECOND") + " wire\n")
 
-    elif numWires == 5:
+    elif num_wires == 5:
         if bomb.serial is None:
             bomb.serial = addSerial()
 
-        if wires[-1] == 'K' and int(bomb.serial[-1]) % 2 == 1:
+        if wires[-1] == "K" and int(bomb.serial[-1]) % 2 == 1:
             print("\nCut the " + bold("FOURTH") + " wire\n")
-        elif wires.count('R') == 1 and wires.count('Y') > 1:
+        elif wires.count("R") == 1 and wires.count('Y') > 1:
             print("\nCut the " + bold("FIRST") + " wire\n")
-        elif 'K' not in wires:
+        elif "K" not in wires:
             print("\nCut the " + bold("SECOND") + " wire\n")
         else:
             print("\nCut the " + bold("FIRST") + " wire\n")
 
-    elif numWires == 6:
+    elif num_wires == 6:
         if bomb.serial is None:
             bomb.serial = addSerial()
 
-        if 'Y' not in wires and int(bomb.serial[-1]) % 2 == 1:
+        if "Y" not in wires and int(bomb.serial[-1]) % 2 == 1:
             print("\nCut the " + bold("THIRD") + " wire\n")
-        elif wires.count('Y') == 1 and wires.count('W') > 1:
+        elif wires.count("Y") == 1 and wires.count("W") > 1:
             print("\nCut the " + bold("FOURTH") + " wire\n")
-        elif 'R' not in wires:
+        elif "R" not in wires:
             print("\nCut the " + bold("LAST") + " wire\n")
         else:
             print("\nCut the " + bold("FOURTH") + " wire\n")
 
     else:
-        raise Exception("len(numWires = " + str(len(numWires)) +
-                        " - this is bad!")
+        raise ValueError(f"len(num_wires) = {len(num_wires)} - this is bad!")
 
 
 def button(bomb):
@@ -450,57 +515,54 @@ def button(bomb):
     """
 
     # Two do-while loops to get the button color and word
-    validColours = ['R', 'B', 'Y', 'W']
+    valid_colours = ["R", "B", "Y", "W"]
     while True:
-        buttonColour = input("Please input the button colour: ").upper()
-        if buttonColour in validColours:
+        button_colour = get_input("Input the button colour: ")
+        if button_colour in valid_colours:
             break
         print("Please supply a valid colour from [R, B, Y, W]")
 
-    buttonWord = ""
-    validWords = ['A', 'D', 'H', 'P']
-    while buttonWord not in validWords:
-        buttonWord = input("Please input first letter of word "
-                           "on button: ").upper()
-        if buttonWord not in validWords:
+    button_word = ""
+    valid_words = ["A", "D", "H", "P"]
+    while button_word not in valid_words:
+        button_word = get_input("Input first letter of word on button: ")
+        if button_word not in valid_words:
             print("Please supply a valid letter from [A, D, H, P]")
 
-    releaseString = (bold("------ DO NOT IMMEDIATELY RELEASE THE "
-                          "BUTTON ------\n\n") +
-                     "If the strip is " + blue("BLUE") + ", release the "
-                     "button when timer has a " + bold("4") + " in any "
-                     "position\nIf the strip is " + yellow("YELLOW") + ", "
-                     "release the button when timer has a " + bold("5") + "in "
-                     "any position\nOtherwise release the button when timer "
-                     "has a " + bold("1") + " in any position\n")
+    release_string = (bold("------ DO NOT IMMEDIATELY RELEASE THE "
+                           "BUTTON ------\n\n") +
+                      "If the strip is " + blue("BLUE") + ", release the "
+                      "button when timer has a " + bold("4") + " in any "
+                      "position\nIf the strip is " + yellow("YELLOW") + ", "
+                      "release the button when timer has a " + bold("5") + "in "
+                      "any position\nOtherwise release the button when timer "
+                      "has a " + bold("1") + " in any position\n")
 
-    if buttonColour == 'B' and buttonWord == 'A':
+    if button_colour == "B" and button_word == "A":
         print("\nHold button\n")
-        print(releaseString)
+        print(release_string)
         return
 
-    if (buttonWord == 'D' and
-        (bomb.numBatteries is None or bomb.numBatteries > 1)):
-        if bomb.numBatteries is None:
-            bomb.numBatteries = addBatteries()
+    if (button_word == "D" and (bomb.num_batteries is None or bomb.num_batteries > 1)):
+        if bomb.num_batteries is None:
+            bomb.num_batteries = addBatteries()
 
-        if bomb.numBatteries > 1:
+        if bomb.num_batteries > 1:
             print("\nPress and release button\n")
             return
 
-    if buttonColour == 'W' and bomb.CAR is not False:
+    if button_colour == "W" and bomb.CAR is not False:
         if bomb.CAR is None:
             bomb.CAR = addCAR()
 
         if bomb.CAR is True:
             print("\nHold button\n")
-            print(releaseString)
+            print(release_string)
             return
 
-    if (bomb.FRK is not False and
-        (bomb.numBatteries is None or bomb.numBatteries > 2)):
-        if bomb.numBatteries is None:
-            bomb.numBatteries = addBatteries()
+    if (bomb.FRK is not False and (bomb.num_batteries is None or bomb.num_batteries > 2)):
+        if bomb.num_batteries is None:
+            bomb.num_batteries = addBatteries()
         if bomb.FRK is None:
             bomb.FRK = addFRK()
 
@@ -508,18 +570,18 @@ def button(bomb):
             print("\nPress and release button\n")
             return
 
-    if buttonColour == 'Y':
+    if button_colour == "Y":
         print("Hold button")
-        print(releaseString)
+        print(release_string)
         return
 
-    if buttonColour == 'R' and buttonWord == 'H':
+    if button_colour == "R" and button_word == "H":
         print("\nPress and release button\n")
         return
 
     else:
         print("Hold button")
-        print(releaseString)
+        print(release_string)
         return
 
 
@@ -538,7 +600,7 @@ def keypad():
           "describe all symbols using a very short and obvious description.\n"
           + "-"*49, end='\n\n')
     while len(symbols) < 4:
-        string = symbolParser()
+        string = symbol_parser()
         if string in symbols:
             print("Symbol already added")
         elif string is None:
@@ -547,22 +609,22 @@ def keypad():
             symbols.append(string)
 
     # Make a copy of the columns for iterating over
-    columnsCopy = dc(columns)
-    for list in columnsCopy:
+    columns_copy = dc(columns)
+    for col in columns_copy:
         for item in symbols:
-            if item not in list:
+            if item not in col:
                 columns.remove(list)
                 break
 
     # Now we have the correct column (or none at all), so we just print out
     # our symbols in order
     if len(columns) == 1:
-        correctColumn = columns[0]
-        for item in correctColumn:
+        correct_column = columns[0]
+        for item in correct_column:
             if item in symbols:
                 print(bold(item.capitalize()))
     elif len(columns) > 1:
-        raise Exception("Multiple valid columns: "+str(columns))
+        raise ValueError(f"Multiple valid columns: {columns}")
     else:
         print("No valid columns. Did you input the symbols correctly?")
 
@@ -574,27 +636,27 @@ def simon(bomb):
     press.
     """
     # Check strike validity
-    if bomb.strikes not in [0, 1, 2]:
-        print("You have " + str(bomb.strikes) + " strikes. "
-              "Please run \"reset strikes\" to try again")
+    if bomb.strikes not in (0, 1, 2):
+        print((f"You have {bomb.strikes} strikes. Please run \"reset strikes\" to try again"))
         return
 
     if bomb.serial is None:
         bomb.serial = addSerial()
     while True:
-        user_input = input("Do you want interactive Simon? (Y/n) ").upper()
+        user_input = get_input("Do you want interactive Simon? (Y/n) ")
         if user_input == "" or user_input[0] == "Y":
-            interactiveSimon(bomb)
+            interactive_simon(bomb)
             print("")  # Blank line
-            return
+            break
         elif user_input[0] == "N":
-            staticSimon(bomb)
+            static_simon(bomb)
             print("")  # Blank line
-            return
-        print("Please select a valid option")
+            break
+        else:
+            print("Please select a valid option")
 
 
-def whosOnFirst():
+def whos_on_first():
     """Solves the "Who's on first" module, by outputting the list of
     potential solutions in order.
     """
@@ -603,8 +665,7 @@ def whosOnFirst():
     while True:
         # Do-while to get the word on the display
         while True:
-            display = input("\nWhat word is on the display? (type "
-                            "\"exit\" to cancel): ").upper().replace(' ', '')
+            display = get_input('\nWhat word is on the display? (type "exit" to cancel): ')
             if display == "EXIT":
                 print("Exiting\n")
                 return
@@ -614,8 +675,7 @@ def whosOnFirst():
 
         # Do-while to get the word on the button
         while True:
-            button = input("What word is on the "+WOFdisplayDict[display]
-                           + " button? ").upper().replace(' ', '')
+            button = get_input(f"What word is on the {WOFdisplayDict[display]} button? ")
             if button == "EXIT":
                 print("Exiting\n")
                 return
@@ -623,8 +683,7 @@ def whosOnFirst():
                 break
             print("Please input a valid button entry")
 
-        print("\nThe button to press is the first valid entry "
-              "in the following list: ")
+        print("\nThe button to press is the first valid entry in the following list: ")
         print(WOFbuttonDict[button])
 
 
@@ -636,127 +695,136 @@ def memory():
     WHICH_LABEL = 1
     WHICH_POSITION = 2
 
+    stage = namedtuple('stage', ["label", "position"])
     # Stage 1
-    ipt = memoryInput(DISPLAY)
+    ipt = memory_input(DISPLAY)
     print("")  # Blank line
-    if ipt == 1 or ipt == 2:
+    if ipt in (1, 2):
         print("Press the button in " + bold("POSITION 2\n"))
-        stage1 = (memoryInput(WHICH_LABEL), 2)
+        stage1 = stage(memory_input(WHICH_LABEL), 2)
     elif ipt == 3:
         print("Press the button in " + bold("POSITION 3\n"))
-        stage1 = (memoryInput(WHICH_LABEL), 3)
-    else:
+        stage1 = stage(memory_input(WHICH_LABEL), 3)
+    elif ipt == 4:
         print("Press the button in " + bold("POSITION 4\n"))
-        stage1 = (memoryInput(WHICH_LABEL), 4)
+        stage1 = stage(memory_input(WHICH_LABEL), 4)
+    else:
+        raise ValueError(f"Invalid option passed to memory stage 1: {ipt}")
 
     # Stage 2
-    ipt = memoryInput(DISPLAY)
+    ipt = memory_input(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
         print("Press the button with " + bold("LABEL 4\n"))
-        stage2 = (4, memoryInput(WHICH_POSITION))
-    elif ipt == 2 or ipt == 4:
-        print("Press the button in " + bold("POSITION {}\n").format(stage1[1]))
-        stage2 = (memoryInput(WHICH_LABEL), stage1[1])
-    else:
+        stage2 = stage(4, memory_input(WHICH_POSITION))
+    elif ipt in (2, 4):
+        print("Press the button in " + bold(f"POSITION {stage1.position}\n"))
+        stage2 = stage(memory_input(WHICH_LABEL), stage1.position)
+    elif ipt == 3:
         print("Press the button in " + bold("POSITION 1\n"))
-        stage2 = (memoryInput(WHICH_LABEL), 1)
+        stage2 = stage(memory_input(WHICH_LABEL), 1)
+    else:
+        raise ValueError(f"Invalid option passed to memory stage 2: {ipt}")
 
     # Stage 3
-    ipt = memoryInput(DISPLAY)
+    ipt = memory_input(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
-        print("Press the button with " + bold("LABEL {}\n").format(stage2[0]))
-        stage3 = (stage2[0], memoryInput(WHICH_POSITION))
+        print("Press the button with " + bold(f"LABEL {stage2.label}\n"))
+        stage3 = stage(stage2.label, memory_input(WHICH_POSITION))
     elif ipt == 2:
-        print("Press the button with " + bold("LABEL {}\n").format(stage1[0]))
-        stage3 = (stage1[0], memoryInput(WHICH_POSITION))
+        print(f"Press the button with " + bold(f"LABEL {stage1.label}\n"))
+        stage3 = stage(stage1.label, memory_input(WHICH_POSITION))
     elif ipt == 3:
         print("Press the button in " + bold("POSITION 3\n"))
-        stage3 = (memoryInput(WHICH_LABEL), 3)
-    else:
+        stage3 = stage(memory_input(WHICH_LABEL), 3)
+    elif ipt == 4:
         print("Press the button with " + bold("LABEL 4\n"))
-        stage3 = (4, memoryInput(WHICH_POSITION))
+        stage3 = stage(4, memory_input(WHICH_POSITION))
+    else:
+        raise ValueError(f"Invalid option passed to memory stage 3: {ipt}")
 
     # Stage 4
-    ipt = memoryInput(DISPLAY)
+    ipt = memory_input(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
-        print("Press the button in " + bold("POSITION {}\n").format(stage1[0]))
-        stage4 = (stage1[0], memoryInput(WHICH_POSITION))
+        print("Press the button in " + bold(f"POSITION {stage1.label}\n"))
+        stage4 = stage(stage1.label, memory_input(WHICH_POSITION))
     elif ipt == 2:
         print("Press the button in " + bold("POSITION 1\n"))
-        stage4 = (memoryInput(WHICH_LABEL), 1)
+        stage4 = stage(memory_input(WHICH_LABEL), 1)
+    elif ipt in (3, 4):
+        print("Press the button in " + bold(f"POSITION {stage2.position}\n"))
+        stage4 = stage(memory_input(WHICH_LABEL), stage2.position)
     else:
-        print("Press the button in " + bold("POSITION {}\n").format(stage2[1]))
-        stage4 = (memoryInput(WHICH_LABEL), stage2[1])
+        raise ValueError(f"Invalid option passed to memory stage 4: {ipt}")
 
     # Stage 5
-    ipt = memoryInput(DISPLAY)
+    ipt = memory_input(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
-        print("Press the button with " + bold("LABEL {}\n").format(stage1[0]))
+        print("Press the button with " + bold(f"LABEL {stage1.label}\n"))
     elif ipt == 2:
-        print("Press the button with " + bold("LABEL {}\n").format(stage2[0]))
+        print("Press the button with " + bold(f"LABEL {stage2.label}\n"))
     elif ipt == 3:
-        print("Press the button with " + bold("LABEL {}\n").format(stage4[0]))
+        print("Press the button with " + bold(f"LABEL {stage4.label}\n"))
+    elif ipt == 4:
+        print("Press the button with " + bold(f"LABEL {stage3.label}\n"))
     else:
-        print("Press the button with " + bold("LABEL {}\n").format(stage3[0]))
+        raise ValueError(f"Invalid option passed to memory stage 5: {ipt}")
 
 
 def morse():
     """Solves the morse module. The user inputs morse characters until
     there is only one valid word left.
     """
-    validWords = ["SHELL", "HALLS", "SLICK", "TRICK", "BOXES", "LEAKS",
-                  "STROBE", "BISTRO", "FLICK", "BOMBS", "BREAK", "BRICK",
-                  "STEAK", "STING", "VECTOR", "BEATS"]
+    valid_words = ["SHELL", "HALLS", "SLICK", "TRICK", "BOXES", "LEAKS",
+                   "STROBE", "BISTRO", "FLICK", "BOMBS", "BREAK", "BRICK",
+                   "STEAK", "STING", "VECTOR", "BEATS"]
     freqs = [3.505, 3.515, 3.522, 3.532, 3.535, 3.542, 3.545, 3.552, 3.555,
              3.565, 3.572, 3.575, 3.582, 3.592, 3.595, 3.600]
-    morseFreqs = dict(zip(validWords, freqs))
-    morseLetters = {".-": "A", "-...": "B", "-.-.": "C", "-..": "D",
-                    ".": "E", "..-.": "F", "--.": "G", "....": "H",
-                    "..": "I", ".---": "J", "-.-": "K", ".-..": "L",
-                    "--": "M", "-.": "N", "---": "O", ".--.": "P",
-                    "--.-": "Q", ".-.": "R", "...": "S", "-": "T",
-                    "..-": "U", "...-": "V", ".--": "W", "-..-": "X",
-                    "-.--": "Y", "--..": "Z"}
+    morse_freqs = dict(zip(valid_words, freqs))
+    morse_letters = {".-": "A", "-...": "B", "-.-.": "C", "-..": "D",
+                     ".": "E", "..-.": "F", "--.": "G", "....": "H",
+                     "..": "I", ".---": "J", "-.-": "K", ".-..": "L",
+                     "--": "M", "-.": "N", "---": "O", ".--.": "P",
+                     "--.-": "Q", ".-.": "R", "...": "S", "-": "T",
+                     "..-": "U", "...-": "V", ".--": "W", "-..-": "X",
+                     "-.--": "Y", "--..": "Z"}
 
-    while len(validWords) > 1:
+    while len(valid_words) > 1:
         while True:
-            morse = input("Please input a morse code letter "
-                          "(. = dot, - = dash): ").replace(' ', '').upper()
-            if morse == "EXIT" or morse == "QUIT":
+            morse_sequence = get_input("Input a morse code letter (. = dot, - = dash): ")
+            if morse_sequence in ("EXIT", "QUIT"):
                 return
-            else:
-                # Test whether the input has valid morse characters
-                validMorse = True
-                for char in morse:
-                    if char not in ['.', '-']:
-                        validMorse = False
-                if len(morse) == 0 or len(morse) > 4:
-                    validMorse = False
-                if validMorse:
-                    break
 
-            print("Invalid morse sequence. Please try again")
+            # Test whether the input has valid morse characters
+            valid_morse = True
+            for char in morse_sequence:
+                if char not in ['.', '-']:
+                    valid_morse = False
+            if len(morse_sequence) == 0 or len(morse_sequence) > 4:
+                valid_morse = False
+            if valid_morse:
+                break
 
-        validWordsCopy = validWords[:]
-        for word in validWordsCopy:
-            if morseLetters[morse] not in word:
-                validWords.remove(word)
+        print("Invalid morse sequence. Please try again")
+
+    valid_words_copy = valid_words[:]
+    for word in valid_words_copy:
+        if morse_letters[morse_sequence] not in word:
+            valid_words.remove(word)
 
     # Now we have at most one valid word
-    if len(validWords) == 0:
-        print("Morse inputs do not match any known word. "
-              "Please run module again.")
+    if len(valid_words) == 0:
+        print("Morse inputs do not match any known word. Please run module again.")
     else:
-        print("\nThe word is "+validWords[0])
-        freqStr = "{:.3f}".format(morseFreqs[validWords[0]])  # Pad with zeroes
-        print("The frequency is " + bold(freqStr) + " MHz\033[0m\n")
+        print(f"\nThe word is {valid_words[0]}")
+        freq_str = f"{morse_freqs[valid_words[0]]:.3f}"  # Pad with zeroes
+        print("The frequency is " + bold(freq_str) + " MHz\n")
 
 
-def complicatedWires(bomb):
+def complicated_wires(bomb):
     """Solves the complicated wires module. The user inputs the wire detail
     one wire at a time, and the function tells the user whether to cut the
     wire or not.
@@ -767,95 +835,94 @@ def complicatedWires(bomb):
     while True:
         # Do-while to obtain the string representing the wire
         while True:
-            wire = input("\nPlease input the string representing "
-                         "the wire (type \"exit\" to cancel) "
-                         "").upper().replace(' ', '').replace('W', '')
+            # Remove white wires since they're irrelevant to us
+            wire = get_input("\nInput the string representing the wire "
+                             "(type \"exit\" to cancel").replace('W', '')
             if wire == "EXIT":
                 print("Exiting\n")
                 return
-            if isValidCompWire(wire):
+            if is_valid_comp_wire(wire):
                 break
             print("Invalid wire")
         wire = "".join(sorted(wire))  # Get in alphabetical order
 
         # Now we have 16 different cases to consider.
         # We use a lookup table which runs the correct printing function.
-        compWiresDict = \
-            {'': cut, 'B': serialCut, 'BL': pPortCut, 'BLR': serialCut,
-             'BLRS': noCut, 'BLS': pPortCut, 'BR': serialCut, 'BRS': pPortCut,
-             'BS': noCut, 'L': noCut, 'LR': batteryCut, 'LRS': batteryCut,
-             'LS': batteryCut, 'R': serialCut, 'RS': cut, 'S': cut}
-        compWiresDict[wire](bomb)
+        comp_wires_dict = \
+            {'': cut, 'B': serial_cut, 'BL': p_port_cut, 'BLR': serial_cut,
+             'BLRS': no_cut, 'BLS': p_port_cut, 'BR': serial_cut, 'BRS': p_port_cut,
+             'BS': no_cut, 'L': no_cut, 'LR': battery_cut, 'LRS': battery_cut,
+             'LS': battery_cut, 'R': serial_cut, 'RS': cut, 'S': cut}
+        comp_wires_dict[wire](bomb)
 
 
 def sequences():
-    """Loads an interfact that can solve the wire sequences module.
+    """Loads an interface that can solve the wire sequences module.
     Also implements a "delete" function in case of accidental input.
     """
     RED = -1
     BLUE = -2
     BLACK = -3
-    validReds = {0: 'C', 1: 'B', 2: 'A', 3: 'AC', 4: 'B',
-                 5: 'AC', 6: 'ABC', 7: 'AB', 8: 'B'}
-    validBlues = {0: 'B', 1: 'AC', 2: 'B', 3: 'A', 4: 'B',
-                  5: 'BC', 6: 'C', 7: 'AC', 8: 'A'}
-    validBlacks = {0: 'ABC', 1: 'AC', 2: 'B', 3: 'AC', 4: 'B',
-                   5: 'BC', 6: 'AB', 7: 'C', 8: 'C'}
-    redCount = 0
-    blueCount = 0
-    blackCount = 0
-    previousMove = None
+    valid_reds = {0: 'C', 1: 'B', 2: 'A', 3: 'AC', 4: 'B',
+                  5: 'AC', 6: 'ABC', 7: 'AB', 8: 'B'}
+    valid_blues = {0: 'B', 1: 'AC', 2: 'B', 3: 'A', 4: 'B',
+                   5: 'BC', 6: 'C', 7: 'AC', 8: 'A'}
+    valid_blacks = {0: 'ABC', 1: 'AC', 2: 'B', 3: 'AC', 4: 'B',
+                    5: 'BC', 6: 'AB', 7: 'C', 8: 'C'}
+    red_count = 0
+    blue_count = 0
+    black_count = 0
+    previous_move = None
     # Keep going until the user wants to exit
     while True:
         # Do-while for input
         while True:
-            wire = input("\nPlease input the colour of the wire, and the "
-                         "letter to which it is connected.\nUse "
-                         "'K' for black. (Type 'exit' to exit, 'undo' to undo "
-                         "previous move.) ").upper().replace(' ', '')
+            wire = get_input("\nInput the colour of the wire, and the letter to which "
+                             "it is connected. Use 'K' for black.\n"
+                             "(Type 'exit' to exit, 'undo' to undo previous move.) ")
             if wire == "EXIT":
                 print("\nExiting\n")
                 return
             if wire == "UNDO":
-                if previousMove is None:
+                if previous_move is None:
                     print("Nothing to undo!")
-                elif previousMove == RED:
-                    redCount -= 1
-                elif previousMove == BLUE:
-                    blueCount -= 1
-                elif previousMove == BLACK:
-                    blackCount -= 1
-                previousMove = None
+                elif previous_move == RED:
+                    red_count -= 1
+                elif previous_move == BLUE:
+                    blue_count -= 1
+                elif previous_move == BLACK:
+                    black_count -= 1
+                previous_move = None
                 break
 
-            if isValidWireSequence(wire):
+            if is_valid_wire_sequence(wire):
                 break
             print("Invalid wire")
 
         # Now our wire is valid, we provide output.
         if wire[0] == 'R':
-            if wire[1] in validReds[redCount]:
-                cut(bomb)
+            if wire[1] in valid_reds[red_count]:
+                cut()
             else:
-                noCut(bomb)
-            redCount += 1
-            previousMove = RED
+                no_cut()
+            red_count += 1
+            previous_move = RED
         elif wire[0] == 'B':
-            if wire[1] in validBlues[blueCount]:
-                cut(bomb)
+            if wire[1] in valid_blues[blue_count]:
+                cut()
             else:
-                noCut(bomb)
-            blueCount += 1
-            previousMove = BLUE
+                no_cut()
+            blue_count += 1
+            previous_move = BLUE
         elif wire[0] == 'K':
-            if wire[1] in validBlacks[blackCount]:
-                cut(bomb)
+            if wire[1] in valid_blacks[black_count]:
+                cut()
             else:
-                noCut(bomb)
-            blackCount += 1
-            previousMove = BLACK
+                no_cut()
+            black_count += 1
+            previous_move = BLACK
 
-        if redCount > 8 or blueCount > 8 or blackCount > 8:
+        if red_count > 8 or blue_count > 8 or black_count > 8:
             print("Used too many wires. Exiting\n")
             return
 
@@ -867,22 +934,22 @@ def maze():
 
 def password():
     """Solves the password module."""
-    validPasswords = ["ABOUT", "AFTER", "AGAIN", "BELOW", "COULD",
-                      "EVERY", "FIRST", "FOUND", "GREAT", "HOUSE",
-                      "LARGE", "LEARN", "NEVER", "OTHER", "PLACE",
-                      "PLANT", "POINT", "RIGHT", "SMALL", "SOUND",
-                      "SPELL", "STILL", "STUDY", "THEIR", "THERE",
-                      "THESE", "THING", "THINK", "THREE", "WATER",
-                      "WHERE", "WHICH", "WORLD", "WOULD", "WRITE"]
-    letterPos = 0
-    while len(validPasswords) > 1:
+    valid_passwords = ["ABOUT", "AFTER", "AGAIN", "BELOW", "COULD",
+                       "EVERY", "FIRST", "FOUND", "GREAT", "HOUSE",
+                       "LARGE", "LEARN", "NEVER", "OTHER", "PLACE",
+                       "PLANT", "POINT", "RIGHT", "SMALL", "SOUND",
+                       "SPELL", "STILL", "STUDY", "THEIR", "THERE",
+                       "THESE", "THING", "THINK", "THREE", "WATER",
+                       "WHERE", "WHICH", "WORLD", "WOULD", "WRITE"]
+    letter_pos = 0
+    while len(valid_passwords) > 1:
         # Do-while to obtain the letters
         while True:
-            letters = input("Please input the list of letters in position "
-                            + str(letterPos+1) + ": ").replace(' ', '').upper()
-            if letters == "EXIT" or letters == "QUIT":
+            letters = get_input(f"Input the list of letters in position {letter_pos+1}: ")
+            if letters in ("EXIT", "QUIT"):
                 return
-            elif letters.isalpha() and len(letters) <= 6:
+
+            if letters.isalpha() and len(letters) <= 6:
                 break
 
             print("Invalid letter sequence. Please try again")
@@ -891,37 +958,38 @@ def password():
 
         # We have to copy the password list so we can remove items from the
         # original list whilst still correctly iterating over the list.
-        validPasswordsCopy = validPasswords[:]
-        for word in validPasswordsCopy:
-            if word[letterPos] not in letters:
-                validPasswords.remove(word)
-        letterPos += 1
+        valid_passwords_copy = valid_passwords[:]
+        for word in valid_passwords_copy:
+            if word[letter_pos] not in letters:
+                valid_passwords.remove(word)
+        letter_pos += 1
 
     # Now there is at most one word in the list. If there's none, the user
     # made an error and we tell them to try again
-    if len(validPasswords) == 0:
+    if len(valid_passwords) == 0:
         print("Invalid input letters. Please run module again")
     else:
-        print("\nThe password is " + bold(validPasswords[0]) + "\n")
+        print("\nThe password is " + bold(valid_passwords[0]) + "\n")
 
 
-def needyKnob():
-    validLights = {"44": "UP", "43": "UP", "53": "DOWN", "32": "DOWN",
-                   "14": "LEFT", "03": "LEFT", "54": "RIGHT", "52": "RIGHT"}
+def needy_knob():
+    """Solves (temporarily) the needy knob module."""
+    valid_lights = {"44": "UP", "43": "UP", "53": "DOWN", "32": "DOWN",
+                    "14": "LEFT", "03": "LEFT", "54": "RIGHT", "52": "RIGHT"}
     # Do-while for input
     while True:
-        lights = input("\nInput the number of lit lights on the left hand "
-                       "side, and the number on the right: ").replace(' ', '')
+        lights = get_input("\nInput the number of lit lights on the left hand side, "
+                           "and the number on the right: ")
         if len(lights) < 2:
             print("Please input two separate numbers")
         elif not lights[0].isdigit() or not lights[-1].isdigit():
             print("Please only input two digits")
         else:
             lights_stripped = lights[0] + lights[-1]
-            if lights_stripped not in validLights.keys():
+            if lights_stripped not in valid_lights.keys():
                 print("Invalid light sequence")
             else:
-                print("\n" + bold(validLights[lights_stripped]) + "\n")
+                print("\n" + bold(valid_lights[lights_stripped]) + "\n")
                 return
 
 
@@ -931,51 +999,57 @@ def needyKnob():
 #                                                            #
 # ---------------------------------------------------------- #
 
-def parseModule(bomb):
+def parse_module(bomb):
+    """Gets input from user regarding what module to solve/option to
+    run, and attempts to parse it as a valid choice. Currently is very
+    naive and almost certainly won't cover every option people would
+    want to give it.
+    """
     while True:
-        funcToCall = input("Which module would you like to solve? (type "
-                           "\"help\" for options): ").lower().replace(' ', '')
-        if funcToCall in ["simplewires", "simple"]:
-            simpleWires(bomb)
-        elif funcToCall in ["button"]:
+        func_to_call = get_input('Which module would you like to solve? '
+                                 '(type "help" for options): ')
+        if func_to_call in ("SIMPLEWIRES", "SIMPLE", "WIRES"):
+            simple_wires(bomb)
+        elif func_to_call in ("BUTTON",):
             button(bomb)
-        elif funcToCall in ["symbol", "symbols", "sym", "keypad"]:
+        elif func_to_call in ("SYMBOL", "SYMBOLS", "SYM", "KEYPAD"):
             keypad()
-        elif funcToCall in ["simon", "simonsays"]:
+        elif func_to_call in ("SIMON", "SIMONSAYS"):
             simon(bomb)
-        elif funcToCall in ["wof", "whosonfirst", "who'sonfirst"]:
-            whosOnFirst()
-        elif funcToCall in ["memory"]:
+        elif func_to_call in ("WOF", "WHOSONFIRST", "WHO'SONFIRST"):
+            whos_on_first()
+        elif func_to_call in ("MEMORY",):
             memory()
-        elif funcToCall in ["morse"]:
+        elif func_to_call in ("MORSE", "MORSECODE"):
             morse()
-        elif funcToCall in ["comp", "complicated", "complicatedwires"]:
-            complicatedWires(bomb)
-        elif funcToCall in ["sequence", "sequences",
-                            "wiresequence", "wiresequences"]:
+        elif func_to_call in ("COMP", "COMPLICATED", "COMPLICATEDWIRES"):
+            complicated_wires(bomb)
+        elif func_to_call in ("SEQUENCE", "SEQUENCES", "WIRESEQUENCE", "WIRESEQUENCES"):
             sequences()
-        elif funcToCall in ["maze", "mazes"]:
+        elif func_to_call in ("MAZE", "MAZES"):
             maze()
-        elif funcToCall in ["password", "pass"]:
+        elif func_to_call in ("PASSWORD", "PASS"):
             password()
-        elif funcToCall in ["needy", "knob", "needyknob", "dial"]:
-            needyKnob()
-        elif funcToCall in ["strike"]:
+        elif func_to_call in ("NEEDY", "KNOB", "NEEDYKNOB", "DIAL"):
+            needy_knob()
+        elif func_to_call in ("STRIKE",):
             strike(bomb)
-        elif funcToCall in ["resetstrike", "resetstrikes"]:
-            resetStrikes(bomb)
-        elif funcToCall in ["config", "conf"]:
-            configBomb(bomb)
-        elif funcToCall in ["help", "h", "-h", "--help"]:
-            help()
-        elif funcToCall in ["exit", "quit"]:
+        elif func_to_call in ("RESETSTRIKE", "RESETSTRIKES"):
+            reset_strikes(bomb)
+        elif func_to_call in ("CONFIG", "CONF"):
+            config_bomb(bomb)
+        elif func_to_call in ("HELP", "H", "-H", "--HELP"):
+            get_help()
+        elif func_to_call in ("EXIT", "QUIT"):
             print("\nWe hope your defusal was a success. Come again soon!\n")
             break
         else:
             print("Please try again")
 
 
-def help():
+def get_help():
+    """Prints list of options to give to the parser, and what they
+    do."""
     print("\nKTANE Solver help")
     print("-"*50, end='\n\n')
     print("Valid commands:\n")
@@ -1000,22 +1074,6 @@ def main():
     """Creates the bomb object with the relevant info, then calls the
     desired function based on user input."""
 
-    logo = ("\n"
-            " _   _______ ___   _   _  _____ \n"
-            "| | / /_   _/ _ \ | \ | ||  ___|\n"
-            "| |/ /  | |/ /_\ \|  \| || |__  \n"
-            "|    \  | ||  _  || . ` ||  __| \n"
-            "| |\  \ | || | | || |\  || |___ \n"
-            "\_| \_/ \_/\_| |_/\_| \_/\____/ \n"
-            "                                \n"
-            "                                \n"
-            " _____       _                  \n"
-            "/  ___|     | |                 \n"
-            "\ `--.  ___ | |_   _____ _ __   \n"
-            " `--. \/ _ \| \ \ / / _ \ '__|  \n"
-            "/\__/ / (_) | |\ V /  __/ |     \n"
-            "\____/ \___/|_| \_/ \___|_|     \n")
-
     print(logo)
     print("Welcome to the KTANE solver!")
     print("We hope you have a successful defusal, with minimal death.\n")
@@ -1024,10 +1082,9 @@ def main():
 
     # Do-while for input
     while True:
-        user_input = input("Do you wish to configure your bomb now "
-                           "(recommended)? (Y/n) ").upper()
+        user_input = get_input("Do you wish to configure your bomb now (recommended)? (Y/n) ")
         if user_input == "" or user_input[0] == "Y":
-            bomb = setupBomb()
+            bomb = setup_bomb()
             break
         elif user_input[0] == "N":
             bomb = Bomb()
@@ -1036,7 +1093,7 @@ def main():
 
     # Now, we ask the user to supply the name of the module they want to solve
 
-    parseModule(bomb)
+    parse_module(bomb)
 
 
 if __name__ == "__main__":
