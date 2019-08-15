@@ -19,7 +19,7 @@ if version_info < (3, 6):
     print("Python 3.6 or greater is required")
     exit(1)
 
-logo = r"""
+LOGO = r"""
  _   _______ ___   _   _  _____
 | | / /_   _/ _ \ | \ | ||  ___|
 | |/ /  | |/ /_\ \|  \| || |__
@@ -35,7 +35,6 @@ logo = r"""
 /\__/ / (_) | |\ V /  __/ |
 \____/ \___/|_| \_/ \___|_|
 """
-
 
 
 class Bomb:
@@ -72,7 +71,7 @@ class Bomb:
 # ---------------------------------------------------------- #
 
 def setup_bomb():
-    """ Sets up the bomb with a bunch of user input."""
+    """Sets up the bomb with a bunch of user input."""
     serial = addSerial()
     num_batteries = addBatteries()
     parallel_port = addPPort()
@@ -83,7 +82,7 @@ def setup_bomb():
 
 
 def config_bomb(bomb):
-    """ Allows later configuration of the bomb in the event of
+    """Allows later configuration of the bomb in the event of
     incorrect initial input."""
     bomb.serial = addSerial()
     bomb.num_batteries = addBatteries()
@@ -93,12 +92,12 @@ def config_bomb(bomb):
 
 
 def strike(bomb):
-    """ Adds a strike to the bomb."""
+    """Adds a strike to the bomb."""
     bomb.strikes += 1
 
 
 def reset_strikes(bomb):
-    """ Resets strikes in case of incorrect strike input."""
+    """Resets strikes in case of incorrect strike input."""
     bomb.strikes = 0
 
 
@@ -1074,7 +1073,7 @@ def main():
     """Creates the bomb object with the relevant info, then calls the
     desired function based on user input."""
 
-    print(logo)
+    print(LOGO)
     print("Welcome to the KTANE solver!")
     print("We hope you have a successful defusal, with minimal death.\n")
     print("\nYou may configure your bomb now if you wish.")

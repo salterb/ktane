@@ -155,8 +155,8 @@ mazeLookup = {(1,5): maze1ValidMoves, (6,4): maze1ValidMoves,
               (3,3): maze8ValidMoves, (4,6): maze8ValidMoves,
               (1,2): maze9ValidMoves, (3,5): maze9ValidMoves}
 
-def maze_input(str):
-    return input(str).strip('()[] ')
+def maze_input(string):
+    return input(string).strip('()[] ')
 
 
 def DFS_maze_helper(maze, player_pos, end, current_moves):
@@ -175,7 +175,7 @@ def DFS_maze_helper(maze, player_pos, end, current_moves):
             new_moves.append(move)
             new_pos = player_pos[:]
 
-            if move == LEFT or move == RIGHT:
+            if move in (LEFT, RIGHT):
                 new_pos[0] += move
             else:
                 # UP/DOWN are encoded as +/- 2 respectively
@@ -188,6 +188,11 @@ def DFS_maze_helper(maze, player_pos, end, current_moves):
             possible_moves = DFS_maze_helper(maze, new_pos, end, new_moves)
             if possible_moves is not None:
                 return possible_moves
+
+    # If we get here, no moves were found. In theory this shouldn't
+    # ever happen, unless the same start and end point were specified,
+    # or if there's a bug.
+    return None
 
 
 def DFS_maze(maze, start, end):
@@ -248,7 +253,7 @@ def solve_maze():
         if (len(end_ipt) >= 2 and
             int(end_ipt[0]) in valid_symbols and
             int(end_ipt[-1]) in valid_symbols):
-                break
+            break
         print("\nInvalid coordinates. Please provide (x,y) coordinates,"
               " where 1 < x,y < 6\n")
     end = (int(end_ipt[0]), int(end_ipt[-1]))
