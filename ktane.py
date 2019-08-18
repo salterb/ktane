@@ -95,6 +95,9 @@ def strike(bomb):
     """Adds a strike to the bomb."""
     bomb.strikes += 1
 
+def num_strikes(bomb):
+    """Prints the number of strikes currently on the bomb."""
+    print(f"The bomb has {bomb.strikes} strikes")
 
 def reset_strikes(bomb):
     """Resets strikes in case of incorrect strike input."""
@@ -1033,6 +1036,8 @@ def parse_module(bomb):
             needy_knob()
         elif func_to_call in ("STRIKE",):
             strike(bomb)
+        elif func_to_call in ("NUMSTRIKE", "NUMSTRIKES"):
+            num_strikes(bomb)
         elif func_to_call in ("RESETSTRIKE", "RESETSTRIKES"):
             reset_strikes(bomb)
         elif func_to_call in ("CONFIG", "CONF"):
@@ -1063,6 +1068,9 @@ def get_help():
     print("   maze           Solve the maze module")
     print("   password       Solve the password module")
     print("   knob           Find correct position for needy knob\n")
+
+    print("   strike         Add a strike to the bomb")
+    print("   num strikes    Print the number of strikes currently on the bomb")
     print("   reset strike   Reset number of strikes on bomb to zero")
     print("   config         (Re)configure the bomb")
     print("   help           Show this help menu")
