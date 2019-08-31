@@ -809,13 +809,12 @@ def morse():
                 valid_morse = False
             if valid_morse:
                 break
+            print("Invalid morse sequence. Please try again")
 
-        print("Invalid morse sequence. Please try again")
-
-    valid_words_copy = valid_words[:]
-    for word in valid_words_copy:
-        if morse_letters[morse_sequence] not in word:
-            valid_words.remove(word)
+        valid_words_copy = valid_words[:]
+        for word in valid_words_copy:
+            if morse_letters[morse_sequence] not in word:
+                valid_words.remove(word)
 
     # Now we have at most one valid word
     if len(valid_words) == 0:
