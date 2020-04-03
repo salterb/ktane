@@ -838,7 +838,7 @@ def complicated_wires(bomb):
         while True:
             # Remove white wires since they're irrelevant to us
             wire = get_input("\nInput the string representing the wire "
-                             "(type \"exit\" to cancel").replace('W', '')
+                             "(type \"exit\" to cancel) ").replace('W', '')
             if wire == "EXIT":
                 print("Exiting\n")
                 return
