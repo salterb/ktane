@@ -13,7 +13,6 @@ from sys import version_info, exit
 import complicated_wires
 import simple_wires
 import wof
-from bomb_config import *
 from mazes import solve_maze
 from colours import *
 from utils import get_input
@@ -80,7 +79,8 @@ class Bomb:
     def add_batteries(self):
         while True:
             try:
-                self.num_batteries = input("Input the number of batteries on the bomb: ")
+                self.num_batteries = int(input("Input the number of batteries "
+                                               "on the bomb: "))
                 break
             except ValueError:
                 print("Invalid number of batteries")
@@ -98,7 +98,7 @@ class Bomb:
 
     def _add_indicator(self, name):
         while True:
-            symbol = input(f'Is there a lit indicator with label "{name}"? (Y/N) '').upper()
+            symbol = input(f'Is there a lit indicator with label "{name}"? (Y/N) ').upper()
             if len(symbol) > 0 and symbol[0] == "Y":
                 setattr(self, symbol, True)
                 break
