@@ -12,6 +12,7 @@ from sys import version_info, exit
 
 import complicated_wires
 import simple_wires
+import password
 import wof
 from mazes import solve_maze
 from colours import *
@@ -88,10 +89,10 @@ class Bomb:
     def add_parallel_port(self):
         while True:
             parallel_port = input("Does the bomb have a parallel port? (Y/N) ").upper()
-            if len(parallel_port) > 0 and parallel_port[0] == 'Y':
+            if len(parallel_port) > 0 and parallel_port[0] == "Y":
                 self.parallel_port = True
                 break
-            elif len(parallel_port) > 0 and parallel_port[0] == 'N':
+            elif len(parallel_port) > 0 and parallel_port[0] == "N":
                 self.parallel_port = False
                 break
             print("Invalid input")
@@ -168,7 +169,7 @@ def is_valid_simon(string):
     if len(string) == 0:
         return False
     for char in string:
-        if char not in ('R', 'B', 'Y', 'G'):
+        if char not in ("R", "B", "Y", "G"):
             return False
     return True
 
@@ -197,7 +198,7 @@ def symbol_parser():
     # Do-while for input
     while True:
         string = get_input("Input your symbol (either a close letter "
-                           "or very short description): ").replace('-', '')
+                           "or very short description): ").replace("-", "")
         # The list of valid symbols to return is as follows:
         # Q, AT, LAMBDA, N, CAT, H, C, EURO, PHI, STAR, QUESTION,
         # OMEGA, K, 3, 6, PARAGRAPH, TB, FACE, PSI, NOTEQUAL, AE
@@ -272,7 +273,7 @@ def static_simon(bomb):
     """Simply prints out the relevant colour conversion list for
     Simon.
     """
-    if set(['A', 'E', 'I', 'O', 'U']).isdisjoint(set(bomb.serial)):
+    if set(["A", "E", "I", "O", "U"]).isdisjoint(set(bomb.serial)):
         if bomb.strikes == 0:
             print(red("RED")+"    -> "+blue("BLUE"))
             print(blue("BLUE")+"   -> "+yellow("YELLOW"))
@@ -330,34 +331,34 @@ def interactive_simon(bomb):
                 break
             print("Invalid color sequence. Use one letter per colour")
 
-        if set(['A', 'E', 'I', 'O', 'U']).isdisjoint(set(bomb.serial)):
+        if set(["A", "E", "I", "O", "U"]).isdisjoint(set(bomb.serial)):
             if bomb.strikes == 0:
-                colour_dict = {'R': 'B', 'B': 'Y', 'G': 'G', 'Y': 'R'}
+                colour_dict = {"R": "B", "B": "Y", "G": "G", "Y": "R"}
             elif bomb.strikes == 1:
-                colour_dict = {'R': 'R', 'B': 'B', 'G': 'Y', 'Y': 'G'}
+                colour_dict = {"R": "R", "B": "B", "G": "Y", "Y": "G"}
             elif bomb.strikes == 2:
-                colour_dict = {'R': 'Y', 'B': 'G', 'G': 'B', 'Y': 'R'}
+                colour_dict = {"R": "Y", "B": "G", "G": "B", "Y": "R"}
             else:
                 raise ValueError(f"Invalid strike number: {bomb.strikes}")
         else:
             if bomb.strikes == 0:
-                colour_dict = {'R': 'B', 'B': 'R', 'G': 'Y', 'Y': 'G'}
+                colour_dict = {"R": "B", "B": "R", "G": "Y", "Y": "G"}
             elif bomb.strikes == 1:
-                colour_dict = {'R': 'Y', 'B': 'G', 'G': 'B', 'Y': 'R'}
+                colour_dict = {"R": "Y", "B": "G", "G": "B", "Y": "R"}
             elif bomb.strikes == 2:
-                colour_dict = {'R': 'G', 'B': 'R', 'G': 'Y', 'Y': 'B'}
+                colour_dict = {"R": "G", "B": "R", "G": "Y", "Y": "B"}
             else:
                 raise ValueError(f"Invalid strike number: {bomb.strikes}")
 
         for char in lights:
             colour = colour_dict[char]
-            if colour == 'R':
+            if colour == "R":
                 print(red("RED"))
-            elif colour == 'B':
+            elif colour == "B":
                 print(blue("BLUE"))
-            elif colour == 'G':
+            elif colour == "G":
                 print(green("GREEN"))
-            elif colour == 'Y':
+            elif colour == "Y":
                 print(yellow("YELLOW"))
             else:
                 raise ValueError(f"Invalid colour: {colour}")
@@ -394,7 +395,7 @@ def is_valid_wire_sequence(wire):
     """Verifies the provided wire sequence consists of valid
     characters.
     """
-    if len(wire) >= 2 and wire[0] in ('R', 'B', 'K') and wire[-1] in ('A', 'B', 'C'):
+    if len(wire) >= 2 and wire[0] in ("R", "B", "K") and wire[-1] in ("A", "B", "C"):
         return True
     return False
 
@@ -498,7 +499,7 @@ def keypad():
     print("\n"+"-"*20+" CAUTION "+"-"*20)
     print("This module is hard for a computer to solve.\nPlease try to "
           "describe all symbols using a very short and obvious description.\n"
-          + "-"*49, end='\n\n')
+          + "-"*49, end="\n\n")
     while len(symbols) < 4:
         string = symbol_parser()
         if string in symbols:
@@ -595,7 +596,7 @@ def memory():
     WHICH_LABEL = 1
     WHICH_POSITION = 2
 
-    stage = namedtuple('stage', ["label", "position"])
+    stage = namedtuple("stage", ["label", "position"])
     # Stage 1
     ipt = _memory_input(DISPLAY)
     print("")  # Blank line
@@ -701,7 +702,7 @@ def morse():
             # Test whether the input has valid morse characters
             valid_morse = True
             for char in morse_sequence:
-                if char not in ['.', '-']:
+                if char not in [".", "-"]:
                     valid_morse = False
             if len(morse_sequence) == 0 or len(morse_sequence) > 4:
                 valid_morse = False
@@ -730,12 +731,12 @@ def sequences():
     RED = -1
     BLUE = -2
     BLACK = -3
-    valid_reds = {0: 'C', 1: 'B', 2: 'A', 3: 'AC', 4: 'B',
-                  5: 'AC', 6: 'ABC', 7: 'AB', 8: 'B'}
-    valid_blues = {0: 'B', 1: 'AC', 2: 'B', 3: 'A', 4: 'B',
-                   5: 'BC', 6: 'C', 7: 'AC', 8: 'A'}
-    valid_blacks = {0: 'ABC', 1: 'AC', 2: 'B', 3: 'AC', 4: 'B',
-                    5: 'BC', 6: 'AB', 7: 'C', 8: 'C'}
+    valid_reds = {0: "C", 1: "B", 2: "A", 3: "AC", 4: "B",
+                  5: "AC", 6: "ABC", 7: "AB", 8: "B"}
+    valid_blues = {0: "B", 1: "AC", 2: "B", 3: "A", 4: "B",
+                   5: "BC", 6: "C", 7: "AC", 8: "A"}
+    valid_blacks = {0: "ABC", 1: "AC", 2: "B", 3: "AC", 4: "B",
+                    5: "BC", 6: "AB", 7: "C", 8: "C"}
     red_count = 0
     blue_count = 0
     black_count = 0
@@ -767,21 +768,21 @@ def sequences():
             print("Invalid wire")
 
         # Now our wire is valid, we provide output.
-        if wire[0] == 'R':
+        if wire[0] == "R":
             if wire[1] in valid_reds[red_count]:
                 cut()
             else:
                 no_cut()
             red_count += 1
             previous_move = RED
-        elif wire[0] == 'B':
+        elif wire[0] == "B":
             if wire[1] in valid_blues[blue_count]:
                 cut()
             else:
                 no_cut()
             blue_count += 1
             previous_move = BLUE
-        elif wire[0] == 'K':
+        elif wire[0] == "K":
             if wire[1] in valid_blacks[black_count]:
                 cut()
             else:
@@ -797,46 +798,6 @@ def sequences():
 def maze():
     """Calls the external maze solver from a separate module."""
     solve_maze()
-
-
-def password():
-    """Solves the password module."""
-    valid_passwords = ["ABOUT", "AFTER", "AGAIN", "BELOW", "COULD",
-                       "EVERY", "FIRST", "FOUND", "GREAT", "HOUSE",
-                       "LARGE", "LEARN", "NEVER", "OTHER", "PLACE",
-                       "PLANT", "POINT", "RIGHT", "SMALL", "SOUND",
-                       "SPELL", "STILL", "STUDY", "THEIR", "THERE",
-                       "THESE", "THING", "THINK", "THREE", "WATER",
-                       "WHERE", "WHICH", "WORLD", "WOULD", "WRITE"]
-    letter_pos = 0
-    while len(valid_passwords) > 1:
-        # Do-while to obtain the letters
-        while True:
-            letters = get_input(f"Input the list of letters in position {letter_pos+1}: ")
-            if letters in ("EXIT", "QUIT"):
-                return
-
-            if letters.isalpha() and len(letters) <= 6:
-                break
-
-            print("Invalid letter sequence. Please try again")
-
-        letters = list(letters)
-
-        # We have to copy the password list so we can remove items from the
-        # original list whilst still correctly iterating over the list.
-        valid_passwords_copy = valid_passwords[:]
-        for word in valid_passwords_copy:
-            if word[letter_pos] not in letters:
-                valid_passwords.remove(word)
-        letter_pos += 1
-
-    # Now there is at most one word in the list. If there's none, the user
-    # made an error and we tell them to try again
-    if len(valid_passwords) == 0:
-        print("Invalid input letters. Please run module again")
-    else:
-        print("\nThe password is " + bold(valid_passwords[0]) + "\n")
 
 
 def needy_knob():
@@ -898,7 +859,8 @@ def parse_module(bomb):
         elif func_to_call in ("MAZE", "MAZES"):
             maze()
         elif func_to_call in ("PASSWORD", "PASS"):
-            password()
+            module = password.Password()
+            module.solve()
         elif func_to_call in ("NEEDY", "KNOB", "NEEDYKNOB", "DIAL"):
             needy_knob()
         elif func_to_call in ("STRIKE",):
@@ -922,7 +884,7 @@ def get_help():
     """Prints list of options to give to the parser, and what they
     do."""
     print("\nKTANE Solver help")
-    print("-"*50, end='\n\n')
+    print("-"*50, end="\n\n")
     print("Valid commands:\n")
     print("   simple         Solve the simple wires module")
     print("   button         Solve the button module")
