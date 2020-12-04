@@ -7,13 +7,16 @@ A friendly interactive manual, written in Python3, to help solve
 modules and defuse bombs in Keep Talking and Nobody Explodes.
 
 """
-from sys import version_info, exit
 from collections import namedtuple
+from sys import version_info, exit
 
+import complicated_wires
+import simple_wires
+import wof
 from bomb_config import *
-from wof import *
 from mazes import solve_maze
 from colours import *
+from utils import get_input
 
 if version_info < (3, 6):
     print("Python 3.6 or greater is required")
@@ -63,6 +66,53 @@ class Bomb:
         rep += f"      FRK: {self.FRK}"
         return rep
 
+    def add_serial(self):
+        # do-while to get input
+        while True:
+            serial = get_input("Input the bomb's serial number: ")
+            if (serial.isalnum() and
+                len(serial) == 6 and
+                (serial[-1]).isdigit()):
+                    self.serial = serial
+                    break
+            print("Invalid serial number")
+
+    def add_batteries(self):
+        while True:
+            try:
+                self.num_batteries = input("Input the number of batteries on the bomb: ")
+                break
+            except ValueError:
+                print("Invalid number of batteries")
+
+    def add_parallel_port(self):
+        while True:
+            parallel_port = input("Does the bomb have a parallel port? (Y/N) ").upper()
+            if len(parallel_port) > 0 and parallel_port[0] == 'Y':
+                self.parallel_port = True
+                break
+            elif len(parallel_port) > 0 and parallel_port[0] == 'N':
+                self.parallel_port = False
+                break
+            print("Invalid input")
+
+    def _add_indicator(self, name):
+        while True:
+            symbol = input(f'Is there a lit indicator with label "{name}"? (Y/N) '').upper()
+            if len(symbol) > 0 and symbol[0] == "Y":
+                setattr(self, symbol, True)
+                break
+            elif len(symbol) > 0 and symbol[0] == "N":
+                setattr(self, symbol, False)
+                break
+            print("Invalid input")
+
+    def add_CAR():
+        self._add_indicator("CAR")
+
+    def add_FRK():
+        self._add_indicator("FRK")
+
 
 # ---------------------------------------------------------- #
 #                                                            #
@@ -72,11 +122,11 @@ class Bomb:
 
 def setup_bomb():
     """Sets up the bomb with a bunch of user input."""
-    serial = addSerial()
-    num_batteries = addBatteries()
-    parallel_port = addPPort()
-    CAR = addCAR()
-    FRK = addFRK()
+    serial = add_serial()
+    num_batteries = add_batteries()
+    parallel_port = add_parallel_port()
+    CAR = add_CAR()
+    FRK = add_FRK()
     bomb = Bomb(serial, num_batteries, parallel_port, CAR, FRK)
     return bomb
 
@@ -84,11 +134,11 @@ def setup_bomb():
 def config_bomb(bomb):
     """Allows later configuration of the bomb in the event of
     incorrect initial input."""
-    bomb.serial = addSerial()
-    bomb.num_batteries = addBatteries()
-    bomb.parallel_port = addPPort()
-    bomb.CAR = addCAR()
-    bomb.FRK = addFRK()
+    bomb.serial = add_serial()
+    bomb.num_batteries = add_batteries()
+    bomb.parallel_port = add_parallel_port()
+    bomb.CAR = add_CAR()
+    bomb.FRK = add_FRK()
 
 
 def strike(bomb):
@@ -110,30 +160,6 @@ def reset_strikes(bomb):
 #                                                            #
 # ---------------------------------------------------------- #
 
-# Input validator functions
-def is_valid_simple_wires(wires):
-    """Helper function to determine if the wire arrangement specified
-    is valid.
-    """
-    if len(wires) < 3 or len(wires) > 6:
-        return False
-    for char in wires:
-        if char not in ('K', 'B', 'Y', 'R', 'W'):
-            return False
-    return True
-
-
-def is_valid_comp_wire(wire):
-    """Helper function to determine if a string representing a
-    complicated wire is valid.
-    """
-    if len(wire) > 4:
-        return False
-    for char in wire:
-        if char not in ('R', 'B', 'S', 'L'):
-            return False
-    return True
-
 
 def is_valid_simon(string):
     """Helper function to determine if the Simon light sequence is
@@ -154,13 +180,6 @@ def _rot13(string):
     """
     from codecs import encode
     return encode(string, "rot_13")
-
-
-def get_input(string):
-    """Removes spaces and forces uppercase for all inputs to ensured
-    uniformity.
-    """
-    return input(string).upper().replace(' ', '')
 
 
 def symbol_parser():
@@ -346,7 +365,7 @@ def interactive_simon(bomb):
 
 
 # Memory functions
-def memory_input(arg):
+def _memory_input(arg):
     """Gets input for the Memory module. Either asks for number on
     display, which value was in the button pressed, or which position
     the pressed button was in, depending on the argument provided.
@@ -371,59 +390,6 @@ def memory_input(arg):
         print("Invalid input")
 
 
-# "Cut" functions for complicated wires and sequences
-def cut(bomb=None):
-    """Informs the user to cut the wire. Does not use the supplied
-    variable, but it is provided as an option for consistency with
-    other "cut" functions.
-    """
-    print("\n" + bold("CUT") + " the wire")
-
-
-def no_cut(bomb=None):
-    """Informs the user NOT to cut the wire. Does not use the supplied
-    variable, but it is provided as an option for consistency with
-    other "cut" functions.
-    """
-    print("\nDo " + bold("NOT") + " cut the wire")
-
-
-def serial_cut(bomb):
-    """Informs the user to cut the wire IF the serial number is
-    even.
-    """
-    if bomb.serial is None:
-        bomb.serial = addSerial()
-    if int(bomb.serial[-1]) % 2 == 0:
-        print("\n" + bold("CUT") + " the wire")
-    else:
-        print("\nDo " + bold("NOT") + " cut the wire")
-
-
-def p_port_cut(bomb):
-    """Informs the user to cut the wire IF the bomb has a
-    parallel port.
-    """
-    if bomb.parallel_port is None:
-        bomb.parallel_port = addPPort()
-    if bomb.parallel_port is True:
-        print("\n" + bold("CUT") + " the wire")
-    else:
-        print("\nDo " + bold("NOT") + " cut the wire")
-
-
-def battery_cut(bomb):
-    """Informs the user to cut the wire IF the bomb has more than
-    two batteries.
-    """
-    if bomb.num_batteries is None:
-        bomb.num_batteries = addBatteries()
-    if bomb.num_batteries >= 2:
-        print("\n" + bold("CUT") + " the wire")
-    else:
-        print("\nDo " + bold("NOT") + " cut the wire")
-
-
 def is_valid_wire_sequence(wire):
     """Verifies the provided wire sequence consists of valid
     characters.
@@ -438,74 +404,6 @@ def is_valid_wire_sequence(wire):
 #                         MODULES                            #
 #                                                            #
 # ---------------------------------------------------------- #
-
-def simple_wires(bomb):
-    """Solve the simple wires module on the bomb. The user inputs the
-    sequence of wires, and the function tells the user which one to
-    cut.
-    """
-
-    # Do-while to get the wire sequence
-    while True:
-        wires = get_input("Please input the wire sequence: ")
-        if is_valid_simple_wires(wires):
-            break
-        print("Invalid wire sequence. Use one letter per wire (black = 'K')")
-
-    num_wires = len(wires)
-    if num_wires == 3:
-        if "R" not in wires:
-            print("\nCut the " + bold("SECOND") + " wire\n")
-        elif wires[-1] == "W":
-            print("\nCut the " + bold("LAST") + " wire")
-        elif wires.count("B") > 1:
-            print("\nCut the " + bold("LAST BLUE") + " wire\n")
-        else:
-            print("\nCut the " + bold("LAST") + " wire\n")
-
-    elif num_wires == 4:
-        if bomb.serial is None:
-            bomb.serial = addSerial()
-
-        if wires.count("R") > 1 and int(bomb.serial[-1]) % 2 == 1:
-            print("\nCut the " + bold("LAST RED") + " wire\n")
-        elif wires[-1] == "Y" and ("R" not in wires):
-            print("\nCut the " + bold("FIRST") + " wire\n")
-        elif wires.count("B") == 1:
-            print("\nCut the " + bold("FIRST") + " wire\n")
-        elif wires.count("Y") > 1:
-            print("\nCut the " + bold("LAST") + " wire\n")
-        else:
-            print("\nCut the " + bold("SECOND") + " wire\n")
-
-    elif num_wires == 5:
-        if bomb.serial is None:
-            bomb.serial = addSerial()
-
-        if wires[-1] == "K" and int(bomb.serial[-1]) % 2 == 1:
-            print("\nCut the " + bold("FOURTH") + " wire\n")
-        elif wires.count("R") == 1 and wires.count('Y') > 1:
-            print("\nCut the " + bold("FIRST") + " wire\n")
-        elif "K" not in wires:
-            print("\nCut the " + bold("SECOND") + " wire\n")
-        else:
-            print("\nCut the " + bold("FIRST") + " wire\n")
-
-    elif num_wires == 6:
-        if bomb.serial is None:
-            bomb.serial = addSerial()
-
-        if "Y" not in wires and int(bomb.serial[-1]) % 2 == 1:
-            print("\nCut the " + bold("THIRD") + " wire\n")
-        elif wires.count("Y") == 1 and wires.count("W") > 1:
-            print("\nCut the " + bold("FOURTH") + " wire\n")
-        elif "R" not in wires:
-            print("\nCut the " + bold("LAST") + " wire\n")
-        else:
-            print("\nCut the " + bold("FOURTH") + " wire\n")
-
-    else:
-        raise ValueError(f"len(num_wires) = {len(num_wires)} - this is bad!")
 
 
 def button(bomb):
@@ -547,7 +445,7 @@ def button(bomb):
 
     if (button_word == "D" and (bomb.num_batteries is None or bomb.num_batteries > 1)):
         if bomb.num_batteries is None:
-            bomb.num_batteries = addBatteries()
+            bomb.num_batteries = add_batteries()
 
         if bomb.num_batteries > 1:
             print("\nPress and release button\n")
@@ -555,7 +453,7 @@ def button(bomb):
 
     if button_colour == "W" and bomb.CAR is not False:
         if bomb.CAR is None:
-            bomb.CAR = addCAR()
+            bomb.CAR = add_CAR()
 
         if bomb.CAR is True:
             print("\nHold button\n")
@@ -564,9 +462,9 @@ def button(bomb):
 
     if (bomb.FRK is not False and (bomb.num_batteries is None or bomb.num_batteries > 2)):
         if bomb.num_batteries is None:
-            bomb.num_batteries = addBatteries()
+            bomb.num_batteries = add_batteries()
         if bomb.FRK is None:
-            bomb.FRK = addFRK()
+            bomb.FRK = add_FRK()
 
         if bomb.FRK is True:
             print("\nPress and release button\n")
@@ -643,7 +541,7 @@ def simon(bomb):
         return
 
     if bomb.serial is None:
-        bomb.serial = addSerial()
+        bomb.serial = add_serial()
     while True:
         user_input = get_input("Do you want interactive Simon? (Y/n) ")
         if user_input == "" or user_input[0] == "Y":
@@ -671,22 +569,22 @@ def whos_on_first():
             if display == "EXIT":
                 print("Exiting\n")
                 return
-            if display in WOFvalidDisplays:
+            if display in wof.VALID_DISPLAYS:
                 break
             print("Please input a valid display entry")
 
         # Do-while to get the word on the button
         while True:
-            button = get_input(f"What word is on the {WOFdisplayDict[display]} button? ")
+            button = get_input(f"What word is on the {wof.DISPLAY_DICT[display]} button? ")
             if button == "EXIT":
                 print("Exiting\n")
                 return
-            if button in WOFvalidButtons:
+            if button in wof.VALID_BUTTONS:
                 break
             print("Please input a valid button entry")
 
         print("\nThe button to press is the first valid entry in the following list: ")
-        print(WOFbuttonDict[button])
+        print(wof.BUTTON_DICT[button])
 
 
 def memory():
@@ -699,70 +597,70 @@ def memory():
 
     stage = namedtuple('stage', ["label", "position"])
     # Stage 1
-    ipt = memory_input(DISPLAY)
+    ipt = _memory_input(DISPLAY)
     print("")  # Blank line
     if ipt in (1, 2):
         print("Press the button in " + bold("POSITION 2\n"))
-        stage1 = stage(memory_input(WHICH_LABEL), 2)
+        stage1 = stage(_memory_input(WHICH_LABEL), 2)
     elif ipt == 3:
         print("Press the button in " + bold("POSITION 3\n"))
-        stage1 = stage(memory_input(WHICH_LABEL), 3)
+        stage1 = stage(_memory_input(WHICH_LABEL), 3)
     elif ipt == 4:
         print("Press the button in " + bold("POSITION 4\n"))
-        stage1 = stage(memory_input(WHICH_LABEL), 4)
+        stage1 = stage(_memory_input(WHICH_LABEL), 4)
     else:
         raise ValueError(f"Invalid option passed to memory stage 1: {ipt}")
 
     # Stage 2
-    ipt = memory_input(DISPLAY)
+    ipt = _memory_input(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
         print("Press the button with " + bold("LABEL 4\n"))
-        stage2 = stage(4, memory_input(WHICH_POSITION))
+        stage2 = stage(4, _memory_input(WHICH_POSITION))
     elif ipt in (2, 4):
         print("Press the button in " + bold(f"POSITION {stage1.position}\n"))
-        stage2 = stage(memory_input(WHICH_LABEL), stage1.position)
+        stage2 = stage(_memory_input(WHICH_LABEL), stage1.position)
     elif ipt == 3:
         print("Press the button in " + bold("POSITION 1\n"))
-        stage2 = stage(memory_input(WHICH_LABEL), 1)
+        stage2 = stage(_memory_input(WHICH_LABEL), 1)
     else:
         raise ValueError(f"Invalid option passed to memory stage 2: {ipt}")
 
     # Stage 3
-    ipt = memory_input(DISPLAY)
+    ipt = _memory_input(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
         print("Press the button with " + bold(f"LABEL {stage2.label}\n"))
-        stage3 = stage(stage2.label, memory_input(WHICH_POSITION))
+        stage3 = stage(stage2.label, _memory_input(WHICH_POSITION))
     elif ipt == 2:
         print(f"Press the button with " + bold(f"LABEL {stage1.label}\n"))
-        stage3 = stage(stage1.label, memory_input(WHICH_POSITION))
+        stage3 = stage(stage1.label, _memory_input(WHICH_POSITION))
     elif ipt == 3:
         print("Press the button in " + bold("POSITION 3\n"))
-        stage3 = stage(memory_input(WHICH_LABEL), 3)
+        stage3 = stage(_memory_input(WHICH_LABEL), 3)
     elif ipt == 4:
         print("Press the button with " + bold("LABEL 4\n"))
-        stage3 = stage(4, memory_input(WHICH_POSITION))
+        stage3 = stage(4, _memory_input(WHICH_POSITION))
     else:
         raise ValueError(f"Invalid option passed to memory stage 3: {ipt}")
 
     # Stage 4
-    ipt = memory_input(DISPLAY)
+    ipt = _memory_input(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
         print("Press the button in " + bold(f"POSITION {stage1.label}\n"))
-        stage4 = stage(stage1.label, memory_input(WHICH_POSITION))
+        stage4 = stage(stage1.label, _memory_input(WHICH_POSITION))
     elif ipt == 2:
         print("Press the button in " + bold("POSITION 1\n"))
-        stage4 = stage(memory_input(WHICH_LABEL), 1)
+        stage4 = stage(_memory_input(WHICH_LABEL), 1)
     elif ipt in (3, 4):
         print("Press the button in " + bold(f"POSITION {stage2.position}\n"))
-        stage4 = stage(memory_input(WHICH_LABEL), stage2.position)
+        stage4 = stage(_memory_input(WHICH_LABEL), stage2.position)
     else:
         raise ValueError(f"Invalid option passed to memory stage 4: {ipt}")
 
     # Stage 5
-    ipt = memory_input(DISPLAY)
+    ipt = _memory_input(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
         print("Press the button with " + bold(f"LABEL {stage1.label}\n"))
@@ -823,38 +721,6 @@ def morse():
         print(f"\nThe word is {valid_words[0]}")
         freq_str = f"{morse_freqs[valid_words[0]]:.3f}"  # Pad with zeroes
         print("The frequency is " + bold(freq_str) + " MHz\n")
-
-
-def complicated_wires(bomb):
-    """Solves the complicated wires module. The user inputs the wire detail
-    one wire at a time, and the function tells the user whether to cut the
-    wire or not.
-    """
-    # We keep running until the user wants to stop
-    print("Use 'R' for 'red', 'B' for 'blue', 'S' for star, and 'L' for light")
-
-    while True:
-        # Do-while to obtain the string representing the wire
-        while True:
-            # Remove white wires since they're irrelevant to us
-            wire = get_input("\nInput the string representing the wire "
-                             "(type \"exit\" to cancel) ").replace('W', '')
-            if wire == "EXIT":
-                print("Exiting\n")
-                return
-            if is_valid_comp_wire(wire):
-                break
-            print("Invalid wire")
-        wire = "".join(sorted(wire))  # Get in alphabetical order
-
-        # Now we have 16 different cases to consider.
-        # We use a lookup table which runs the correct printing function.
-        comp_wires_dict = \
-            {'': cut, 'B': serial_cut, 'BL': p_port_cut, 'BLR': serial_cut,
-             'BLRS': no_cut, 'BLS': p_port_cut, 'BR': serial_cut, 'BRS': p_port_cut,
-             'BS': no_cut, 'L': no_cut, 'LR': battery_cut, 'LRS': battery_cut,
-             'LS': battery_cut, 'R': serial_cut, 'RS': cut, 'S': cut}
-        comp_wires_dict[wire](bomb)
 
 
 def sequences():
@@ -1010,7 +876,8 @@ def parse_module(bomb):
         func_to_call = get_input('Which module would you like to solve? '
                                  '(type "help" for options): ')
         if func_to_call in ("SIMPLEWIRES", "SIMPLE", "WIRES"):
-            simple_wires(bomb)
+            module = simple_wires.SimpleWires(bomb)
+            module.solve()
         elif func_to_call in ("BUTTON",):
             button(bomb)
         elif func_to_call in ("SYMBOL", "SYMBOLS", "SYM", "KEYPAD"):
@@ -1024,7 +891,8 @@ def parse_module(bomb):
         elif func_to_call in ("MORSE", "MORSECODE"):
             morse()
         elif func_to_call in ("COMP", "COMPLICATED", "COMPLICATEDWIRES"):
-            complicated_wires(bomb)
+            module = complicated_wires.ComplicatedWires(bomb)
+            module.solve()
         elif func_to_call in ("SEQUENCE", "SEQUENCES", "WIRESEQUENCE", "WIRESEQUENCES"):
             sequences()
         elif func_to_call in ("MAZE", "MAZES"):

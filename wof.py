@@ -1,11 +1,11 @@
 # ----------------------- WHO'S ON FIRST -------------------
 
-WOFvalidDisplays = ['YES', 'FIRST', 'DISPLAY', 'OKAY', 'SAYS', 'NOTHING', '',
-                    'BLANK', 'NO', 'LED', 'LEAD', 'READ', 'RED', 'REED',
-                    'LEED', 'HOLDON', 'YOU', 'YOUARE', 'YOUR', "YOU'RE", 'UR',
-                    'THERE', "THEY'RE", 'THEIR', 'THEYARE', 'SEE', 'C', 'CEE']
+VALID_DISPLAYS = ['YES', 'FIRST', 'DISPLAY', 'OKAY', 'SAYS', 'NOTHING', '',
+                  'BLANK', 'NO', 'LED', 'LEAD', 'READ', 'RED', 'REED',
+                  'LEED', 'HOLDON', 'YOU', 'YOUARE', 'YOUR', "YOU'RE", 'UR',
+                  'THERE', "THEY'RE", 'THEIR', 'THEYARE', 'SEE', 'C', 'CEE']
 
-WOFdisplayDict = \
+DISPLAY_DICT = \
 {'YES': 'middle left', 'FIRST': 'top right', 'DISPLAY': 'bottom right',
 'OKAY': 'top right', 'SAYS': 'bottom right', 'NOTHING': 'middle left',
 '': 'bottom left', 'BLANK': 'middle right', 'NO': 'bottom right',
@@ -17,12 +17,12 @@ WOFdisplayDict = \
 'THEYARE': 'middle left', 'SEE': 'bottom right', 'C': 'top right',
 'CEE': 'bottom right'}
 
-WOFvalidButtons = ['READY', 'FIRST', 'NO', 'BLANK', 'NOTHING', 'YES', 'WHAT',
-                   'UHHH', 'LEFT', 'RIGHT', 'MIDDLE', 'OKAY', 'WAIT', 'PRESS',
-                   'YOU', 'YOUARE', 'YOUR', "YOU'RE", 'UR', 'U', 'UHHUH',
-                   'UHUH', 'WHAT?', 'DONE', 'NEXT', 'HOLD', 'SURE', 'LIKE']
+VALID_BUTTONS = ['READY', 'FIRST', 'NO', 'BLANK', 'NOTHING', 'YES', 'WHAT',
+                 'UHHH', 'LEFT', 'RIGHT', 'MIDDLE', 'OKAY', 'WAIT', 'PRESS',
+                 'YOU', 'YOUARE', 'YOUR', "YOU'RE", 'UR', 'U', 'UHHUH',
+                 'UHUH', 'WHAT?', 'DONE', 'NEXT', 'HOLD', 'SURE', 'LIKE']
 
-WOFbuttonDict = \
+BUTTON_DICT = \
 {'READY': ['YES', 'OKAY', 'WHAT', 'MIDDLE', 'LEFT', 'PRESS', 'RIGHT', 'BLANK', 'READY', 'NO', 'FIRST', 'UHHH', 'NOTHING', 'WAIT'],
 'FIRST': ['LEFT', 'OKAY', 'YES', 'MIDDLE', 'NO', 'RIGHT', 'NOTHING', 'UHHH', 'WAIT', 'READY', 'BLANK', 'WHAT', 'PRESS', 'FIRST'],
 'NO': ['BLANK', 'UHHH', 'WAIT', 'FIRST', 'WHAT', 'READY', 'RIGHT', 'YES', 'NOTHING', 'LEFT', 'PRESS', 'OKAY', 'NO', 'MIDDLE'],
