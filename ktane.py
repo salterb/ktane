@@ -13,6 +13,7 @@ from sys import version_info, exit
 import complicated_wires
 import simple_wires
 import password
+import simple_wires
 import wof
 from mazes import solve_maze
 from colours import *
@@ -834,11 +835,11 @@ def parse_module(bomb):
     want to give it.
     """
     while True:
+        module = None
         func_to_call = get_input('Which module would you like to solve? '
                                  '(type "help" for options): ')
         if func_to_call in ("SIMPLEWIRES", "SIMPLE", "WIRES"):
             module = simple_wires.SimpleWires(bomb)
-            module.solve()
         elif func_to_call in ("BUTTON",):
             button(bomb)
         elif func_to_call in ("SYMBOL", "SYMBOLS", "SYM", "KEYPAD"):
@@ -853,14 +854,12 @@ def parse_module(bomb):
             morse()
         elif func_to_call in ("COMP", "COMPLICATED", "COMPLICATEDWIRES"):
             module = complicated_wires.ComplicatedWires(bomb)
-            module.solve()
         elif func_to_call in ("SEQUENCE", "SEQUENCES", "WIRESEQUENCE", "WIRESEQUENCES"):
             sequences()
         elif func_to_call in ("MAZE", "MAZES"):
             maze()
         elif func_to_call in ("PASSWORD", "PASS"):
             module = password.Password()
-            module.solve()
         elif func_to_call in ("NEEDY", "KNOB", "NEEDYKNOB", "DIAL"):
             needy_knob()
         elif func_to_call in ("STRIKE",):
@@ -876,6 +875,9 @@ def parse_module(bomb):
         elif func_to_call in ("EXIT", "QUIT"):
             print("\nWe hope your defusal was a success. Come again soon!\n")
             break
+
+        if module:
+            module.solve()
         else:
             print("Please try again")
 
