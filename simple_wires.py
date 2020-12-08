@@ -44,8 +44,6 @@ class SimpleWires:
             print("\nCut the " + bold("LAST") + " wire\n")
 
     def _solve_4_wires(self):
-        if self.bomb.serial is None:
-            self.bomb.add_serial()
         if self.wires.count("R") > 1 and int(self.bomb.serial[-1]) % 2 == 1:
             print("\nCut the " + bold("LAST RED") + " wire\n")
         elif self.wires[-1] == "Y" and "R" not in self.wires:
@@ -58,8 +56,6 @@ class SimpleWires:
             print("\nCut the " + bold("SECOND") + " wire\n")
 
     def _solve_5_wires(self):
-        if self.bomb.serial is None:
-            self.bomb.add_serial()
         if self.wires[-1] == "K" and int(self.bomb.serial[-1]) % 2 == 1:
             print("\nCut the " + bold("FOURTH") + " wire\n")
         elif self.wires.count("R") == 1 and self.wires.count('Y') > 1:
@@ -70,8 +66,6 @@ class SimpleWires:
             print("\nCut the " + bold("FIRST") + " wire\n")
 
     def _solve_6_wires(self):
-        if self.bomb.serial is None:
-            self.bomb.add_serial()
         if "Y" not in self.wires and int(self.bomb.serial[-1]) % 2 == 1:
             print("\nCut the " + bold("THIRD") + " wire\n")
         elif self.wires.count("Y") == 1 and self.wires.count("W") > 1:

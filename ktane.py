@@ -108,7 +108,7 @@ class Bomb:
 
     @parallel_port.setter
     def parallel_port(self, val):
-        self._boolean_setter("__parallel_port", val)
+        self._boolean_setter("parallel_port", val)
 
     @property
     def CAR(self):
@@ -118,7 +118,7 @@ class Bomb:
 
     @CAR.setter
     def CAR(self, val):
-        self._boolean_setter("__CAR", val)
+        self._boolean_setter("CAR", val)
 
     @property
     def FRK(self):
@@ -128,16 +128,21 @@ class Bomb:
 
     @FRK.setter
     def FRK(self, val):
-        self._boolean_setter("__FRK", val)
+        self._boolean_setter("FRK", val)
 
     def _boolean_setter(self, name, val):
+        # "Real" attributes are saved as __attr, which is
+        # represented internally as _class__attr.
+        # setattr on a dunder doesn't do this properly, instead
+        # just setting __attr, so we need to hack the name together.
+        dunder_name = f"_{__class__.__name__}__{name}"
         if val is None:
-            setattr(self, name, None)
+            setattr(self, dunder_name, None)
             return
         if len(val) > 0 and val[0] == "Y":
-            setattr(self, name, True)
+            setattr(self, dunder_name, True)
         elif len(val) > 0 and val[0] == "N":
-            setattr(self, name, False)
+            setattr(self, dunder_name, False)
         else:
             print("Invalid input")
 # ---------------------------------------------------------- #

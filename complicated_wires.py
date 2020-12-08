@@ -42,8 +42,6 @@ class ComplicatedWires:
         """Informs the user to cut the wire if the serial number is
         even.
         """
-        if self.bomb.serial is None:
-            self.bomb.add_serial()
         self._conditional_cut(int(self.bomb.serial[-1]) % 2 == 0)
 
 
@@ -51,17 +49,13 @@ class ComplicatedWires:
         """Informs the user to cut the wire if the bomb has a
         parallel port.
         """
-        if self.bomb.parallel_port is None:
-            self.bomb.add_parallel_port()
         self._conditional_cut(self.bomb.parallel_port is True)
 
     def battery_cut(self):
         """Informs the user to cut the wire if the bomb has more than
         two batteries.
         """
-        if self.bomb.num_batteries is None:
-            self.bomb.add_batteries()
-        self._conditional_cut(self.bomb.num_batteries >= 2)
+        self._conditional_cut(self.bomb.batteries >= 2)
 
     def get_complicated_wire_sequence(self):
         """Helper function to get wire sequence from user input, and
