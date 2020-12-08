@@ -11,7 +11,7 @@ from collections import namedtuple
 from sys import version_info, exit
 
 import complicated_wires
-import simple_wires
+import morse
 import password
 import simple_wires
 import wof
@@ -676,55 +676,6 @@ def memory():
         raise ValueError(f"Invalid option passed to memory stage 5: {ipt}")
 
 
-def morse():
-    """Solves the morse module. The user inputs morse characters until
-    there is only one valid word left.
-    """
-    valid_words = ["SHELL", "HALLS", "SLICK", "TRICK", "BOXES", "LEAKS",
-                   "STROBE", "BISTRO", "FLICK", "BOMBS", "BREAK", "BRICK",
-                   "STEAK", "STING", "VECTOR", "BEATS"]
-    freqs = [3.505, 3.515, 3.522, 3.532, 3.535, 3.542, 3.545, 3.552, 3.555,
-             3.565, 3.572, 3.575, 3.582, 3.592, 3.595, 3.600]
-    morse_freqs = dict(zip(valid_words, freqs))
-    morse_letters = {".-": "A", "-...": "B", "-.-.": "C", "-..": "D",
-                     ".": "E", "..-.": "F", "--.": "G", "....": "H",
-                     "..": "I", ".---": "J", "-.-": "K", ".-..": "L",
-                     "--": "M", "-.": "N", "---": "O", ".--.": "P",
-                     "--.-": "Q", ".-.": "R", "...": "S", "-": "T",
-                     "..-": "U", "...-": "V", ".--": "W", "-..-": "X",
-                     "-.--": "Y", "--..": "Z"}
-
-    while len(valid_words) > 1:
-        while True:
-            morse_sequence = get_input("Input a morse code letter (. = dot, - = dash): ")
-            if morse_sequence in ("EXIT", "QUIT"):
-                return
-
-            # Test whether the input has valid morse characters
-            valid_morse = True
-            for char in morse_sequence:
-                if char not in [".", "-"]:
-                    valid_morse = False
-            if len(morse_sequence) == 0 or len(morse_sequence) > 4:
-                valid_morse = False
-            if valid_morse:
-                break
-            print("Invalid morse sequence. Please try again")
-
-        valid_words_copy = valid_words[:]
-        for word in valid_words_copy:
-            if morse_letters[morse_sequence] not in word:
-                valid_words.remove(word)
-
-    # Now we have at most one valid word
-    if len(valid_words) == 0:
-        print("Morse inputs do not match any known word. Please run module again.")
-    else:
-        print(f"\nThe word is {valid_words[0]}")
-        freq_str = f"{morse_freqs[valid_words[0]]:.3f}"  # Pad with zeroes
-        print("The frequency is " + bold(freq_str) + " MHz\n")
-
-
 def sequences():
     """Loads an interface that can solve the wire sequences module.
     Also implements a "delete" function in case of accidental input.
@@ -851,7 +802,7 @@ def parse_module(bomb):
         elif func_to_call in ("MEMORY",):
             memory()
         elif func_to_call in ("MORSE", "MORSECODE"):
-            morse()
+            module = morse.Morse()
         elif func_to_call in ("COMP", "COMPLICATED", "COMPLICATEDWIRES"):
             module = complicated_wires.ComplicatedWires(bomb)
         elif func_to_call in ("SEQUENCE", "SEQUENCES", "WIRESEQUENCE", "WIRESEQUENCES"):
