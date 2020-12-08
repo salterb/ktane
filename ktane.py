@@ -61,10 +61,10 @@ class Bomb:
         self.strikes = 0
 
     def __repr__(self):
-        rep  = f"Bomb: serial: {self.serial}"
-        rep += f"      num_batteries: {self.num_batteries}"
-        rep += f"      parallel_port: {self.parallel_port}"
-        rep += f"      CAR: {self.CAR}"
+        rep  = f"Bomb: serial: {self.serial}\n"
+        rep += f"      num_batteries: {self.num_batteries}\n"
+        rep += f"      parallel_port: {self.parallel_port}\n"
+        rep += f"      CAR: {self.CAR}\n"
         rep += f"      FRK: {self.FRK}"
         return rep
 
@@ -305,41 +305,41 @@ def static_simon(bomb):
     """
     if set(["A", "E", "I", "O", "U"]).isdisjoint(set(bomb.serial)):
         if bomb.strikes == 0:
-            print(red("RED")+"    -> "+blue("BLUE"))
-            print(blue("BLUE")+"   -> "+yellow("YELLOW"))
-            print(green("GREEN")+"  -> "+green("GREEN"))
-            print(yellow("YELLOW")+" -> "+red("RED"))
+            print(f'{red("RED")}    -> {blue("BLUE")}')
+            print(f'{blue("BLUE")}   -> {yellow("YELLOW")}')
+            print(f'{green("GREEN")}  -> {green("GREEN")}')
+            print(f'{yellow("YELLOW")} -> {red("RED")}')
 
         elif bomb.strikes == 1:
-            print(red("RED")+"    -> "+red("RED"))
-            print(blue("BLUE")+"   -> "+blue("BLUE"))
-            print(green("GREEN")+"  -> "+yellow("YELLOW"))
-            print(yellow("YELLOW")+" -> "+green("GREEN"))
+            print(f'{red("RED")}    -> {red("RED")}')
+            print(f'{blue("BLUE")}   -> {blue("BLUE")}')
+            print(f'{green("GREEN")}  -> {yellow("YELLOW")}')
+            print(f'{yellow("YELLOW")} -> {green("GREEN")}')
 
         elif bomb.strikes == 2:
-            print(red("RED")+"    -> "+yellow("YELLOW"))
-            print(blue("BLUE")+"   -> "+green("GREEN"))
-            print(green("GREEN")+"  -> "+blue("BLUE"))
-            print(yellow("YELLOW")+" -> "+red("RED"))
+            print(f'{red("RED")}    -> {yellow("YELLOW")}')
+            print(f'{blue("BLUE")}   -> {green("GREEN")}')
+            print(f'{green("GREEN")}  -> {blue("BLUE")}')
+            print(f'{yellow("YELLOW")} -> {red("RED")}')
         else:
             raise ValueError(f"Invalid strike number: {bomb.strikes}")
 
     else:
         if bomb.strikes == 0:
-            print(red("RED")+"    -> "+blue("BLUE"))
-            print(blue("BLUE")+"   -> "+red("RED"))
-            print(green("GREEN")+"  -> "+yellow("YELLOW"))
-            print(yellow("YELLOW")+" -> "+green("GREEN"))
+            print(f'{red("RED")}    -> {blue("BLUE")}')
+            print(f'{blue("BLUE")}   -> {red("RED")}')
+            print(f'{green("GREEN")}  -> {yellow("YELLOW")}')
+            print(f'{yellow("YELLOW")} -> {green("GREEN")}')
         elif bomb.strikes == 1:
-            print(red("RED")+"     -> "+yellow("YELLOW"))
-            print(blue("BLUE")+"    -> "+green("GREEN"))
-            print(green("GREEN")+"   -> "+blue("BLUE"))
-            print(yellow("YELLOW")+"  -> "+red("RED"))
+            print(f'{red("RED")}     -> {yellow("YELLOW")}')
+            print(f'{blue("BLUE")}    -> {green("GREEN")}')
+            print(f'{green("GREEN")}   -> {blue("BLUE")}')
+            print(f'{yellow("YELLOW")}  -> {red("RED")}')
         elif bomb.strikes == 2:
-            print(red("RED")+"    -> "+green("GREEN"))
-            print(blue("BLUE")+"   -> "+red("RED"))
-            print(green("GREEN")+"  -> "+yellow("YELLOW"))
-            print(yellow("YELLOW")+" -> "+blue("BLUE"))
+            print(f'{red("RED")}    -> {green("GREEN")}')
+            print(f'{blue("BLUE")}   -> {red("RED")}')
+            print(f'{green("GREEN")}  -> {yellow("YELLOW")}')
+            print(f'{yellow("YELLOW")} -> {blue("BLUE")}')
         else:
             raise ValueError(f"Invalid strike number: {bomb.strikes}")
 
@@ -489,7 +489,7 @@ def simon(bomb):
     """
     # Check strike validity
     if bomb.strikes not in (0, 1, 2):
-        print((f"You have {bomb.strikes} strikes. Please run \"reset strikes\" to try again"))
+        print((f'You have {bomb.strikes} strikes. Run "reset strikes" to try again'))
         return
 
     if bomb.serial is None:
@@ -552,13 +552,13 @@ def memory():
     ipt = _memory_input(DISPLAY)
     print("")  # Blank line
     if ipt in (1, 2):
-        print("Press the button in " + bold("POSITION 2\n"))
+        print(f'Press the button in {bold("POSITION 2")}\n')
         stage1 = stage(_memory_input(WHICH_LABEL), 2)
     elif ipt == 3:
-        print("Press the button in " + bold("POSITION 3\n"))
+        print(f'Press the button in {bold("POSITION 3")}\n')
         stage1 = stage(_memory_input(WHICH_LABEL), 3)
     elif ipt == 4:
-        print("Press the button in " + bold("POSITION 4\n"))
+        print(f'Press the button in {bold("POSITION 4")}\n')
         stage1 = stage(_memory_input(WHICH_LABEL), 4)
     else:
         raise ValueError(f"Invalid option passed to memory stage 1: {ipt}")
@@ -567,13 +567,13 @@ def memory():
     ipt = _memory_input(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
-        print("Press the button with " + bold("LABEL 4\n"))
+        print(f'Press the button with {bold("LABEL 4")}\n')
         stage2 = stage(4, _memory_input(WHICH_POSITION))
     elif ipt in (2, 4):
-        print("Press the button in " + bold(f"POSITION {stage1.position}\n"))
+        print(f'Press the button in {bold(f"POSITION {stage1.position}")}\n')
         stage2 = stage(_memory_input(WHICH_LABEL), stage1.position)
     elif ipt == 3:
-        print("Press the button in " + bold("POSITION 1\n"))
+        print(f'Press the button in {bold("POSITION 1")}\n')
         stage2 = stage(_memory_input(WHICH_LABEL), 1)
     else:
         raise ValueError(f"Invalid option passed to memory stage 2: {ipt}")
@@ -582,16 +582,16 @@ def memory():
     ipt = _memory_input(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
-        print("Press the button with " + bold(f"LABEL {stage2.label}\n"))
+        print(f'Press the button with {bold(f"LABEL {stage2.label}")}\n')
         stage3 = stage(stage2.label, _memory_input(WHICH_POSITION))
     elif ipt == 2:
-        print(f"Press the button with " + bold(f"LABEL {stage1.label}\n"))
+        print(f'Press the button with {bold(f"LABEL {stage1.label}")}\n')
         stage3 = stage(stage1.label, _memory_input(WHICH_POSITION))
     elif ipt == 3:
-        print("Press the button in " + bold("POSITION 3\n"))
+        print(f'Press the button in {bold("POSITION 3")}\n')
         stage3 = stage(_memory_input(WHICH_LABEL), 3)
     elif ipt == 4:
-        print("Press the button with " + bold("LABEL 4\n"))
+        print(f'Press the button with {bold("LABEL 4")}\n')
         stage3 = stage(4, _memory_input(WHICH_POSITION))
     else:
         raise ValueError(f"Invalid option passed to memory stage 3: {ipt}")
@@ -600,13 +600,13 @@ def memory():
     ipt = _memory_input(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
-        print("Press the button in " + bold(f"POSITION {stage1.label}\n"))
+        print(f'Press the button in {bold(f"POSITION {stage1.label}")}\n')
         stage4 = stage(stage1.label, _memory_input(WHICH_POSITION))
     elif ipt == 2:
-        print("Press the button in " + bold("POSITION 1\n"))
+        print(f'Press the button in {bold("POSITION 1")}\n')
         stage4 = stage(_memory_input(WHICH_LABEL), 1)
     elif ipt in (3, 4):
-        print("Press the button in " + bold(f"POSITION {stage2.position}\n"))
+        print(f'Press the button in {bold(f"POSITION {stage2.position}")}\n')
         stage4 = stage(_memory_input(WHICH_LABEL), stage2.position)
     else:
         raise ValueError(f"Invalid option passed to memory stage 4: {ipt}")
@@ -615,13 +615,13 @@ def memory():
     ipt = _memory_input(DISPLAY)
     print("")  # Blank line
     if ipt == 1:
-        print("Press the button with " + bold(f"LABEL {stage1.label}\n"))
+        print(f'Press the button with {bold(f"LABEL {stage1.label}")}\n')
     elif ipt == 2:
-        print("Press the button with " + bold(f"LABEL {stage2.label}\n"))
+        print(f'Press the button with {bold(f"LABEL {stage2.label}")}\n')
     elif ipt == 3:
-        print("Press the button with " + bold(f"LABEL {stage4.label}\n"))
+        print(f'Press the button with {bold(f"LABEL {stage4.label}")}\n')
     elif ipt == 4:
-        print("Press the button with " + bold(f"LABEL {stage3.label}\n"))
+        print(f'Press the button with {bold(f"LABEL {stage3.label}")}\n')
     else:
         raise ValueError(f"Invalid option passed to memory stage 5: {ipt}")
 
