@@ -10,6 +10,7 @@ modules and defuse bombs in Keep Talking and Nobody Explodes.
 from collections import namedtuple
 from sys import version_info, exit
 
+import button
 import complicated_wires
 import morse
 import password
@@ -48,15 +49,15 @@ class Bomb:
     """
     def __init__(self,
                  serial=None,
-                 num_batteries=None,
+                 batteries=None,
                  parallel_port=None,
                  CAR=None,
                  FRK=None):
-        self.serial = serial              # The bomb's serial number
-        self.num_batteries = num_batteries  # The number of batteries on the bomb
+        self.serial = serial                # The bomb's serial number
+        self.batteries = batteries          # The number of batteries on the bomb
         self.parallel_port = parallel_port  # Is there a parallel port?
-        self.CAR = CAR                    # Is there a _lit_ CAR indicator?
-        self.FRK = FRK                    # Is there a _lit_ FRK indicator?
+        self.CAR = CAR                      # Is there a _lit_ CAR indicator?
+        self.FRK = FRK                      # Is there a _lit_ FRK indicator?
         self.strikes = 0
 
     def __repr__(self):
@@ -67,55 +68,78 @@ class Bomb:
         rep += f"      FRK: {self.FRK}"
         return rep
 
-    def add_serial(self):
-        # do-while to get input
-        while True:
-            serial = get_input("Input the bomb's serial number: ")
-            if (serial.isalnum() and
-                len(serial) == 6 and
-                (serial[-1]).isdigit()):
-                    self.serial = serial
-                    break
+    @property
+    def serial(self):
+        while self.__serial is None:
+            self.serial = get_input("Input the bomb's serial number: ")
+        return self.__serial
+
+    @serial.setter
+    def serial(self, val):
+        if val is None:
+            self.__serial = None
+            return
+        if val.isalnum() and len(val) == 6 and (val[-1]).isdigit():
+            self.__serial = val
+        else:
             print("Invalid serial number")
 
-    def add_batteries(self):
-        while True:
-            try:
-                self.num_batteries = int(input("Input the number of batteries "
-                                               "on the bomb: "))
-                break
-            except ValueError:
-                print("Invalid number of batteries")
+    @property
+    def batteries(self):
+        while self.__batteries is None:
+            self.batteries = input("Input the number of batteries on the bomb: ")
+        return self.__batteries
 
-    def add_parallel_port(self):
-        while True:
-            parallel_port = input("Does the bomb have a parallel port? (Y/N) ").upper()
-            if len(parallel_port) > 0 and parallel_port[0] == "Y":
-                self.parallel_port = True
-                break
-            elif len(parallel_port) > 0 and parallel_port[0] == "N":
-                self.parallel_port = False
-                break
+    @batteries.setter
+    def batteries(self, val):
+        if val is None:
+            self.__batteries = None
+            return
+        try:
+            self.__batteries = int(val)
+        except ValueError:
+            print("Invalid number of batteries")
+
+    @property
+    def parallel_port(self):
+        while self.__parallel_port is None:
+            self.parallel_port = input("Does the bomb have a parallel port? (Y/N) ").upper()
+        return self.__parallel_port
+
+    @parallel_port.setter
+    def parallel_port(self, val):
+        self._boolean_setter("__parallel_port", val)
+
+    @property
+    def CAR(self):
+        while self.__CAR is None:
+            self.CAR = input(f"Is there a lit indicator with label CAR? (Y/N) ").upper()
+        return self.__CAR
+
+    @CAR.setter
+    def CAR(self, val):
+        self._boolean_setter("__CAR", val)
+
+    @property
+    def FRK(self):
+        while self.__FRK is None:
+            self.FRK = input(f"Is there a lit indicator with label FRK? (Y/N) ").upper()
+        return self.__FRK
+
+    @FRK.setter
+    def FRK(self, val):
+        self._boolean_setter("__FRK", val)
+
+    def _boolean_setter(self, name, val):
+        if val is None:
+            setattr(self, name, None)
+            return
+        if len(val) > 0 and val[0] == "Y":
+            setattr(self, name, True)
+        elif len(val) > 0 and val[0] == "N":
+            setattr(self, name, False)
+        else:
             print("Invalid input")
-
-    def _add_indicator(self, name):
-        while True:
-            symbol = input(f'Is there a lit indicator with label "{name}"? (Y/N) ').upper()
-            if len(symbol) > 0 and symbol[0] == "Y":
-                setattr(self, symbol, True)
-                break
-            elif len(symbol) > 0 and symbol[0] == "N":
-                setattr(self, symbol, False)
-                break
-            print("Invalid input")
-
-    def add_CAR():
-        self._add_indicator("CAR")
-
-    def add_FRK():
-        self._add_indicator("FRK")
-
-
 # ---------------------------------------------------------- #
 #                                                            #
 #                       BOMB CONFIG                          #
@@ -406,85 +430,6 @@ def is_valid_wire_sequence(wire):
 #                         MODULES                            #
 #                                                            #
 # ---------------------------------------------------------- #
-
-
-def button(bomb):
-    """Solves the button module on the bomb.
-    This function is ugly. We've used 'if's and returns rather than
-    'elif's, since we are also providing functionality for users to
-    supply the bomb data at the last possible moment, and that involves
-    provisionally going inside if statements to provide user input.
-    """
-
-    # Two do-while loops to get the button color and word
-    valid_colours = ["R", "B", "Y", "W"]
-    while True:
-        button_colour = get_input("Input the button colour: ")
-        if button_colour in valid_colours:
-            break
-        print("Please supply a valid colour from [R, B, Y, W]")
-
-    button_word = ""
-    valid_words = ["A", "D", "H", "P"]
-    while button_word not in valid_words:
-        button_word = get_input("Input first letter of word on button: ")
-        if button_word not in valid_words:
-            print("Please supply a valid letter from [A, D, H, P]")
-
-    release_string = (bold("------ DO NOT IMMEDIATELY RELEASE THE "
-                           "BUTTON ------\n\n") +
-                      "If the strip is " + blue("BLUE") + ", release the "
-                      "button when timer has a " + bold("4") + " in any "
-                      "position\nIf the strip is " + yellow("YELLOW") + ", "
-                      "release the button when timer has a " + bold("5") + "in "
-                      "any position\nOtherwise release the button when timer "
-                      "has a " + bold("1") + " in any position\n")
-
-    if button_colour == "B" and button_word == "A":
-        print("\nHold button\n")
-        print(release_string)
-        return
-
-    if (button_word == "D" and (bomb.num_batteries is None or bomb.num_batteries > 1)):
-        if bomb.num_batteries is None:
-            bomb.num_batteries = add_batteries()
-
-        if bomb.num_batteries > 1:
-            print("\nPress and release button\n")
-            return
-
-    if button_colour == "W" and bomb.CAR is not False:
-        if bomb.CAR is None:
-            bomb.CAR = add_CAR()
-
-        if bomb.CAR is True:
-            print("\nHold button\n")
-            print(release_string)
-            return
-
-    if (bomb.FRK is not False and (bomb.num_batteries is None or bomb.num_batteries > 2)):
-        if bomb.num_batteries is None:
-            bomb.num_batteries = add_batteries()
-        if bomb.FRK is None:
-            bomb.FRK = add_FRK()
-
-        if bomb.FRK is True:
-            print("\nPress and release button\n")
-            return
-
-    if button_colour == "Y":
-        print("Hold button")
-        print(release_string)
-        return
-
-    if button_colour == "R" and button_word == "H":
-        print("\nPress and release button\n")
-        return
-
-    else:
-        print("Hold button")
-        print(release_string)
-        return
 
 
 def keypad():
@@ -792,7 +737,7 @@ def parse_module(bomb):
         if func_to_call in ("SIMPLEWIRES", "SIMPLE", "WIRES"):
             module = simple_wires.SimpleWires(bomb)
         elif func_to_call in ("BUTTON",):
-            button(bomb)
+            module = button.Button(bomb)
         elif func_to_call in ("SYMBOL", "SYMBOLS", "SYM", "KEYPAD"):
             keypad()
         elif func_to_call in ("SIMON", "SIMONSAYS"):
