@@ -508,37 +508,6 @@ def simon(bomb):
             print("Please select a valid option")
 
 
-def whos_on_first():
-    """Solves the "Who's on first" module, by outputting the list of
-    potential solutions in order.
-    """
-
-    # We keep going until the user wants to stop
-    while True:
-        # Do-while to get the word on the display
-        while True:
-            display = get_input('\nWhat word is on the display? (type "exit" to cancel): ')
-            if display == "EXIT":
-                print("Exiting\n")
-                return
-            if display in wof.VALID_DISPLAYS:
-                break
-            print("Please input a valid display entry")
-
-        # Do-while to get the word on the button
-        while True:
-            button = get_input(f"What word is on the {wof.DISPLAY_DICT[display]} button? ")
-            if button == "EXIT":
-                print("Exiting\n")
-                return
-            if button in wof.VALID_BUTTONS:
-                break
-            print("Please input a valid button entry")
-
-        print("\nThe button to press is the first valid entry in the following list: ")
-        print(wof.BUTTON_DICT[button])
-
-
 def memory():
     """Solves the memory module by storing all previous input and
     automatically referring back to it to find the correct answers.
@@ -748,7 +717,7 @@ def parse_module(bomb):
         elif func_to_call in ("SIMON", "SIMONSAYS"):
             simon(bomb)
         elif func_to_call in ("WOF", "WHOSONFIRST", "WHO'SONFIRST"):
-            whos_on_first()
+            module = wof.WOF()
         elif func_to_call in ("MEMORY",):
             memory()
         elif func_to_call in ("MORSE", "MORSECODE"):

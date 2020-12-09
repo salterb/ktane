@@ -1,5 +1,52 @@
-# ----------------------- WHO'S ON FIRST -------------------
+"""----------------------- WHO'S ON FIRST -------------------"""
 
+from utils import get_input
+
+def get_wof_display():
+    while True:
+        display = get_input('\nWhat word is on the display? (type "exit" to cancel): ')
+        if display in ("EXIT", "QUIT"):
+            print("Exiting\n")
+            return None
+        if display in VALID_DISPLAYS:
+            return display
+        print("Please input a valid display entry")
+
+def get_wof_button(display):
+    while True:
+        button = get_input(f"What word is on the {DISPLAY_DICT[display]} button? ")
+        if button == ("EXIT", "QUIT"):
+            print("Exiting\n")
+            return None
+        if button in VALID_BUTTONS:
+            return button
+        print("Please input a valid button entry")
+
+
+class WOF:
+    def __init__(self):
+        pass
+
+    def solve(self):
+        """Solves the "Who's on first" module, by outputting the list of
+        potential solutions in order.
+        """
+        # We keep going until the user wants to stop
+        while True:
+            display = get_wof_display()
+            if display is None:  # "EXIT" or "QUIT"
+                return
+            button = get_wof_button(display)
+            if button is None:  # "EXIT" or "QUIT"
+                return
+            print("\nThe button to press is the first valid entry in the following list: ")
+            print(BUTTON_DICT[button])
+
+
+if __name__ == "__main__":
+    print("Please run the script ktane.py instead!")
+
+# WOF data
 VALID_DISPLAYS = ['YES', 'FIRST', 'DISPLAY', 'OKAY', 'SAYS', 'NOTHING', '',
                   'BLANK', 'NO', 'LED', 'LEAD', 'READ', 'RED', 'REED',
                   'LEED', 'HOLDON', 'YOU', 'YOUARE', 'YOUR', "YOU'RE", 'UR',
@@ -51,6 +98,3 @@ BUTTON_DICT = \
 'HOLD': ['YOU ARE', 'U', 'DONE', 'UH UH', 'YOU', 'UR', 'SURE', 'WHAT?', "YOU'RE", 'NEXT', 'HOLD', 'UH HUH', 'YOUR', 'LIKE'],
 'SURE': ['YOU ARE', 'DONE', 'LIKE', "YOU'RE", 'YOU', 'HOLD', 'UH HUH', 'UR', 'SURE', 'U', 'WHAT?', 'NEXT', 'YOUR', 'UH UH'],
 'LIKE': ["YOU'RE", 'NEXT', 'U', 'UR', 'HOLD', 'DONE', 'UH UH', 'WHAT?', 'UH HUH', 'YOU', 'LIKE', 'SURE', 'YOU ARE', 'YOUR']}
-
-if __name__ == "__main__":
-    print("Please run the script ktane.py instead!")
