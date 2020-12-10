@@ -13,6 +13,7 @@ from sys import version_info, exit
 import button
 import complicated_wires
 import morse
+import needy_knob
 import password
 import simple_wires
 import wof
@@ -671,27 +672,6 @@ def maze():
     solve_maze()
 
 
-def needy_knob():
-    """Solves (temporarily) the needy knob module."""
-    valid_lights = {"44": "UP", "43": "UP", "53": "DOWN", "32": "DOWN",
-                    "14": "LEFT", "03": "LEFT", "54": "RIGHT", "52": "RIGHT"}
-    # Do-while for input
-    while True:
-        lights = get_input("\nInput the number of lit lights on the left hand side, "
-                           "and the number on the right: ")
-        if len(lights) < 2:
-            print("Please input two separate numbers")
-        elif not lights[0].isdigit() or not lights[-1].isdigit():
-            print("Please only input two digits")
-        else:
-            lights_stripped = lights[0] + lights[-1]
-            if lights_stripped not in valid_lights.keys():
-                print("Invalid light sequence")
-            else:
-                print("\n" + bold(valid_lights[lights_stripped]) + "\n")
-                return
-
-
 # ---------------------------------------------------------- #
 #                                                            #
 #                       USAGE FUNCTIONS                      #
@@ -731,7 +711,7 @@ def parse_module(bomb):
         elif func_to_call in ("PASSWORD", "PASS"):
             module = password.Password()
         elif func_to_call in ("NEEDY", "KNOB", "NEEDYKNOB", "DIAL"):
-            needy_knob()
+            module = needy_knob.NeedyKnob()
         elif func_to_call in ("STRIKE",):
             strike(bomb)
         elif func_to_call in ("NUMSTRIKE", "NUMSTRIKES"):
