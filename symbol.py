@@ -35,31 +35,31 @@ def symbol_parser():
         # are all in separate columns
         if string in ("Q", "QOPPA", "KOPPA", "WEIRDQ", "LOLLY", "LOLLIPOP",
                       "LOLLYPOP", "POPSICLE"):
-            return "Q"
+            symbol = "Q"
         elif string in ("AT", "TA", "WEIRDA", "A", "PYRAMID", "LADDER"):
-            return "AT"
+            symbol = "AT"
         elif string in ("LAMBDA", "LAMBDALINE", "WEIRDLAMBDA", "LAMBDAWITHLINE"):
-            return "LAMBDA"
+            symbol = "LAMBDA"
         elif string in ("N", "WEIRDN", "BACKWARDSN", "LIGHTNING", "BOLT", "LIGHTNINGBOLT",
                         "THUNDER", "THUNDERBOLT", "NWITHHAT", "NHAT", "NSQUIGGLE", "NBREVE"):
-            return "N"
+            symbol = "N"
         elif string in ("CAT", "KITTY", "JELLYFISH", "WHAT", "WHAT?", "HWITHTRIANGLE",
                         "HTRIANGLE"):
-            return "CAT"
+            symbol = "CAT"
         elif string in ("H", "CURLY H", "CURSIVEH", "GOTHICH", "HWITHTAIL", "HTAIL", "WEIRDH"):
-            return "H"
+            symbol = "H"
         elif string in ("C", "CWITHDOT", "CDOT", "BACKWARDC", "BACKWARDCDOT", "COPYRIGHT",
                         "CINCIRCLE"):
-            return "C"
+            symbol = "C"
         elif string in ("EURO", "EUROUMLAUT", "EURODOTS", "E", "EDOTS", "BACKWARDSEURO"):
-            return "EURO"
+            symbol = "EURO"
         elif string in ("PHI", "SPRING", "COIL", "CURL", "CURLYQ"):
-            return "PHI"
+            symbol = "PHI"
         elif string in ("STAR", "WHITESTAR", "BLACKSTAR", "FILLEDINSTAR"):
-            return "STAR"
+            symbol = "STAR"
         elif string in ("QUESTION", "QUESTIONMARK", "UPSIDEDOWNQUESTIONMARK",
                         "UPSIDEDOWNQUESTION", "?"):
-            return "QUESTION"
+            symbol = "QUESTION"
 
         # ROT-13 encoding here because SOME PEOPLE claim that this
         # symbol resembles various bodily parts, the names of which I
@@ -69,31 +69,33 @@ def symbol_parser():
                         _rot13("OBBOVRF"), _rot13("GVGF"), _rot13("GVGGVRF"),
                         _rot13("ONYYF"), _rot13("GRFGRF"), _rot13("FPEBGHZ"),
                         _rot13("AHGFNPX"), _rot13("AHGF"), "HEADPHONES"):
-            return "OMEGA"
+            symbol = "OMEGA"
         elif string in ("K", "Ж", "ZHE", "KS", "2K", "2KS", "TWOK", "TWOKS", "WEIRDX",
                         "WEIRDK", "Z", "BACKTOBACKK", "BACKTOBACKKS"):
-            return "K"
+            symbol = "K"
         elif string in ("3", "WEIRD3", "HALF3", "UNFINISHED3", "THREE", "3WITHTAIL",
                         "3WITHHORNS"):
-            return "3"
+            symbol = "3"
         elif string in ("6", "SIX", "FLAT6", "FLATSIX", "WEIRD6", "WEIRDSIX", "DELTA",
                         "WEIRDDELTA"):
-            return "6"
+            symbol = "6"
         elif string in ("PARAGRAPH", "P", "WEIRDP", "BOLDP"):
-            return "PARAGRAPH"
+            symbol = "PARAGRAPH"
         elif string in ("TB", "BT", "DT", "TD", "WEIRDB"):
-            return "TB"
+            symbol = "TB"
         elif string in ("FACE", "SMILE", "SMILEY", "SMILEYFACE", "HAPPY",
                         "HAPPYFACE"):
-            return "FACE"
+            symbol = "FACE"
         elif string in ("PSI", "TRIDENT", "FORK", "PITCHFORK"):
-            return "PSI"
+            symbol = "PSI"
         elif string in ("NOTEQUAL", "NOTEQUALS", "NOTEQUALSIGN", "HASH", "HASHTAG", "POUND",
                         "POUNDSIGN", "WEIGHT", "WEIGHTS", "DUMBBELL", "WEIRDX", "CROSS"):
-            return "NOTEQUAL"
+            symbol = "NOTEQUAL"
         elif string in ("AE", "Æ", "ASH"):
-            return "AE"
-        return None
+            symbol = "AE"
+        else:
+            symbol = None
+        return symbol
 
 class Symbol:
     def __init__(self):
