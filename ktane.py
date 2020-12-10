@@ -719,6 +719,7 @@ def get_help():
     print("   strike         Add a strike to the bomb")
     print("   num strikes    Print the number of strikes currently on the bomb")
     print("   reset strike   Reset number of strikes on bomb to zero")
+    print("   reset          Reset the bomb configuration")
     print("   help           Show this help menu")
     print("   exit           Exit the program\n")
 
