@@ -15,6 +15,7 @@ import complicated_wires
 import morse
 import needy_knob
 import password
+import simon
 import simple_wires
 import wof
 from mazes import solve_maze
@@ -158,18 +159,6 @@ class Bomb:
 # ---------------------------------------------------------- #
 
 
-def is_valid_simon(string):
-    """Helper function to determine if the Simon light sequence is
-    valid.
-    """
-    if len(string) == 0:
-        return False
-    for char in string:
-        if char not in ("R", "B", "Y", "G"):
-            return False
-    return True
-
-
 # Symbols functions
 def _rot13(string):
     """Enable rot-13 encoding of words so my code doesn't have smutty
@@ -264,103 +253,6 @@ def symbol_parser():
         return symbol
 
 
-# Simon functions
-def static_simon(bomb):
-    """Simply prints out the relevant colour conversion list for
-    Simon.
-    """
-    if set(["A", "E", "I", "O", "U"]).isdisjoint(set(bomb.serial)):
-        if bomb.strikes == 0:
-            print(f'{red("RED")}    -> {blue("BLUE")}')
-            print(f'{blue("BLUE")}   -> {yellow("YELLOW")}')
-            print(f'{green("GREEN")}  -> {green("GREEN")}')
-            print(f'{yellow("YELLOW")} -> {red("RED")}')
-
-        elif bomb.strikes == 1:
-            print(f'{red("RED")}    -> {red("RED")}')
-            print(f'{blue("BLUE")}   -> {blue("BLUE")}')
-            print(f'{green("GREEN")}  -> {yellow("YELLOW")}')
-            print(f'{yellow("YELLOW")} -> {green("GREEN")}')
-
-        elif bomb.strikes == 2:
-            print(f'{red("RED")}    -> {yellow("YELLOW")}')
-            print(f'{blue("BLUE")}   -> {green("GREEN")}')
-            print(f'{green("GREEN")}  -> {blue("BLUE")}')
-            print(f'{yellow("YELLOW")} -> {red("RED")}')
-        else:
-            raise ValueError(f"Invalid strike number: {bomb.strikes}")
-
-    else:
-        if bomb.strikes == 0:
-            print(f'{red("RED")}    -> {blue("BLUE")}')
-            print(f'{blue("BLUE")}   -> {red("RED")}')
-            print(f'{green("GREEN")}  -> {yellow("YELLOW")}')
-            print(f'{yellow("YELLOW")} -> {green("GREEN")}')
-        elif bomb.strikes == 1:
-            print(f'{red("RED")}     -> {yellow("YELLOW")}')
-            print(f'{blue("BLUE")}    -> {green("GREEN")}')
-            print(f'{green("GREEN")}   -> {blue("BLUE")}')
-            print(f'{yellow("YELLOW")}  -> {red("RED")}')
-        elif bomb.strikes == 2:
-            print(f'{red("RED")}    -> {green("GREEN")}')
-            print(f'{blue("BLUE")}   -> {red("RED")}')
-            print(f'{green("GREEN")}  -> {yellow("YELLOW")}')
-            print(f'{yellow("YELLOW")} -> {blue("BLUE")}')
-        else:
-            raise ValueError(f"Invalid strike number: {bomb.strikes}")
-
-
-def interactive_simon(bomb):
-    """Prompts the user for the Simon input, and displays the correct
-    output.
-    """
-
-    # Repeat the process until the user wants to exit
-    while True:
-        # Do-while for input
-        while True:
-            lights = get_input('Input the light sequence shown (type "exit" to exit): ')
-            if lights == "EXIT":
-                return
-            if is_valid_simon(lights):
-                print("")  # Blank line
-                break
-            print("Invalid color sequence. Use one letter per colour")
-
-        if set(["A", "E", "I", "O", "U"]).isdisjoint(set(bomb.serial)):
-            if bomb.strikes == 0:
-                colour_dict = {"R": "B", "B": "Y", "G": "G", "Y": "R"}
-            elif bomb.strikes == 1:
-                colour_dict = {"R": "R", "B": "B", "G": "Y", "Y": "G"}
-            elif bomb.strikes == 2:
-                colour_dict = {"R": "Y", "B": "G", "G": "B", "Y": "R"}
-            else:
-                raise ValueError(f"Invalid strike number: {bomb.strikes}")
-        else:
-            if bomb.strikes == 0:
-                colour_dict = {"R": "B", "B": "R", "G": "Y", "Y": "G"}
-            elif bomb.strikes == 1:
-                colour_dict = {"R": "Y", "B": "G", "G": "B", "Y": "R"}
-            elif bomb.strikes == 2:
-                colour_dict = {"R": "G", "B": "R", "G": "Y", "Y": "B"}
-            else:
-                raise ValueError(f"Invalid strike number: {bomb.strikes}")
-
-        for char in lights:
-            colour = colour_dict[char]
-            if colour == "R":
-                print(red("RED"))
-            elif colour == "B":
-                print(blue("BLUE"))
-            elif colour == "G":
-                print(green("GREEN"))
-            elif colour == "Y":
-                print(yellow("YELLOW"))
-            else:
-                raise ValueError(f"Invalid colour: {colour}")
-        print("")  # Blank line
-
-
 # Memory functions
 def _memory_input(arg):
     """Gets input for the Memory module. Either asks for number on
@@ -445,33 +337,6 @@ def keypad():
         raise ValueError(f"Multiple valid columns: {columns}")
     else:
         print("No valid columns. Did you input the symbols correctly?")
-
-
-def simon(bomb):
-    """Solves the "Simon" module, in one of two ways. Either prints out
-    the colour map, or enters "interactive mode", where the user inputs
-    a color string and we print out the correct sequence of colors to
-    press.
-    """
-    # Check strike validity
-    if bomb.strikes not in (0, 1, 2):
-        print((f'You have {bomb.strikes} strikes. Run "reset strikes" to try again'))
-        return
-
-    if bomb.serial is None:
-        bomb.serial = add_serial()
-    while True:
-        user_input = get_input("Do you want interactive Simon? (Y/n) ")
-        if user_input == "" or user_input[0] == "Y":
-            interactive_simon(bomb)
-            print("")  # Blank line
-            break
-        elif user_input[0] == "N":
-            static_simon(bomb)
-            print("")  # Blank line
-            break
-        else:
-            print("Please select a valid option")
 
 
 def memory():
@@ -661,7 +526,7 @@ def solve_modules():
         elif func_to_call in ("SYMBOL", "SYMBOLS", "SYM", "KEYPAD"):
             keypad()
         elif func_to_call in ("SIMON", "SIMONSAYS"):
-            simon(bomb)
+            module = simon.Simon(bomb)
         elif func_to_call in ("WOF", "WHOSONFIRST", "WHO'SONFIRST"):
             module = wof.WOF()
         elif func_to_call in ("MEMORY",):
