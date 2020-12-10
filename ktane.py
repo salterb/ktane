@@ -680,22 +680,25 @@ def solve_modules():
             module = needy_knob.NeedyKnob()
         elif func_to_call in ("STRIKE",):
             bomb.strikes += 1
+            print(f"The bomb now has {bomb.strikes} strike{'' if bomb.strikes == 1 else 's'}")
         elif func_to_call in ("NUMSTRIKE", "NUMSTRIKES"):
-            print(f"The bomb has {bomb.strikes} strikes")
+            print(f"The bomb has {bomb.strikes} strike{'' if bomb.strikes == 1 else 's'}")
         elif func_to_call in ("RESETSTRIKE", "RESETSTRIKES"):
             bomb.reset_strikes()
+            print("Bomb strikes reset to 0")
         elif func_to_call in ("RESET", "RESETBOMB"):
             bomb = Bomb()
+            print("Bomb config reset")
         elif func_to_call in ("HELP", "H", "-H", "--HELP"):
             get_help()
         elif func_to_call in ("EXIT", "QUIT"):
             print("\nWe hope your defusal was a success. Come again soon!\n")
             break
+        else:
+            print("Please try again")
 
         if module:
             module.solve()
-        else:
-            print("Please try again")
 
 
 def get_help():
