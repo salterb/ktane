@@ -17,6 +17,7 @@ import needy_knob
 import password
 import simon
 import simple_wires
+import symbol
 import wof
 from mazes import solve_maze
 from colours import *
@@ -159,100 +160,6 @@ class Bomb:
 # ---------------------------------------------------------- #
 
 
-# Symbols functions
-def _rot13(string):
-    """Enable rot-13 encoding of words so my code doesn't have smutty
-    words in it.
-    """
-    from codecs import encode
-    return encode(string, "rot_13")
-
-
-def symbol_parser():
-    """Takes a string, and attempts to parse it to match to one of many
-    symbols. The idea is that there are no two columns with similar
-    symbols, so several, such as "black star" and "white star" can be
-    mapped to "star". Even so, it's gonna be ugly.
-    """
-
-    # If you're reading this, this project probably became too big, and
-    # you need a better parsing function. You're not gonna be able to
-    # bootstrap anything onto this to make it work, you'll need to do
-    # something cleverer. Sorry.
-
-    # Do-while for input
-    while True:
-        string = get_input("Input your symbol (either a close letter "
-                           "or very short description): ").replace("-", "")
-        # The list of valid symbols to return is as follows:
-        # Q, AT, LAMBDA, N, CAT, H, C, EURO, PHI, STAR, QUESTION,
-        # OMEGA, K, 3, 6, PARAGRAPH, TB, FACE, PSI, NOTEQUAL, AE
-        # Note that some symbols overlap, but this isn't a problem as they
-        # are all in separate columns
-        if string in ("Q", "QOPPA", "KOPPA", "WEIRDQ", "LOLLY", "LOLLIPOP",
-                      "LOLLYPOP", "POPSICLE"):
-            symbol = "Q"
-        elif string in ("AT", "TA", "WEIRDA", "A", "PYRAMID", "LADDER"):
-            symbol = "AT"
-        elif string in ("LAMBDA", "LAMBDALINE", "WEIRDLAMBDA", "LAMBDAWITHLINE"):
-            symbol = "LAMBDA"
-        elif string in ("N", "WEIRDN", "BACKWARDSN", "LIGHTNING", "BOLT", "LIGHTNINGBOLT",
-                        "THUNDER", "THUNDERBOLT", "NWITHHAT", "NHAT", "NSQUIGGLE", "NBREVE"):
-            symbol = "N"
-        elif string in ("CAT", "KITTY", "JELLYFISH", "WHAT", "WHAT?", "HWITHTRIANGLE",
-                        "HTRIANGLE"):
-            symbol = "CAT"
-        elif string in ("H", "CURLY H", "CURSIVEH", "GOTHICH", "HWITHTAIL", "HTAIL", "WEIRDH"):
-            symbol = "H"
-        elif string in ("C", "CWITHDOT", "CDOT", "BACKWARDC", "BACKWARDCDOT", "COPYRIGHT",
-                        "CINCIRCLE"):
-            symbol = "C"
-        elif string in ("EURO", "EUROUMLAUT", "EURODOTS", "E", "EDOTS", "BACKWARDSEURO"):
-            symbol = "EURO"
-        elif string in ("PHI", "SPRING", "COIL", "CURL", "CURLYQ"):
-            symbol = "PHI"
-        elif string in ("STAR", "WHITESTAR", "BLACKSTAR", "FILLEDINSTAR"):
-            symbol = "STAR"
-        elif string in ("QUESTION", "QUESTIONMARK", "UPSIDEDOWNQUESTIONMARK",
-                        "UPSIDEDOWNQUESTION", "?"):
-            symbol = "QUESTION"
-
-        # ROT-13 encoding here because SOME PEOPLE claim that this
-        # symbol resembles various bodily parts, the names of which I
-        # don't want in my code. IT'S AN OMEGA, EVERYONE!
-        elif string in ("OMEGA", "W", "WEIRDW", _rot13("NFF"), _rot13("OHZ"),
-                        _rot13("OHGG"), _rot13("OBBGL"), _rot13("OBBOF"),
-                        _rot13("OBBOVRF"), _rot13("GVGF"), _rot13("GVGGVRF"),
-                        _rot13("ONYYF"), _rot13("GRFGRF"), _rot13("FPEBGHZ"),
-                        _rot13("AHGFNPX"), _rot13("AHGF"), "HEADPHONES"):
-            symbol = "OMEGA"
-        elif string in ("K", "Ж", "ZHE", "KS", "2K", "2KS", "TWOK", "TWOKS", "WEIRDX",
-                        "WEIRDK", "Z", "BACKTOBACKK", "BACKTOBACKKS"):
-            symbol = "K"
-        elif string in ("3", "WEIRD3", "HALF3", "UNFINISHED3", "THREE", "3WITHTAIL",
-                        "3WITHHORNS"):
-            symbol = "3"
-        elif string in ("6", "SIX", "FLAT6", "FLATSIX", "WEIRD6", "WEIRDSIX", "DELTA",
-                        "WEIRDDELTA"):
-            symbol = "6"
-        elif string in ("PARAGRAPH", "P", "WEIRDP", "BOLDP"):
-            symbol = "PARAGRAPH"
-        elif string in ("TB", "BT", "DT", "TD", "WEIRDB"):
-            symbol = "TB"
-        elif string in ("FACE", "SMILE", "SMILEY", "SMILEYFACE", "HAPPY",
-                        "HAPPYFACE"):
-            symbol = "FACE"
-        elif string in ("PSI", "TRIDENT", "FORK", "PITCHFORK"):
-            symbol = "PSI"
-        elif string in ("NOTEQUAL", "NOTEQUALS", "NOTEQUALSIGN", "HASH", "HASHTAG", "POUND",
-                        "POUNDSIGN", "WEIGHT", "WEIGHTS", "DUMBBELL", "WEIRDX", "CROSS"):
-            symbol = "NOTEQUAL"
-        elif string in ("AE", "Æ", "ASH"):
-            symbol = "AE"
-
-        return symbol
-
-
 # Memory functions
 def _memory_input(arg):
     """Gets input for the Memory module. Either asks for number on
@@ -293,50 +200,6 @@ def is_valid_wire_sequence(wire):
 #                         MODULES                            #
 #                                                            #
 # ---------------------------------------------------------- #
-
-
-def keypad():
-    """Solves the symbol keypad."""
-    from copy import deepcopy as dc
-    columns = [["Q", "AT", "LAMBDA", "N", "CAT", "H", "C"],
-               ["EURO", "Q", "C", "PHI", "STAR", "H", "QUESTION"],
-               ["C", "OMEGA", "PHI", "K", "3", "LAMBDA", "STAR"],
-               ["6", "PARAGRAPH", "TB", "CAT", "K", "QUESTION", "FACE"],
-               ["PHI", "FACE", "TB", "C", "PARAGRAPH", "3", "STAR"],
-               ["6", "EURO", "NOTEQUAL", "AE", "PSI", "N", "OMEGA"]]
-    symbols = []
-    print("\n"+"-"*20+" CAUTION "+"-"*20)
-    print("This module is hard for a computer to solve.\nPlease try to "
-          "describe all symbols using a very short and obvious description.\n"
-          + "-"*49, end="\n\n")
-    while len(symbols) < 4:
-        string = symbol_parser()
-        if string in symbols:
-            print("Symbol already added")
-        elif string is None:
-            print("Symbol not recognised")
-        else:
-            symbols.append(string)
-
-    # Make a copy of the columns for iterating over
-    columns_copy = dc(columns)
-    for col in columns_copy:
-        for item in symbols:
-            if item not in col:
-                columns.remove(list)
-                break
-
-    # Now we have the correct column (or none at all), so we just print out
-    # our symbols in order
-    if len(columns) == 1:
-        correct_column = columns[0]
-        for item in correct_column:
-            if item in symbols:
-                print(bold(item.capitalize()))
-    elif len(columns) > 1:
-        raise ValueError(f"Multiple valid columns: {columns}")
-    else:
-        print("No valid columns. Did you input the symbols correctly?")
 
 
 def memory():
@@ -524,7 +387,7 @@ def solve_modules():
         elif func_to_call in ("BUTTON",):
             module = button.Button(bomb)
         elif func_to_call in ("SYMBOL", "SYMBOLS", "SYM", "KEYPAD"):
-            keypad()
+            module = symbol.Symbol()
         elif func_to_call in ("SIMON", "SIMONSAYS"):
             module = simon.Simon(bomb)
         elif func_to_call in ("WOF", "WHOSONFIRST", "WHO'SONFIRST"):
