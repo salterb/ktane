@@ -146,44 +146,9 @@ class Bomb:
             setattr(self, dunder_name, False)
         else:
             print("Invalid input")
-# ---------------------------------------------------------- #
-#                                                            #
-#                       BOMB CONFIG                          #
-#                                                            #
-# ---------------------------------------------------------- #
 
-def setup_bomb():
-    """Sets up the bomb with a bunch of user input."""
-    serial = add_serial()
-    num_batteries = add_batteries()
-    parallel_port = add_parallel_port()
-    CAR = add_CAR()
-    FRK = add_FRK()
-    bomb = Bomb(serial, num_batteries, parallel_port, CAR, FRK)
-    return bomb
-
-
-def config_bomb(bomb):
-    """Allows later configuration of the bomb in the event of
-    incorrect initial input."""
-    bomb.serial = add_serial()
-    bomb.num_batteries = add_batteries()
-    bomb.parallel_port = add_parallel_port()
-    bomb.CAR = add_CAR()
-    bomb.FRK = add_FRK()
-
-
-def strike(bomb):
-    """Adds a strike to the bomb."""
-    bomb.strikes += 1
-
-def num_strikes(bomb):
-    """Prints the number of strikes currently on the bomb."""
-    print(f"The bomb has {bomb.strikes} strikes")
-
-def reset_strikes(bomb):
-    """Resets strikes in case of incorrect strike input."""
-    bomb.strikes = 0
+    def reset_strikes(self):
+        self.strikes = 0
 
 
 # ---------------------------------------------------------- #
@@ -678,12 +643,13 @@ def maze():
 #                                                            #
 # ---------------------------------------------------------- #
 
-def parse_module(bomb):
+def solve_modules():
     """Gets input from user regarding what module to solve/option to
     run, and attempts to parse it as a valid choice. Currently is very
     naive and almost certainly won't cover every option people would
     want to give it.
     """
+    bomb = Bomb()
     while True:
         module = None
         func_to_call = get_input('Which module would you like to solve? '
@@ -713,13 +679,13 @@ def parse_module(bomb):
         elif func_to_call in ("NEEDY", "KNOB", "NEEDYKNOB", "DIAL"):
             module = needy_knob.NeedyKnob()
         elif func_to_call in ("STRIKE",):
-            strike(bomb)
+            bomb.strikes += 1
         elif func_to_call in ("NUMSTRIKE", "NUMSTRIKES"):
-            num_strikes(bomb)
+            print(f"The bomb has {bomb.strikes} strikes")
         elif func_to_call in ("RESETSTRIKE", "RESETSTRIKES"):
-            reset_strikes(bomb)
-        elif func_to_call in ("CONFIG", "CONF"):
-            config_bomb(bomb)
+            bomb.reset_strikes()
+        elif func_to_call in ("RESET", "RESETBOMB"):
+            bomb = Bomb()
         elif func_to_call in ("HELP", "H", "-H", "--HELP"):
             get_help()
         elif func_to_call in ("EXIT", "QUIT"):
@@ -753,7 +719,6 @@ def get_help():
     print("   strike         Add a strike to the bomb")
     print("   num strikes    Print the number of strikes currently on the bomb")
     print("   reset strike   Reset number of strikes on bomb to zero")
-    print("   config         (Re)configure the bomb")
     print("   help           Show this help menu")
     print("   exit           Exit the program\n")
 
@@ -767,22 +732,10 @@ def main():
     print("We hope you have a successful defusal, with minimal death.\n")
     print("\nYou may configure your bomb now if you wish.")
     print("If you do not, we may ask for additional information later")
-
-    # Do-while for input
-    while True:
-        user_input = get_input("Do you wish to configure your bomb now (recommended)? (Y/n) ")
-        if user_input == "" or user_input[0] == "Y":
-            bomb = setup_bomb()
-            break
-        elif user_input[0] == "N":
-            bomb = Bomb()
-            break
-        print("Please select a valid option")
-
-    # Now, we ask the user to supply the name of the module they want to solve
-
-    parse_module(bomb)
-
+    solve_modules()
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n\nWe hope your defusal was a success. Come again soon!\n")
