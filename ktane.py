@@ -12,6 +12,7 @@ from sys import version_info, exit
 
 import button
 import complicated_wires
+import memory
 import morse
 import needy_knob
 import password
@@ -160,32 +161,6 @@ class Bomb:
 # ---------------------------------------------------------- #
 
 
-# Memory functions
-def _memory_input(arg):
-    """Gets input for the Memory module. Either asks for number on
-    display, which value was in the button pressed, or which position
-    the pressed button was in, depending on the argument provided.
-    """
-    DISPLAY = 0
-    WHICH_LABEL = 1
-    WHICH_POSITION = 2
-    if arg not in (DISPLAY, WHICH_LABEL, WHICH_POSITION):
-        raise ValueError(f"Invalid argument passed to memoryDisplayInput: {arg}")
-
-    # Do-while for input
-    while True:
-        if arg == DISPLAY:
-            ipt = get_input("Input the number on the display: ")
-        elif arg == WHICH_LABEL:
-            ipt = get_input("What value was in that position? ")
-        else:
-            ipt = get_input("Which position was that in? ")
-
-        if ipt.isdigit() and 1 <= int(ipt) <= 4:
-            return int(ipt)
-        print("Invalid input")
-
-
 def is_valid_wire_sequence(wire):
     """Verifies the provided wire sequence consists of valid
     characters.
@@ -200,93 +175,6 @@ def is_valid_wire_sequence(wire):
 #                         MODULES                            #
 #                                                            #
 # ---------------------------------------------------------- #
-
-
-def memory():
-    """Solves the memory module by storing all previous input and
-    automatically referring back to it to find the correct answers.
-    """
-    DISPLAY = 0
-    WHICH_LABEL = 1
-    WHICH_POSITION = 2
-
-    stage = namedtuple("stage", ["label", "position"])
-    # Stage 1
-    ipt = _memory_input(DISPLAY)
-    print("")  # Blank line
-    if ipt in (1, 2):
-        print(f'Press the button in {bold("POSITION 2")}\n')
-        stage1 = stage(_memory_input(WHICH_LABEL), 2)
-    elif ipt == 3:
-        print(f'Press the button in {bold("POSITION 3")}\n')
-        stage1 = stage(_memory_input(WHICH_LABEL), 3)
-    elif ipt == 4:
-        print(f'Press the button in {bold("POSITION 4")}\n')
-        stage1 = stage(_memory_input(WHICH_LABEL), 4)
-    else:
-        raise ValueError(f"Invalid option passed to memory stage 1: {ipt}")
-
-    # Stage 2
-    ipt = _memory_input(DISPLAY)
-    print("")  # Blank line
-    if ipt == 1:
-        print(f'Press the button with {bold("LABEL 4")}\n')
-        stage2 = stage(4, _memory_input(WHICH_POSITION))
-    elif ipt in (2, 4):
-        print(f'Press the button in {bold(f"POSITION {stage1.position}")}\n')
-        stage2 = stage(_memory_input(WHICH_LABEL), stage1.position)
-    elif ipt == 3:
-        print(f'Press the button in {bold("POSITION 1")}\n')
-        stage2 = stage(_memory_input(WHICH_LABEL), 1)
-    else:
-        raise ValueError(f"Invalid option passed to memory stage 2: {ipt}")
-
-    # Stage 3
-    ipt = _memory_input(DISPLAY)
-    print("")  # Blank line
-    if ipt == 1:
-        print(f'Press the button with {bold(f"LABEL {stage2.label}")}\n')
-        stage3 = stage(stage2.label, _memory_input(WHICH_POSITION))
-    elif ipt == 2:
-        print(f'Press the button with {bold(f"LABEL {stage1.label}")}\n')
-        stage3 = stage(stage1.label, _memory_input(WHICH_POSITION))
-    elif ipt == 3:
-        print(f'Press the button in {bold("POSITION 3")}\n')
-        stage3 = stage(_memory_input(WHICH_LABEL), 3)
-    elif ipt == 4:
-        print(f'Press the button with {bold("LABEL 4")}\n')
-        stage3 = stage(4, _memory_input(WHICH_POSITION))
-    else:
-        raise ValueError(f"Invalid option passed to memory stage 3: {ipt}")
-
-    # Stage 4
-    ipt = _memory_input(DISPLAY)
-    print("")  # Blank line
-    if ipt == 1:
-        print(f'Press the button in {bold(f"POSITION {stage1.label}")}\n')
-        stage4 = stage(stage1.label, _memory_input(WHICH_POSITION))
-    elif ipt == 2:
-        print(f'Press the button in {bold("POSITION 1")}\n')
-        stage4 = stage(_memory_input(WHICH_LABEL), 1)
-    elif ipt in (3, 4):
-        print(f'Press the button in {bold(f"POSITION {stage2.position}")}\n')
-        stage4 = stage(_memory_input(WHICH_LABEL), stage2.position)
-    else:
-        raise ValueError(f"Invalid option passed to memory stage 4: {ipt}")
-
-    # Stage 5
-    ipt = _memory_input(DISPLAY)
-    print("")  # Blank line
-    if ipt == 1:
-        print(f'Press the button with {bold(f"LABEL {stage1.label}")}\n')
-    elif ipt == 2:
-        print(f'Press the button with {bold(f"LABEL {stage2.label}")}\n')
-    elif ipt == 3:
-        print(f'Press the button with {bold(f"LABEL {stage4.label}")}\n')
-    elif ipt == 4:
-        print(f'Press the button with {bold(f"LABEL {stage3.label}")}\n')
-    else:
-        raise ValueError(f"Invalid option passed to memory stage 5: {ipt}")
 
 
 def sequences():
@@ -393,7 +281,7 @@ def solve_modules():
         elif func_to_call in ("WOF", "WHOSONFIRST", "WHO'SONFIRST"):
             module = wof.WOF()
         elif func_to_call in ("MEMORY",):
-            memory()
+            module = memory.Memory()
         elif func_to_call in ("MORSE", "MORSECODE"):
             module = morse.Morse()
         elif func_to_call in ("COMP", "COMPLICATED", "COMPLICATEDWIRES"):
