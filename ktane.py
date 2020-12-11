@@ -462,8 +462,6 @@ def main():
     print(LOGO)
     print("Welcome to the KTANE solver!")
     print("We hope you have a successful defusal, with minimal death.\n")
-    print("\nYou may configure your bomb now if you wish.")
-    print("If you do not, we may ask for additional information later")
     solve_modules()
 
 if __name__ == "__main__":

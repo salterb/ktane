@@ -10,7 +10,7 @@ COLUMNS = set([("Q", "AT", "LAMBDA", "N", "CAT", "H", "C"),
                ("PHI", "FACE", "TB", "C", "PARAGRAPH", "3", "STAR"),
                ("6", "EURO", "NOTEQUAL", "AE", "PSI", "N", "OMEGA")])
 
-def _rot13(string):
+def rot13(string):
     """Enable rot-13 encoding of words so my code doesn't have smutty
     words in it.
     """
@@ -63,11 +63,11 @@ def get_symbol():
     # ROT-13 encoding here because SOME PEOPLE claim that this
     # symbol resembles various bodily parts, the names of which I
     # don't want in my code. IT'S AN OMEGA, EVERYONE!
-    elif string in ("OMEGA", "W", "WEIRDW", _rot13("NFF"), _rot13("OHZ"),
-                    _rot13("OHGG"), _rot13("OBBGL"), _rot13("OBBOF"),
-                    _rot13("OBBOVRF"), _rot13("GVGF"), _rot13("GVGGVRF"),
-                    _rot13("ONYYF"), _rot13("GRFGRF"), _rot13("FPEBGHZ"),
-                    _rot13("AHGFNPX"), _rot13("AHGF"), "HEADPHONES"):
+    elif string in ("OMEGA", "W", "WEIRDW", rot13("NFF"), rot13("OHZ"),
+                    rot13("OHGG"), rot13("OBBGL"), rot13("OBBOF"),
+                    rot13("OBBOVRF"), rot13("GVGF"), rot13("GVGGVRF"),
+                    rot13("ONYYF"), rot13("GRFGRF"), rot13("FPEBGHZ"),
+                    rot13("AHGFNPX"), rot13("AHGF"), "HEADPHONES"):
         symbol = "OMEGA"
     elif string in ("K", "Ж", "ZHE", "KS", "2K", "2KS", "TWOK", "TWOKS", "WEIRDX",
                     "WEIRDK", "Z", "BACKTOBACKK", "BACKTOBACKKS"):
