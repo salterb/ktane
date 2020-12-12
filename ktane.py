@@ -250,5 +250,5 @@ def main():
 if __name__ == "__main__":
     try:
         main()
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, EOFError):  # Catch CTRL+C and CTRL+D
         print("\n\nWe hope your defusal was a success. Come again soon!\n")
