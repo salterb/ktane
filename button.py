@@ -7,8 +7,8 @@ from utils import get_input
 
 VALID_COLOURS = ["R", "B", "Y", "W"]
 VALID_WORDS = ["A", "D", "H", "P"]
-RELEASE_STRING = \
-f"""{bold("------ DO NOT IMMEDIATELY RELEASE THE BUTTON ------")}
+HOLD_STRING = \
+f"""{bold("------ HOLD, BUT DO NOT IMMEDIATELY RELEASE THE BUTTON ------")}
 
 If the strip is {blue("BLUE")}, release the button when timer has a \
 {bold("4")} in any position
@@ -70,20 +70,16 @@ class Button:
         # provisionally going inside if statements to provide user input.
 
         if self.colour == Colour.BLUE and self.word == Word.ABORT:
-            print("\nHold button\n")
-            print(RELEASE_STRING)
+            print(HOLD_STRING)
         elif self.word == Word.DETONATE and self.bomb.batteries > 1:
             print("\nPress and release button\n")
         elif self.colour == Colour.WHITE and self.bomb.CAR:
-            print("\nHold button\n")
-            print(release_string)
+            print(HOLD_STRING)
         elif self.bomb.FRK and self.bomb.num_batteries > 2:
             print("\nPress and release button\n")
         elif self.colour == Colour.YELLOW:
-            print("\nHold button\n")
-            print(RELEASE_STRING)
+            print(HOLD_STRING)
         elif self.colour == Colour.RED and self.word == Word.HOLD:
             print("\nPress and release button\n")
         else:
-            print("Hold button")
-            print(RELEASE_STRING)
+            print(HOLD_STRING)
