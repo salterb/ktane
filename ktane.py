@@ -19,6 +19,7 @@ import password
 import simon
 import simple_wires
 import symbol
+import wire_sequence
 import wof
 from mazes import solve_maze
 from colours import *
@@ -156,96 +157,9 @@ class Bomb:
 
 # ---------------------------------------------------------- #
 #                                                            #
-#                         HELPERS                            #
-#                                                            #
-# ---------------------------------------------------------- #
-
-
-def is_valid_wire_sequence(wire):
-    """Verifies the provided wire sequence consists of valid
-    characters.
-    """
-    if len(wire) >= 2 and wire[0] in ("R", "B", "K") and wire[-1] in ("A", "B", "C"):
-        return True
-    return False
-
-
-# ---------------------------------------------------------- #
-#                                                            #
 #                         MODULES                            #
 #                                                            #
 # ---------------------------------------------------------- #
-
-
-def sequences():
-    """Loads an interface that can solve the wire sequences module.
-    Also implements a "delete" function in case of accidental input.
-    """
-    RED = -1
-    BLUE = -2
-    BLACK = -3
-    valid_reds = {0: "C", 1: "B", 2: "A", 3: "AC", 4: "B",
-                  5: "AC", 6: "ABC", 7: "AB", 8: "B"}
-    valid_blues = {0: "B", 1: "AC", 2: "B", 3: "A", 4: "B",
-                   5: "BC", 6: "C", 7: "AC", 8: "A"}
-    valid_blacks = {0: "ABC", 1: "AC", 2: "B", 3: "AC", 4: "B",
-                    5: "BC", 6: "AB", 7: "C", 8: "C"}
-    red_count = 0
-    blue_count = 0
-    black_count = 0
-    previous_move = None
-    # Keep going until the user wants to exit
-    while True:
-        # Do-while for input
-        while True:
-            wire = get_input("\nInput the colour of the wire, and the letter to which "
-                             "it is connected. Use 'K' for black.\n"
-                             "(Type 'exit' to exit, 'undo' to undo previous move.) ")
-            if wire == "EXIT":
-                print("\nExiting\n")
-                return
-            if wire == "UNDO":
-                if previous_move is None:
-                    print("Nothing to undo!")
-                elif previous_move == RED:
-                    red_count -= 1
-                elif previous_move == BLUE:
-                    blue_count -= 1
-                elif previous_move == BLACK:
-                    black_count -= 1
-                previous_move = None
-                break
-
-            if is_valid_wire_sequence(wire):
-                break
-            print("Invalid wire")
-
-        # Now our wire is valid, we provide output.
-        if wire[0] == "R":
-            if wire[1] in valid_reds[red_count]:
-                cut()
-            else:
-                no_cut()
-            red_count += 1
-            previous_move = RED
-        elif wire[0] == "B":
-            if wire[1] in valid_blues[blue_count]:
-                cut()
-            else:
-                no_cut()
-            blue_count += 1
-            previous_move = BLUE
-        elif wire[0] == "K":
-            if wire[1] in valid_blacks[black_count]:
-                cut()
-            else:
-                no_cut()
-            black_count += 1
-            previous_move = BLACK
-
-        if red_count > 8 or blue_count > 8 or black_count > 8:
-            print("Used too many wires. Exiting\n")
-            return
 
 
 def maze():
@@ -287,7 +201,7 @@ def solve_modules():
         elif func_to_call in ("COMP", "COMPLICATED", "COMPLICATEDWIRES"):
             module = complicated_wires.ComplicatedWires(bomb)
         elif func_to_call in ("SEQUENCE", "SEQUENCES", "WIRESEQUENCE", "WIRESEQUENCES"):
-            sequences()
+            module = wire_sequence.WireSequence()
         elif func_to_call in ("MAZE", "MAZES"):
             maze()
         elif func_to_call in ("PASSWORD", "PASS"):
