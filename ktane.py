@@ -12,6 +12,7 @@ from sys import version_info, exit
 
 import button
 import complicated_wires
+import maze
 import memory
 import morse
 import needy_knob
@@ -21,8 +22,6 @@ import simple_wires
 import symbol
 import wire_sequence
 import wof
-from mazes import solve_maze
-from colours import *
 from utils import get_input
 
 if version_info < (3, 6):
@@ -155,24 +154,6 @@ class Bomb:
         self.strikes = 0
 
 
-# ---------------------------------------------------------- #
-#                                                            #
-#                         MODULES                            #
-#                                                            #
-# ---------------------------------------------------------- #
-
-
-def maze():
-    """Calls the external maze solver from a separate module."""
-    solve_maze()
-
-
-# ---------------------------------------------------------- #
-#                                                            #
-#                       USAGE FUNCTIONS                      #
-#                                                            #
-# ---------------------------------------------------------- #
-
 def solve_modules():
     """Gets input from user regarding what module to solve/option to
     run, and attempts to parse it as a valid choice. Currently is very
@@ -203,7 +184,7 @@ def solve_modules():
         elif func_to_call in ("SEQUENCE", "SEQUENCES", "WIRESEQUENCE", "WIRESEQUENCES"):
             module = wire_sequence.WireSequence()
         elif func_to_call in ("MAZE", "MAZES"):
-            maze()
+            module = maze.Maze()
         elif func_to_call in ("PASSWORD", "PASS"):
             module = password.Password()
         elif func_to_call in ("NEEDY", "KNOB", "NEEDYKNOB", "DIAL"):
