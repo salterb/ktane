@@ -1,4 +1,9 @@
-"""Placeholder docstring."""
+"""Button
+
+The Button module consists of a single button in 5 possible colours,
+with 4 possible different words on it. Based on these two criteria,
+the button should either be pressed, or held until a specific time.
+"""
 
 from enum import Enum
 
@@ -18,6 +23,7 @@ Otherwise release the button when timer has a {bold("1")} in any position
 """
 
 class Colour(Enum):
+    """The possible colours of the button."""
     RED = "R"
     BLUE = "B"
     YELLOW = "Y"
@@ -26,6 +32,7 @@ class Colour(Enum):
 
 
 class Word(Enum):
+    """The possible words on the button."""
     ABORT = "A"
     DETONATE = "D"
     HOLD = "H"
@@ -33,6 +40,7 @@ class Word(Enum):
 
 
 def get_button_colour():
+    """Get user input to get the colour of the button."""
     while True:
         button_colour = get_input("Input the button colour: ")
         try:
@@ -48,6 +56,7 @@ def get_button_colour():
 
 
 def get_button_word():
+    """Get user input to get the word on the button."""
     while True:
         button_word = get_input("Input word on button: ")
         try:
@@ -57,18 +66,17 @@ def get_button_word():
 
 
 class Button:
+    """Class to represent the button. Solving required getting the
+    colour and word, and then either pressing or holding depending
+    on a web of conditions prescribed by bomb attributes.
+    """
     def __init__(self, bomb):
         self.bomb = bomb
         self.colour = get_button_colour()
         self.word = get_button_word()
 
     def solve(self):
-        """Solves the button module on the bomb."""
-        # This function is ugly. We've used 'if's and returns rather than
-        # 'elif's, since we are also providing functionality for users to
-        # supply the bomb data at the last possible moment, and that involves
-        # provisionally going inside if statements to provide user input.
-
+        """Solve the button module on the bomb."""
         if self.colour == Colour.BLUE and self.word == Word.ABORT:
             print(HOLD_STRING)
         elif self.word == Word.DETONATE and self.bomb.batteries > 1:
