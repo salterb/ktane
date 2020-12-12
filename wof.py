@@ -1,11 +1,58 @@
-# ----------------------- WHO'S ON FIRST -------------------
+"""----------------------- WHO'S ON FIRST -------------------"""
 
-WOFvalidDisplays = ['YES', 'FIRST', 'DISPLAY', 'OKAY', 'SAYS', 'NOTHING', '',
-                    'BLANK', 'NO', 'LED', 'LEAD', 'READ', 'RED', 'REED',
-                    'LEED', 'HOLDON', 'YOU', 'YOUARE', 'YOUR', "YOU'RE", 'UR',
-                    'THERE', "THEY'RE", 'THEIR', 'THEYARE', 'SEE', 'C', 'CEE']
+from utils import get_input
 
-WOFdisplayDict = \
+def get_wof_display():
+    while True:
+        display = get_input('\nWhat word is on the display? (type "exit" to cancel): ')
+        if display in ("EXIT", "QUIT"):
+            print("Exiting\n")
+            return None
+        if display in VALID_DISPLAYS:
+            return display
+        print("Please input a valid display entry")
+
+def get_wof_button(display):
+    while True:
+        button = get_input(f"What word is on the {DISPLAY_DICT[display]} button? ")
+        if button == ("EXIT", "QUIT"):
+            print("Exiting\n")
+            return None
+        if button in VALID_BUTTONS:
+            return button
+        print("Please input a valid button entry")
+
+
+class WOF:
+    def __init__(self):
+        pass
+
+    def solve(self):
+        """Solves the "Who's on first" module, by outputting the list of
+        potential solutions in order.
+        """
+        # We keep going until the user wants to stop
+        while True:
+            display = get_wof_display()
+            if display is None:  # "EXIT" or "QUIT"
+                return
+            button = get_wof_button(display)
+            if button is None:  # "EXIT" or "QUIT"
+                return
+            print("\nThe button to press is the first valid entry in the following list: ")
+            print(BUTTON_DICT[button])
+
+
+if __name__ == "__main__":
+    print("Please run the script ktane.py instead!")
+
+# WOF data
+VALID_DISPLAYS = ['YES', 'FIRST', 'DISPLAY', 'OKAY', 'SAYS', 'NOTHING', '',
+                  'BLANK', 'NO', 'LED', 'LEAD', 'READ', 'RED', 'REED',
+                  'LEED', 'HOLDON', 'YOU', 'YOUARE', 'YOUR', "YOU'RE", 'UR',
+                  'THERE', "THEY'RE", 'THEIR', 'THEYARE', 'SEE', 'C', 'CEE']
+
+DISPLAY_DICT = \
 {'YES': 'middle left', 'FIRST': 'top right', 'DISPLAY': 'bottom right',
 'OKAY': 'top right', 'SAYS': 'bottom right', 'NOTHING': 'middle left',
 '': 'bottom left', 'BLANK': 'middle right', 'NO': 'bottom right',
@@ -17,12 +64,12 @@ WOFdisplayDict = \
 'THEYARE': 'middle left', 'SEE': 'bottom right', 'C': 'top right',
 'CEE': 'bottom right'}
 
-WOFvalidButtons = ['READY', 'FIRST', 'NO', 'BLANK', 'NOTHING', 'YES', 'WHAT',
-                   'UHHH', 'LEFT', 'RIGHT', 'MIDDLE', 'OKAY', 'WAIT', 'PRESS',
-                   'YOU', 'YOUARE', 'YOUR', "YOU'RE", 'UR', 'U', 'UHHUH',
-                   'UHUH', 'WHAT?', 'DONE', 'NEXT', 'HOLD', 'SURE', 'LIKE']
+VALID_BUTTONS = ['READY', 'FIRST', 'NO', 'BLANK', 'NOTHING', 'YES', 'WHAT',
+                 'UHHH', 'LEFT', 'RIGHT', 'MIDDLE', 'OKAY', 'WAIT', 'PRESS',
+                 'YOU', 'YOUARE', 'YOUR', "YOU'RE", 'UR', 'U', 'UHHUH',
+                 'UHUH', 'WHAT?', 'DONE', 'NEXT', 'HOLD', 'SURE', 'LIKE']
 
-WOFbuttonDict = \
+BUTTON_DICT = \
 {'READY': ['YES', 'OKAY', 'WHAT', 'MIDDLE', 'LEFT', 'PRESS', 'RIGHT', 'BLANK', 'READY', 'NO', 'FIRST', 'UHHH', 'NOTHING', 'WAIT'],
 'FIRST': ['LEFT', 'OKAY', 'YES', 'MIDDLE', 'NO', 'RIGHT', 'NOTHING', 'UHHH', 'WAIT', 'READY', 'BLANK', 'WHAT', 'PRESS', 'FIRST'],
 'NO': ['BLANK', 'UHHH', 'WAIT', 'FIRST', 'WHAT', 'READY', 'RIGHT', 'YES', 'NOTHING', 'LEFT', 'PRESS', 'OKAY', 'NO', 'MIDDLE'],
@@ -51,6 +98,3 @@ WOFbuttonDict = \
 'HOLD': ['YOU ARE', 'U', 'DONE', 'UH UH', 'YOU', 'UR', 'SURE', 'WHAT?', "YOU'RE", 'NEXT', 'HOLD', 'UH HUH', 'YOUR', 'LIKE'],
 'SURE': ['YOU ARE', 'DONE', 'LIKE', "YOU'RE", 'YOU', 'HOLD', 'UH HUH', 'UR', 'SURE', 'U', 'WHAT?', 'NEXT', 'YOUR', 'UH UH'],
 'LIKE': ["YOU'RE", 'NEXT', 'U', 'UR', 'HOLD', 'DONE', 'UH UH', 'WHAT?', 'UH HUH', 'YOU', 'LIKE', 'SURE', 'YOU ARE', 'YOUR']}
-
-if __name__ == "__main__":
-    print("Please run the script ktane.py instead!")
