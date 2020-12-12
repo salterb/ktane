@@ -66,7 +66,7 @@ class Bomb:
 
     def __repr__(self):
         rep  = f"Bomb: serial: {self.serial}\n"
-        rep += f"      num_batteries: {self.num_batteries}\n"
+        rep += f"      batteries: {self.batteries}\n"
         rep += f"      parallel_port: {self.parallel_port}\n"
         rep += f"      CAR: {self.CAR}\n"
         rep += f"      FRK: {self.FRK}"
