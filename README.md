@@ -1,4 +1,4 @@
-# Live solutions to KTANE
+# KTANE
 
 Do you enjoy defusing bombs, but don't like the hassle of having to speak to other humans? Then do we have the stupid program for you!
 
