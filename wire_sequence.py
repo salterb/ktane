@@ -1,3 +1,10 @@
+"""Wire Sequence
+
+The Wire Sequence module consists of four screens of wires, each
+containing 1-3 wires. The wires go from a number to a letter, and are
+either red, blue, or black.
+"""
+
 from colours import bold
 from utils import get_input
 
@@ -29,11 +36,18 @@ def is_valid_wire_sequence(wire):
 
 
 class WireSequence:
+    """Class to represent the Wire Sequence module. Solving requires
+    inputting the wires in order (ordered by the numbers on the left),
+    listing their colour and which letter they terminate at. The wires
+    should either be cut or not depending on the colour, their terminus,
+    and how many wires of that colour we've seen so far.
+    """
     def __init__(self):
         self.wire_counts = {"R": 0, "B": 0, "K": 0}
         self.sequence = []
 
     def get_wire(self):
+        """Prompt user to provide a wire colour and terminus."""
         while True:
             wire = get_input("\nInput the colour of the wire, and the letter to which "
                              "it is connected. Use 'K' for black.\n"
@@ -55,7 +69,7 @@ class WireSequence:
                 print("Invalid wire")
 
     def solve(self):
-        # Keep going until the user wants to exit
+        """Solve the Wire Sequence module."""
         while True:
             wire = self.get_wire()
             if wire is None:  # "EXIT"
