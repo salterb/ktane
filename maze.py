@@ -1,6 +1,16 @@
+"""Maze
+
+The Maze module consists of a 6x6 grid with invisible walls, containing
+a controllable light and end point. To solve, you must move the light
+to the end without hitting any of the walls.
+"""
+
 from copy import copy
 
 def get_coords(string):
+    """Prompt user for a coordinate on the maze, and return a tuple of
+    ints representing a position on the 6x6 maze.
+    """
     while True:
         coords = input(string).strip('()[] ')
         try:
@@ -15,6 +25,11 @@ def get_coords(string):
 
 
 class Maze:
+    """Class to represent the Maze. Solving requires getting the
+    location of a green circle on the maze to identify which maze it is,
+    as well as the start and end point. This solver then uses a DFS to
+    solve the maze and print out the required moves.
+    """
     def __init__(self):
         while True:
             maze_ipt = get_coords("Enter the coordinates of any green circle in the maze: ")
@@ -61,11 +76,14 @@ class Maze:
         return None
 
     def solve(self):
+        """Solve the Maze module on the bomb."""
         moves = self.DFS_maze()
         print_moves(moves)
 
 def print_moves(moves):
-    """Prints the necessary moves to solve the maze."""
+    """Given a list of moves in the format outputted by the DFS, print
+    them in a more user-friendly format.
+    """
     print("")  # New line
     if moves is None:
         print("No moves - maybe you specified the same start and end point?")
