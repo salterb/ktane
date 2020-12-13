@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 """
 KTANE Solver
 
@@ -7,8 +6,9 @@ A friendly interactive manual, written in Python3, to help solve
 modules and defuse bombs in Keep Talking and Nobody Explodes.
 
 """
-from collections import namedtuple
-from sys import version_info, exit
+# We're using setattr to set some attributes, which confuses pylint,
+# so silence those errors
+# pylint: disable=E1101
 
 import button
 import complicated_wires
@@ -23,10 +23,6 @@ import symbol
 import wire_sequence
 import wof
 from utils import get_input
-
-if version_info < (3, 6):
-    print("Python 3.6 or greater is required")
-    exit(1)
 
 LOGO = r"""
  _   _______ ___   _   _  _____
@@ -117,7 +113,7 @@ class Bomb:
     @property
     def CAR(self):
         while self.__CAR is None:
-            self.CAR = input(f"Is there a lit indicator with label CAR? (Y/N) ").upper()
+            self.CAR = input("Is there a lit indicator with label CAR? (Y/N) ").upper()
         return self.__CAR
 
     @CAR.setter
@@ -127,7 +123,7 @@ class Bomb:
     @property
     def FRK(self):
         while self.__FRK is None:
-            self.FRK = input(f"Is there a lit indicator with label FRK? (Y/N) ").upper()
+            self.FRK = input("Is there a lit indicator with label FRK? (Y/N) ").upper()
         return self.__FRK
 
     @FRK.setter
