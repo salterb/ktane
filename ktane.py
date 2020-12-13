@@ -12,6 +12,7 @@ modules and defuse bombs in Keep Talking and Nobody Explodes.
 
 import button
 import complicated_wires
+import keypad
 import maze
 import memory
 import morse
@@ -19,7 +20,6 @@ import needy_knob
 import password
 import simon
 import simple_wires
-import symbol
 import wire_sequence
 import wof
 from utils import get_input
@@ -166,7 +166,7 @@ def solve_modules():
         elif func_to_call in ("BUTTON",):
             module = button.Button(bomb)
         elif func_to_call in ("SYMBOL", "SYMBOLS", "SYM", "KEYPAD"):
-            module = symbol.Symbol()
+            module = keypad.Keypad()
         elif func_to_call in ("SIMON", "SIMONSAYS"):
             module = simon.Simon(bomb)
         elif func_to_call in ("WOF", "WHOSONFIRST", "WHO'SONFIRST"):

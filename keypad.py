@@ -1,3 +1,8 @@
+"""Keypad
+
+The Keypad module consists of four symbols arranged in a square.
+"""
+
 from codecs import encode
 
 from colours import bold
@@ -96,7 +101,15 @@ def get_symbol():
         symbol = None
     return symbol
 
-class Symbol:
+class Keypad:
+    """Class to represent the Keypad module. Solving requires inputting
+    the symbols, finding the unique lookup table containing all the
+    inputted symbols, and pressing the symbols in the order they appear
+    in the lookup table.
+
+    By their nature, the symbols are hard to describe, which makes this
+    module particularly challenging to reliably solve.
+    """
     def __init__(self):
         print(f"\n{'-'*20} CAUTION {'-'*20}")
         print("This module is hard for a computer to solve.\n"
@@ -105,7 +118,7 @@ class Symbol:
         print(f"{'-'*49}", end="\n\n")
 
     def solve(self):
-        """Solves the symbol keypad."""
+        """Solves the Keypad module."""
         symbols = set()
         while len(symbols) < 4:
             string = get_symbol()
