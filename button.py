@@ -66,7 +66,7 @@ def get_button_word():
 
 
 class Button:
-    """Class to represent the button. Solving required getting the
+    """Class to represent the button. Solving requires getting the
     colour and word, and then either pressing or holding depending
     on a web of conditions prescribed by bomb attributes.
     """
@@ -91,3 +91,6 @@ class Button:
             print("\nPress and release button\n")
         else:
             print(HOLD_STRING)
+
+if __name__ == "__main__":
+    print("Please run the script ktane.py instead!")
