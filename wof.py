@@ -53,7 +53,8 @@ class WOF:
             if button is None:  # "EXIT" or "QUIT"
                 return
             print("\nThe button to press is the first valid entry in the following list: ")
-            print(BUTTON_DICT[button])
+            for word in BUTTON_DICT[button]:
+                print(word)
 
 
 if __name__ == "__main__":
