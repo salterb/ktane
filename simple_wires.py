@@ -1,4 +1,7 @@
-"""TODO Simple Wires module docstring
+"""Simple Wires
+
+The Simple Wires module consists of 3-6 horizontal wires with various
+possible colours.
 """
 
 from utils import get_input
@@ -17,7 +20,10 @@ def _is_valid_simple_wires(wires):
 
 
 class SimpleWires:
-    """TODO SimpleWires placeholder docstring.
+    """Class to represent the SimpleWires module. Solving requires
+    inputting the list of wire colours, and then cutting a wire
+    based on a web of conditions based on the number and colours of
+    the wires, and the bomb's serial number
     """
     def __init__(self, bomb):
         # Do-while to get the wire sequence
