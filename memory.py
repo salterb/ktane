@@ -1,3 +1,9 @@
+"""Memory
+
+The Memory module consists of a display that shows a single number, and
+four buttons that display the numbers 1-4 in some order.
+"""
+
 from collections import namedtuple
 from enum import IntEnum
 
@@ -5,6 +11,7 @@ from colours import bold
 from utils import get_input
 
 class Input(IntEnum):
+    """The three different types of input we ask for."""
     DISPLAY = 0
     LABEL = 1
     POSITION = 2
@@ -35,6 +42,12 @@ def _input(arg):
         print("Invalid input")
 
 class Memory:
+    """Class to represent the Memory module. Solving requires asking for
+    the number on the display, and pressing either a certain number, or
+    the number in a certain position, and repeating four more times. The
+    number/position pressed are both remembered, since that affects
+    which buttons to press in future rounds.
+    """
     def __init__(self):
         self.stages = []
 
@@ -102,7 +115,7 @@ class Memory:
             raise ValueError(f"Invalid option passed to memory stage 4: {ipt}")
 
     def stage_5(self):
-        """Solve and store results from stage 5 of the Memory Module."""
+        """Solve stage 5 of the Memory Module."""
         ipt = _input(Input.DISPLAY)
         if ipt == 1:
             print(f'Press the button with {bold(f"LABEL {self.stages[0].label}")}\n')
@@ -116,6 +129,7 @@ class Memory:
             raise ValueError(f"Invalid option passed to memory stage 5: {ipt}")
 
     def solve(self):
+        """Solve the Memory module."""
         self.stage_1()
         self.stage_2()
         self.stage_3()
