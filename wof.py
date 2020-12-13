@@ -1,8 +1,14 @@
-"""----------------------- WHO'S ON FIRST -------------------"""
+"""Who's On First
+
+The Who's On First module consists of a display which shows 0-2 words,
+and 6 buttons underneath, each of which shows 1-2 words.
+"""
+
 
 from utils import get_input
 
 def get_wof_display():
+    """Prompt user for input to get the word on the display."""
     while True:
         display = get_input('\nWhat word is on the display? (type "exit" to cancel): ')
         if display in ("EXIT", "QUIT"):
@@ -13,6 +19,7 @@ def get_wof_display():
         print("Please input a valid display entry")
 
 def get_wof_button(display):
+    """Prompt user for input to get the word on a specific button."""
     while True:
         button = get_input(f"What word is on the {DISPLAY_DICT[display]} button? ")
         if button == ("EXIT", "QUIT"):
@@ -24,6 +31,12 @@ def get_wof_button(display):
 
 
 class WOF:
+    """Class to represent the Who's On First module. Solving requires
+    inputting the word(s) on the display. This then prompts for the
+    word(s) on a specific button. Based on the latter word(s), the user
+    must press the first word in a list of words that appears on one of
+    their buttons.
+    """
     def __init__(self):
         pass
 
@@ -47,6 +60,7 @@ if __name__ == "__main__":
     print("Please run the script ktane.py instead!")
 
 # WOF data
+# pylint: disable=C0301
 VALID_DISPLAYS = ['YES', 'FIRST', 'DISPLAY', 'OKAY', 'SAYS', 'NOTHING', '',
                   'BLANK', 'NO', 'LED', 'LEAD', 'READ', 'RED', 'REED',
                   'LEED', 'HOLDON', 'YOU', 'YOUARE', 'YOUR', "YOU'RE", 'UR',
