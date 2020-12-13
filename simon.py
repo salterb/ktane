@@ -1,3 +1,9 @@
+"""Simon
+
+The Simon module consists of four coloured buttons that flash in some
+sequence
+"""
+
 from colours import blue, green, red, yellow
 from utils import get_input
 
@@ -26,6 +32,16 @@ def _get_simon_input():
 
 
 class Simon:
+    """Class to represent the Simon module. Solving requires finding the
+    correct move lookup table (dependent on the number of strikes and
+    whether the bomb serial contains a vowel), mapping each colour to a
+    different one, and then repeating back the sequences the module
+    flashes, but with the "mapped" buttons instead.
+
+    Can either run in "static mode", which prints the lookup table, or
+    "interactive mode", where the colour sequence is inputted each time
+    and the corresponding buttons to be pressed are printed.
+    """
     def __init__(self, bomb):
         self.bomb = bomb
         self.vowels = _contains_vowels(self.bomb.serial)
@@ -119,12 +135,13 @@ class Simon:
 
 
     def solve(self):
+        """Solve the Simon module."""
         while True:
             user_input = get_input("Do you want interactive Simon? (Y/n) ")
             if user_input == "" or user_input[0] == "Y":
                 self.interactive_simon()
                 break
-            elif user_input[0] == "N":
+            if user_input[0] == "N":
                 self.static_simon()
                 break
             print("Please select a valid option")
