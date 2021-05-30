@@ -45,8 +45,8 @@ def get_button_colour():
     while True:
         button_colour = get_input("Input the button colour: ")
         try:
-             # Black is represented by "K", not "B", so we have a special
-             # check for it
+            # Black is represented by "K", not "B", so we have a special
+            # check for it
             if button_colour == "BLACK":
                 colour = Colour.BLACK
             else:
