@@ -68,7 +68,7 @@ class ComplicatedWires:
         """Informs the user to cut the wire if the bomb has a
         parallel port.
         """
-        self._conditional_cut(self.bomb.parallel_port is True)
+        self._conditional_cut(self.bomb.parallel_port.present)
 
     def battery_cut(self):
         """Informs the user to cut the wire if the bomb has more than
