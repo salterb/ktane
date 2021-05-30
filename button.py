@@ -21,6 +21,7 @@ If the strip is {yellow("YELLOW")}, release the button when timer has a \
 {bold("5")} in any position
 Otherwise release the button when timer has a {bold("1")} in any position
 """
+RELEASE_STRING = "\nPress and release button\n"
 
 class Colour(Enum):
     """The possible colours of the button."""
@@ -80,15 +81,15 @@ class Button:
         if self.colour == Colour.BLUE and self.word == Word.ABORT:
             print(HOLD_STRING)
         elif self.word == Word.DETONATE and self.bomb.batteries > 1:
-            print("\nPress and release button\n")
-        elif self.colour == Colour.WHITE and self.bomb.CAR:
+            print(RELEASE_STRING)
+        elif self.colour == Colour.WHITE and self.bomb.CAR.lit:
             print(HOLD_STRING)
-        elif self.bomb.FRK and self.bomb.num_batteries > 2:
-            print("\nPress and release button\n")
+        elif self.bomb.FRK.lit and self.bomb.batteries > 2:
+            print(RELEASE_STRING)
         elif self.colour == Colour.YELLOW:
             print(HOLD_STRING)
         elif self.colour == Colour.RED and self.word == Word.HOLD:
-            print("\nPress and release button\n")
+            print(RELEASE_STRING)
         else:
             print(HOLD_STRING)
 

@@ -42,30 +42,116 @@ LOGO = r"""
 """
 
 
+class Indicator:
+    """Indicator object.
+
+    Holds information about the three-letter indicators present
+    on the bomb.
+    """
+
+    def __init__(self, name):
+        self.name = name
+        self.present = None
+        self.lit = None
+
+    def __repr__(self):
+        present_prefix = "" if self.present else "not "
+        lit_prefix = "" if self.lit else "not "
+        return f"{self.name.upper()}: {present_prefix}present, {lit_prefix}lit"
+
+    @property
+    def present(self):
+        while self.__present is None:
+            self.present = input(f"Is there an indicator with {self.name} (Y/N)? ").upper()
+        return self.__present
+
+    @present.setter
+    def present(self, value):
+        if value is None or isinstance(value, bool):
+            self.__present = value
+            return
+        if value.startswith("Y"):
+            self.__present = True
+        elif value.startswith("N"):
+            self.__present = False
+            self.lit = False
+        else:
+            print("Invalid input")
+
+    @property
+    def lit(self):
+        if self.present is False:  # If there's no indicator, it can't be lit
+            return False
+        while self.__lit is None:
+            self.lit = input(f"Is the indicator with label {self.name} lit (Y/N)? ").upper()
+        return self.__lit
+
+    @lit.setter
+    def lit(self, value):
+        if value is None or isinstance(value, bool):
+            self.__lit = value
+            return
+        if value.startswith("Y"):
+            self.__lit = True
+        elif value.startswith("N"):
+            self.__lit = False
+        else:
+            print("Invalid input")
+
+
+class Port:
+    """Indicator object.
+
+    Holds information about ports present on the bomb.
+    """
+
+    def __init__(self, name):
+        self.name = name
+        self.present = None
+
+    def __repr__(self):
+        status = "present" if self.present else "not present"
+        return f"{self.name}: {status}"
+
+    def __bool__(self):
+        return self.present
+
+    @property
+    def present(self):
+        while self.__present is None:
+            self.present = input(f"Is there a {self.name} on the bomb (Y/N)? ").upper()
+        return self.__present
+
+    @present.setter
+    def present(self, value):
+        if value is None:
+            self.__present = None
+            return
+        if value.startswith("Y"):
+            self.__present = True
+        elif value.startswith("N"):
+            self.__present = False
+        else:
+            print("Invalid input")
+
+
 class Bomb:
     """Bomb object.
 
     Holds configuration information for the bomb.
     """
-    def __init__(self,
-                 serial=None,
-                 batteries=None,
-                 parallel_port=None,
-                 CAR=None,
-                 FRK=None):
-        self.serial = serial                # The bomb's serial number
-        self.batteries = batteries          # The number of batteries on the bomb
-        self.parallel_port = parallel_port  # Is there a parallel port?
-        self.CAR = CAR                      # Is there a _lit_ CAR indicator?
-        self.FRK = FRK                      # Is there a _lit_ FRK indicator?
+
+    def __init__(self):
+        self.serial = None
+        self.batteries = None
         self.strikes = 0
 
     def __repr__(self):
         rep  = f"Bomb: serial: {self.serial}\n"
         rep += f"      batteries: {self.batteries}\n"
-        rep += f"      parallel_port: {self.parallel_port}\n"
-        rep += f"      CAR: {self.CAR}\n"
-        rep += f"      FRK: {self.FRK}"
+        rep += f"      {self.parallel_port!r}\n"
+        rep += f"      {self.CAR!r}\n"
+        rep += f"      {self.FRK!r}"
         return rep
 
     @property
@@ -100,51 +186,17 @@ class Bomb:
         except ValueError:
             print("Invalid number of batteries")
 
-    @property
-    def parallel_port(self):
-        while self.__parallel_port is None:
-            self.parallel_port = input("Does the bomb have a parallel port? (Y/N) ").upper()
-        return self.__parallel_port
+    def __getattr__(self, attr):
+        if attr.isupper() and len(attr) == 3:  # Indicator
+            indicator = Indicator(attr)
+            setattr(self, attr, indicator)
+            return indicator
+        if attr.endswith("_port"):
+            port = Port(attr)
+            setattr(self, attr, port)
+            return port
+        raise AttributeError(f"'{__class__.__name__}' object has no attribute '{attr}'")
 
-    @parallel_port.setter
-    def parallel_port(self, val):
-        self._boolean_setter("parallel_port", val)
-
-    @property
-    def CAR(self):
-        while self.__CAR is None:
-            self.CAR = input("Is there a lit indicator with label CAR? (Y/N) ").upper()
-        return self.__CAR
-
-    @CAR.setter
-    def CAR(self, val):
-        self._boolean_setter("CAR", val)
-
-    @property
-    def FRK(self):
-        while self.__FRK is None:
-            self.FRK = input("Is there a lit indicator with label FRK? (Y/N) ").upper()
-        return self.__FRK
-
-    @FRK.setter
-    def FRK(self, val):
-        self._boolean_setter("FRK", val)
-
-    def _boolean_setter(self, name, val):
-        # "Real" attributes are saved as __attr, which is
-        # represented internally as _class__attr.
-        # setattr on a dunder doesn't do this properly, instead
-        # just setting __attr, so we need to hack the name together.
-        dunder_name = f"_{__class__.__name__}__{name}"
-        if val is None:
-            setattr(self, dunder_name, None)
-            return
-        if len(val) > 0 and val[0] == "Y":
-            setattr(self, dunder_name, True)
-        elif len(val) > 0 and val[0] == "N":
-            setattr(self, dunder_name, False)
-        else:
-            print("Invalid input")
 
     def reset_strikes(self):
         self.strikes = 0
