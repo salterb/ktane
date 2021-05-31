@@ -22,7 +22,7 @@ import simon
 import simple_wires
 import wire_sequence
 import wof
-from utils import get_input
+from utils import get_bool, get_input
 
 LOGO = r"""
  _   _______ ___   _   _  _____
@@ -51,52 +51,17 @@ class Indicator:
 
     def __init__(self, name):
         self.name = name
-        self.present = None
-        self.lit = None
+        self.present = get_bool(f"Is there an indicator with {self.name} (Y/N)? ")
+        # If indicator not present, then obviously it cannot be lit
+        lit = None if self.present else False
+        if lit is None:
+            lit = get_bool(f"Is the indicator with label {self.name} lit (Y/N)? ")
+        self.lit = lit
 
     def __repr__(self):
         present_prefix = "" if self.present else "not "
         lit_prefix = "" if self.lit else "not "
         return f"{self.name.upper()}: {present_prefix}present, {lit_prefix}lit"
-
-    @property
-    def present(self):
-        while self.__present is None:
-            self.present = input(f"Is there an indicator with {self.name} (Y/N)? ").upper()
-        return self.__present
-
-    @present.setter
-    def present(self, value):
-        if value is None or isinstance(value, bool):
-            self.__present = value
-            return
-        if value.startswith("Y"):
-            self.__present = True
-        elif value.startswith("N"):
-            self.__present = False
-            self.lit = False
-        else:
-            print("Invalid input")
-
-    @property
-    def lit(self):
-        if self.present is False:  # If there's no indicator, it can't be lit
-            return False
-        while self.__lit is None:
-            self.lit = input(f"Is the indicator with label {self.name} lit (Y/N)? ").upper()
-        return self.__lit
-
-    @lit.setter
-    def lit(self, value):
-        if value is None or isinstance(value, bool):
-            self.__lit = value
-            return
-        if value.startswith("Y"):
-            self.__lit = True
-        elif value.startswith("N"):
-            self.__lit = False
-        else:
-            print("Invalid input")
 
 
 class Port:
@@ -107,7 +72,7 @@ class Port:
 
     def __init__(self, name):
         self.name = name
-        self.present = None
+        self.present = get_bool(f"Is there a {self.name} on the bomb (Y/N)? ")
 
     def __repr__(self):
         status = "present" if self.present else "not present"
@@ -115,24 +80,6 @@ class Port:
 
     def __bool__(self):
         return self.present
-
-    @property
-    def present(self):
-        while self.__present is None:
-            self.present = input(f"Is there a {self.name} on the bomb (Y/N)? ").upper()
-        return self.__present
-
-    @present.setter
-    def present(self, value):
-        if value is None:
-            self.__present = None
-            return
-        if value.startswith("Y"):
-            self.__present = True
-        elif value.startswith("N"):
-            self.__present = False
-        else:
-            print("Invalid input")
 
 
 class Bomb:
